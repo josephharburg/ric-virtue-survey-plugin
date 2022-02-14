@@ -24,7 +24,7 @@
          require_once SURVEY_PLUGIN_DIR_PATH . 'admin/class-virtue-survey-administration-panel.php';
 
          $survey_actions_and_shortcodes = new Virtue_Survey_Actions_And_Shortcodes;
-         $admin_interface = new Survey_Administation_Panel;
+         $admin_interface = new  Virtue_Survey_Administration_Panel;
        }
 
        public static function instance() {
