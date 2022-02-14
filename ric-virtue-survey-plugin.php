@@ -1,7 +1,6 @@
 <?php
    /*
    Plugin Name: Restored in Christ Virtue Survey
-   Plugin URI:
    description: Adds the neccessary elements to create the Restored in Christ Virtue Survey.
    Version: 1.0
    Author: Joseph Harburg
@@ -20,12 +19,11 @@
        public static $instance = null;
        function __construct(){
          if ( ! defined( 'SURVEY_PLUGIN_DIR_PATH' ) ) define( 'SURVEY_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
-         require_once SURVEY_PLUGIN_DIR_PATH . 'includes/survey-results-actions.php';
-         require_once SURVEY_PLUGIN_DIR_PATH . 'includes/survey-results-object.php';
-         require_once SURVEY_PLUGIN_DIR_PATH . 'admin/survey-administration-panel.php';
+         require_once SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-actions-and-shortcodes.php';
+         require_once SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-result-object.php';
+         require_once SURVEY_PLUGIN_DIR_PATH . 'admin/class-virtue-survey-administration-panel.php';
 
-         //Survey Calculations and Results
-         $survey_results_actions = new Survey_Results_Actions;
+         $survey_actions_and_shortcodes = new Virtue_Survey_Actions_And_Shortcodes;
          $admin_interface = new Survey_Administation_Panel;
        }
 
