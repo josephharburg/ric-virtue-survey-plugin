@@ -1,11 +1,10 @@
 <?php
 
-/*The Virtue Survey Result Object
+/** The Virtue Survey Result Object
 *
 * For every survey result, this is the object created.
 * The object is capable of calculating and serving survey results as well as raw survey entries.
-*
-* @package RIC_Virtue_Survey_Plugin
+* @package ric-virtue-survey-plugin
 * @access public
 * @version 1.0
 */
@@ -16,8 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 }
 
-class Virtue_Survey_Result
-{
+class Virtue_Survey_Result {
   public $entry = [];
   public $results = [];
   public $test_version = "1.0";
@@ -43,6 +41,7 @@ class Virtue_Survey_Result
 
     // Get all the values set in admin interface for the current version of the survey
     $virtue_questions = array(get_option('prudence_question_ids'), get_option('justice_question_ids'), get_option('temperance_question_ids'));
+
     foreach($virtue_questions as $question_set){
       $current_virtue_name = $question_set['virtue_name'];
       foreach($question_set as $key => $field_id){
