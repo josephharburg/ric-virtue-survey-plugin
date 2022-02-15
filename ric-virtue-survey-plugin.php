@@ -21,8 +21,10 @@
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-actions-and-shortcodes.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-result-object.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/admin/class-virtue-survey-settings.php';
+         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-rest-api-controller.php';
          $survey_actions_and_shortcodes = new Virtue_Survey_Actions_And_Shortcodes;
          $admin_interface = new  Virtue_Survey_Settings;
+         $plugin_rest_api = new Virtue_Survey_REST_API;
        }
 
        /**

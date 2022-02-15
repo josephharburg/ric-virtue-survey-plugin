@@ -40,14 +40,14 @@ class Virtue_Survey_Result {
     */
 
     // Get all the values set in admin interface for the current version of the survey
-    $virtue_questions = array(get_option('prudence_question_ids'), get_option('justice_question_ids'), get_option('temperance_question_ids'));
+    $virtue_questions = array(get_option('prudence_question_ids'));
 
     foreach($virtue_questions as $question_set){
       $current_virtue_name = $question_set['virtue_name'];
       foreach($question_set as $key => $field_id){
 
     // Skip virtue_name value
-       if($key == 'virtue_name') continue;
+       if($key === 'virtue_name') continue;
 
     // If the key of the array has reverse in it make sure to do reverese calculation
        $current_virtue[] = (stipos($key, 'reverse') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
@@ -63,6 +63,10 @@ class Virtue_Survey_Result {
 
   public function get_top_virtue(){
     return array_key_first($this->results);
+  }
+
+  public function get_weakest_virtue(){
+    return array_key_last($this->results);
   }
 
   public static function output_results_page($results = []){

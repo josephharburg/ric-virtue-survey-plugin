@@ -11,7 +11,7 @@ class Virtue_Survey_Actions_And_Shortcodes
   function __construct(){
     add_action( 'gform_after_submission_11', array($this, 'calculate_data_results'), 10, 2 );
     add_action( 'gform_after_submission_12', array($this,'calculate_data_results'), 10, 2 );
-    add_shortcode( 'output_transient',array($this, 'output_survey_results'));
+    add_shortcode( 'survey_results', array($this, 'output_survey_results'));
     add_shortcode( 'student_survey_results_table', array($this, 'output_student_table' ));
   }
 
