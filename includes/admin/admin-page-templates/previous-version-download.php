@@ -18,4 +18,12 @@
 </form>
   <a id="formDownloadButton" href="<?php echo "$upload_dir/$uploaded_forms[0]" ?>">Download the survey!</a>
 </div>
-<?php
+
+<script type="text/javascript">
+  (function($){
+    $('#downloadDropdown').on('change', function($) {
+      $('#formDownloadButton').attr('href',<?php echo wp_upload_dir()['basedir'] . '/virtue-survey/'; ?>$(this).val() );
+    } );
+  })(jQuery)
+
+</script>
