@@ -2,7 +2,7 @@
 /**
  * This REST API handles updates and settings for plugin.
  */
-class Virtue_Survey_REST_API
+class Virtue_Survey_API
 {
   private $namespace = 'vs_api/v1';
 
@@ -41,8 +41,6 @@ public function vs_register_plugin_routes(){
   //     'permission_callback' => array($this, 'vs_plugin_permission_callback'),
   //   ));
 
-
-  // Add path to Update Virtue Definition and Links (or have separate paths)?
     register_rest_route($this->namespace, '/update-virtue-definitions/',
       array(
       'methods' => 'POST',
@@ -51,7 +49,6 @@ public function vs_register_plugin_routes(){
       )
     );
 
-  // Add path to add transient results to user meta
     register_rest_route($this->namespace, '/save-user-survey/',
       array(
       'methods' => 'POST',
@@ -145,12 +142,12 @@ function vs_upload_survey(){
 // }
 
 
-// Add callback to update virtue definitions and links.
+// Add callback to update virtue definitions
   function vs_update_definitions(){
 
   }
 
-// Add callback for saving transient result after logging in or registerin
+// Add callback for saving transient result after logging in or registering (Not sure if this is necessary).
   function vs_save_user_survey(){
 
   }

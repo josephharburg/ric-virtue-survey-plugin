@@ -11,7 +11,7 @@
 <div id="uploadSucess">Your survey upload was a sucess!</div>
 </div>
 <?php
-$js_version =  date("ymd-Gis", filemtime(   VIRTUE_SURVEY_FILE_PATH. 'assets/js/upload-virtue-survey.min.js'));
+$js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_FILE_PATH. 'assets/js/upload-virtue-survey.min.js'));
 wp_enqueue_script( 'upload-virtue-survey', VIRTUE_SURVEY_FILE_PATH.'assets/js/upload-virtue-survey.min.js', array('jquery'), $js_version, true );
 wp_localize_script( 'upload-virtue-survey', 'surveyUploadObject', array(
   'nonce' => wp_create_nonce('wp_rest'),

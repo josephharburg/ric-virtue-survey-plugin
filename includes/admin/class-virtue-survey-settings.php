@@ -21,22 +21,17 @@ class Virtue_Survey_Settings
      */
 
     public function add_virtue_survey_admin_menus(){
-      $capability = 'add_users';
+      $capability = 'manage_options';
 
-      //Add Main Admin Panel
-        add_menu_page( 'Virtue Survey Settings', 'Virtue Survey', $capability, 'virtue-survey-settings', array($this,'vs_settings_panel'), 'dashicons-media-spreadsheet', 5);
+      add_menu_page( 'Virtue Survey Settings', 'Virtue Survey', $capability, 'virtue-survey-settings', array($this,'vs_settings_panel'), 'dashicons-media-spreadsheet', 5);
 
-      // Add Survey Field ID Mapping SubMenu page
-        add_submenu_page('virtue-survey-settings', 'Map Field Ids', 'Field Id Mapping', $capability, 'field-id-mapping', array($this, 'vs_field_id_mapping') );
+      add_submenu_page('virtue-survey-settings', 'Map Field Ids', 'Question Field Id Mapping', $capability, 'field-id-mapping', array($this, 'vs_field_id_mapping') );
 
-      // Add Survey Version Upload
-        add_submenu_page( 'virtue-survey-settings', 'Donwnload Previous Survey Versions', 'Download Previous Verisions', $capability, 'current-version-upload', array($this,'vs_version_uploads' ));
+      add_submenu_page( 'virtue-survey-settings', 'Donwnload Previous Survey Versions', 'Download Previous Verisions', $capability, 'current-version-upload', array($this,'vs_version_uploads' ));
 
-      // Add Survey Version Download SubMenu page
-        add_submenu_page( 'virtue-survey-settings', 'Donwnload Previous Survey Versions', 'Download Previous Verisions', $capability, 'previous-version-download', array($this,'vs_version_downloads' ));
+      add_submenu_page( 'virtue-survey-settings', 'Upload Current Survey Version', 'Upload Current Survey Version', $capability, 'previous-version-download', array($this,'vs_version_downloads' ));
 
-      // Add Virtue Definitions and Resources SubMenu Page
-        add_submenu_page( 'virtue-survey-settings', 'Virtue Definitions and Resources', 'Result Settings', $capability, 'virtue-definitions-and-links', array($this, 'vs_definitions_and_links') );
+      add_submenu_page( 'virtue-survey-settings', 'Virtue Definitions and Resources', 'Result Settings', $capability, 'virtue-definitions-and-links', array($this, 'vs_definitions_and_links') );
 
     }
 

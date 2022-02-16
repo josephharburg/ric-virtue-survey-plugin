@@ -21,10 +21,10 @@
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-actions-and-shortcodes.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-result-object.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/admin/class-virtue-survey-settings.php';
-         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-rest-api-controller.php';
+         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-api.php';
          $survey_actions_and_shortcodes = new Virtue_Survey_Actions_And_Shortcodes;
          $admin_interface = new  Virtue_Survey_Settings;
-         $plugin_rest_api = new Virtue_Survey_REST_API;
+         $plugin_rest_api = new Virtue_Survey_API;
        }
 
        /**
@@ -45,6 +45,20 @@
       */
 
       function virtue_survey_plugin_activate() {
+        if(!is_plugin_active('gravityforms/gravityforms.php')){
+          deactivate_plugins( VIRTUE_SURVEY_PLUGIN_NAME );
+          // Link to gravity forms page
+          $plugin_link = 'https://www.gravityforms.com/';
+          $message = '<p style="text-align: center;">' .
+                     sprintf(
+                       esc_attr_( 'Please download and activate %s before activating the Virtue Survey Plugin.'),
+                       '<a href="' . $plugin_link. '" target="_blank">Gravity Forms</a>'
+                     ) .
+                     '</p>';
+          wp_die( $message );
+        }
+
+
       $uploads = wp_upload_dir();
       $upload_dir = $uploads['basedir'];
       $upload_dir = $upload_dir . '/virtue-survey';

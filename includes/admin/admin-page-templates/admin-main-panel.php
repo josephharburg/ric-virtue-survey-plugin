@@ -4,7 +4,7 @@
     <div class="vs-navigation-wrapper">
       <div class="vs-nav-btn-container">
         <a href="<?php echo get_admin_url().'admin.php?page=field-id-mapping' ?>" class="vs-nav-button">Field ID Mapping</a>
-        <div class="vs-nav-btn-desc">Map the field ids to the admin labels on gforms.</div>
+        <div class="vs-nav-btn-desc">Map the field ids to the questions.</div>
       </div>
       <div class="vs-nav-btn-container">
         <a href="<?php echo get_admin_url().'admin.php?page=virtue-definitions-and-links' ?>" class="vs-nav-button">Virtue Definitions and Links</a>
