@@ -14,60 +14,76 @@ class Virtue_Survey_Settings
       wp_enqueue_scripts('plugin-admin-style', array($this, 'enqueue_admin_scripts'));
     }
 
-        /**
-         * Adds the menus to WordPress Backend
-         *
-         * @return void
-         */
+    /**
+     * Adds the menus to WordPress Backend
+     *
+     * @return void
+     */
 
-        public function add_virtue_survey_admin_menus(){
-          $capability = 'add_users';
+    public function add_virtue_survey_admin_menus(){
+      $capability = 'add_users';
 
-          //Add Main Admin Panel
-            add_menu_page( 'Virtue Survey Settings', 'Virtue Survey', $capability, 'virtue-survey-settings', array($this,'virtue_survey_settings_panel'), 'dashicons-media-spreadsheet', 5);
+      //Add Main Admin Panel
+        add_menu_page( 'Virtue Survey Settings', 'Virtue Survey', $capability, 'virtue-survey-settings', array($this,'vs_settings_panel'), 'dashicons-media-spreadsheet', 5);
 
-          // Add Survey Field ID Mapping SubMenu page
-            add_submenu_page('virtue-survey-settings', 'Map Field Ids', 'Field Id Mapping', $capability, 'field-id-mapping', array($this, 'virtue_survey_field_id_mapping') );
+      // Add Survey Field ID Mapping SubMenu page
+        add_submenu_page('virtue-survey-settings', 'Map Field Ids', 'Field Id Mapping', $capability, 'field-id-mapping', array($this, 'vs_field_id_mapping') );
 
-          // Add Survey Version Download SubMenu page
-            add_submenu_page( 'virtue-survey-settings', 'Donwnload Previous Survey Versions', 'Download Previous Verisions', $capability, 'previous-version-download', array($this,'virtue_survey_version_downloads' ));
+      // Add Survey Version Upload
+        add_submenu_page( 'virtue-survey-settings', 'Donwnload Previous Survey Versions', 'Download Previous Verisions', $capability, 'current-version-upload', array($this,'vs_version_uploads' ));
 
-          // Add Virtue Definitions and Resources SubMenu Page
-            add_submenu_page( 'virtue-survey-settings', 'Virtue Definitions and Resources', 'Result Settings', $capability, 'virtue-definitions-and-links', array($this, 'virtue_survey_definitions_and_links') );
+      // Add Survey Version Download SubMenu page
+        add_submenu_page( 'virtue-survey-settings', 'Donwnload Previous Survey Versions', 'Download Previous Verisions', $capability, 'previous-version-download', array($this,'vs_version_downloads' ));
 
-        }
+      // Add Virtue Definitions and Resources SubMenu Page
+        add_submenu_page( 'virtue-survey-settings', 'Virtue Definitions and Resources', 'Result Settings', $capability, 'virtue-definitions-and-links', array($this, 'vs_definitions_and_links') );
 
-        /**
-         * Pulls the template the Main Menu for virtue survey settings
-         * @return void
-         */
-        public function virtue_survey_settings_panel(){
-            require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/admin-main-panel.php';
-        }
+    }
 
-        /**
-         * Pulls the template
-         * @return void
-         */
-        public function virtue_survey_field_id_mapping(){
-            require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/field-id-mapping.php';
-        }
+    /**
+     * Pulls the template the Main Menu for virtue survey settings
+     * @return void
+     */
 
-        /**
-         * Pulls the template for the version download page
-         * @return void
-         */
-        public function virtue_survey_version_downloads(){
-            require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/previous-version-download.php';
-        }
+    public function vs_settings_panel(){
+        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/admin-main-panel.php';
+    }
 
-        /**
-         * Pulls the template for the definitions and links settings
-         * @return void
-         */
-        public function virtue_survey_definitions_and_links(){
-            require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/virtue-definitions-and-links.php';
-        }
+    /**
+     * Pulls the template for field id mapping
+     * @return void
+     */
+
+    public function vs_field_id_mapping(){
+        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/field-id-mapping.php';
+    }
+
+    /**
+     * Pulls the template for the version download page
+     * @return void
+     */
+
+    public function vs_version_downloads(){
+        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/previous-version-download.php';
+    }
+
+    /**
+     * Pulls the template for the definitions and links settings
+     * @return void
+     */
+
+    public function vs_definitions_and_links(){
+        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/virtue-definitions-and-links.php';
+    }
+
+    /**
+     * Pulls the template for the definitions and links settings
+     * @return void
+     */
+
+    public function vs_version_uploads(){
+        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/upload-current-survey-version.php';
+    }
 
     /**
      * Enqueues the scripts for admin interface
@@ -76,13 +92,14 @@ class Virtue_Survey_Settings
 
     public function enqueue_admin_scripts(){
       if(!is_admin()) return;
-      $current_css_ver  = date("ymd-Gis", filemtime(   VIRTUE_SURVEY_FILE_PATH. 'assets/admin-styles-min.css'));
-      wp_enqueue_style( 'virtue-survey-admin-styles', VIRTUE_SURVEY_FILE_PATH. 'assets/admin-styles-min.css', array(), $current_css_ver );
+      $current_css_ver  = date("ymd-Gis", filemtime(   VIRTUE_SURVEY_FILE_PATH. 'assets/css/admin-styles-min.css'));
+      wp_enqueue_style( 'virtue-survey-admin-styles', VIRTUE_SURVEY_FILE_PATH. 'assets/css/admin-styles-min.css', array(), $current_css_ver );
 
       //Add Javascript Files here as well
       // wp_enqueue_script( $handle, $src = false, $deps = array(), $ver = false, $in_footer = false );
 
     }
+
     /**
      * Add settings link to plugins page
      * @param  array $links

@@ -14,6 +14,10 @@
         <a href="<?php echo get_admin_url().'admin.php?page=previous-version-download' ?>" class="vs-nav-button">Get Previous Surveys</a>
         <div class="vs-nav-btn-desc">Download a previous verison of the survey.</div>
       </div>
+      <div class="vs-nav-btn-container">
+        <a href="<?php echo get_admin_url().'admin.php?page=current-version-upload' ?>" class="vs-nav-button">Get Previous Surveys</a>
+        <div class="vs-nav-btn-desc">Upload the currrent version of the survey.</div>
+      </div>
     </div>
   </div>
 </div>

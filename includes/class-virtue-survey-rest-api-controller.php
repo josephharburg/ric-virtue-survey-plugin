@@ -18,27 +18,47 @@ class Virtue_Survey_REST_API
  */
 
 public function vs_register_plugin_routes(){
-  // Add path to update Field Id Mapping by Virtue
   register_rest_route($this->namespace, '/map-field-ids/',
     array(
       'methods' => 'POST',
       'callback' => array($this,'vs_map_field_ids'),
       'permission_callback' => array($this, 'vs_plugin_permission_callback'),
-    ));
-  // Add path to upload survey versions
-  //
-  // Add path to retrive previous survey versions
-  register_rest_route($this->namespace, '/retrieve-stored-survey/',
+    )
+  );
+  register_rest_route($this->namespace, '/upload-survey/',
     array(
       'methods' => 'POST',
-      'callback' => array($this,'vs_retrieve_stored_survey'),
+      'callback' => array($this,'vs_upload_survey'),
       'permission_callback' => array($this, 'vs_plugin_permission_callback'),
-    ));
+    )
+  );
+
+  // Add path to retrive previous survey versions (NOT NECESSARY)
+  // register_rest_route($this->namespace, '/retrieve-stored-survey/',
+  //   array(
+  //     'methods' => 'GET',
+  //     'callback' => array($this,'vs_retrieve_stored_survey'),
+  //     'permission_callback' => array($this, 'vs_plugin_permission_callback'),
+  //   ));
 
 
   // Add path to Update Virtue Definition and Links (or have separate paths)?
+    register_rest_route($this->namespace, '/update-virtue-definitions/',
+      array(
+      'methods' => 'POST',
+      'callback' => array($this,'vs_update_definitions'),
+      'permission_callback' => array($this, 'vs_plugin_permission_callback'),
+      )
+    );
 
   // Add path to add transient results to user meta
+    register_rest_route($this->namespace, '/save-user-survey/',
+      array(
+      'methods' => 'POST',
+      'callback' => array($this,'vs_save_user_survey'),
+      'permission_callback' => array($this, 'vs_plugin_permission_callback'),
+      )
+    );
 }
 
 /**
@@ -56,35 +76,36 @@ function vs_plugin_permission_callback(){
   return true;
 }
 
-// Add callback to handle updating field ids for each virtue
+/**
+ * Map Gravity Forms Field Ids to Questions
+ * @return string
+ */
+
 function vs_map_field_ids(){
   // Everytime we update the field ids it should be represented
   // as a new version of the survey incremented by .1
   $new_version_number = get_option('current_vs_version') + 0.1;
   update_option('current_vs_version', $new_version_number);
+
+
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Add callback to upload previous versions of survey.                       //
-// I am thinking that there should be a separate uploads folder in           //
-// the wp-uploads directory specifically for this.                           //
-// The naming of these files needs to be consistant so that retrieving them  //
-// later will be possible.                                                   //
-///////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////
-// <form action="none" onSubmit="return uploadSurvey()" method="post" enctype="multipart/form-data"> //
-//   Select survey to upload:                                                  //
-//   <input type="file" name="surveyToUpload" id="surveyToUpload">                //
-//   <input type="submit" value="Upload Survey" name="submit">                 //
-// </form>                                                                    //
-////////////////////////////////////////////////////////////////////////////////
+
+
 function vs_upload_survey(){
+  // Get the current version number
   $version_number = get_option('current_vs_version');
 
+  // Get the uploads directory path
   $uploads_folder = wp_upload_dir();
+
+  // The path to the custom plugin directory
   $upload_dir = $uploads_folder['basedir'] . '/virtue-survey';
+
+  // Make sure the directory exists
   if (is_dir($upload_dir)) {
-    $target_file = $upload_dir . basename($_FILES["surveyToUpload"]["name"]."_$version_number");
+    $file_name = "survey-version-number-$version_number.json";
+    $target_file = $upload_dir . "/$file_name";
 
     // Check to see that file doesnt already exist.
     if (file_exists($target_file)) {
@@ -100,7 +121,7 @@ function vs_upload_survey(){
 
     //Try to move file into uploads directory or send error if applicable.
     if (move_uploaded_file($_FILES["surveyToUpload"]["tmp_name"], $target_file)) {
-    return wp_send_json_success( "The file ". htmlspecialchars( basename( $_FILES["surveyToUpload"]["name"])). " has been uploaded to the virtue survey directory!" ) ;
+    return wp_send_json_success( "The file ". htmlspecialchars($file_name). " has been uploaded to the virtue survey directory!" ) ;
     }
   }
   // If the file upload does not make it through the validation send error
@@ -108,15 +129,29 @@ function vs_upload_survey(){
     return wp_send_json_error("Whoops! There was an error uploading your file.");
 }
 
-// Add callback to handle downloading previous versions
-function vs_retrieve_stored_survey(){
-  $version_number = $_POST['vs_survey_version'];
-
-}
+// Add callback to handle downloading previous versions (We might not need this)
+// as we can just generate a list of files to download with scandir()
+// function vs_retrieve_stored_survey($data){
+//   $version_number = $_data['vsSurveyVersion'];
+//   $uploads_directory = wp_upload_dir();
+//   $retrieval_path = $uploads_directory['basedir'] . '/virtue-survey/';
+//
+//   $target_file = "{$retrieval_path}survey-version-number-$version_number.json";
+//   $button_html = "<a class='vs-download-button' href='$target_file'>Download survey json file</a>";
+//   if(file_exists($target_file)){
+//   return wp_send_json_success( $button_html );
+//   }
+//   return wp_send_json_error( "Looks like that file " );
+// }
 
 
 // Add callback to update virtue definitions and links.
+  function vs_update_definitions(){
+
+  }
 
 // Add callback for saving transient result after logging in or registerin
+  function vs_save_user_survey(){
 
+  }
 }
