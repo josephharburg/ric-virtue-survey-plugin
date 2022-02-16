@@ -37,7 +37,26 @@
          }
          return self::$instance;
        }
-     }
-   }
 
-   RIC_Virtue_Survey_Plugin::instance();
+
+     /**
+      * Activation function
+      * @return void
+      */
+
+      function virtue_survey_plugin_activate() {
+      $uploads = wp_upload_dir();
+      $upload_dir = $uploads['basedir'];
+      $upload_dir = $upload_dir . '/virtue-survey';
+      if (! is_dir($upload_dir)) {
+         mkdir( $upload_dir, 0700 );
+      }
+      if(get_option('current_vs_version') == false){
+        add_option( 'current_vs_version', (float)1.0);
+      }
+    }
+  }
+}
+
+RIC_Virtue_Survey_Plugin::instance();
+register_activation_hook( __FILE__, array('RIC_Virtue_Survey_Plugin' ,'virtue_survey_plugin_activate') );
