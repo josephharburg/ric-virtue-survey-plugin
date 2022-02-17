@@ -23,15 +23,15 @@ class Virtue_Survey_Settings
     public function add_virtue_survey_admin_menus(){
       $capability = 'manage_options';
 
-      add_menu_page( 'Virtue Survey Settings', 'Virtue Survey', $capability, 'virtue-survey-settings', array($this,'vs_settings_panel'), 'dashicons-media-spreadsheet', 5);
+      add_menu_page( 'Virtue Survey Settings', 'Virtue Survey', $capability, 'virtue-survey-settings', array($this,'vs_settings_main'), 'dashicons-media-spreadsheet', 5);
 
       add_submenu_page('virtue-survey-settings', 'Map Field Ids', 'Question Field Id Mapping', $capability, 'field-id-mapping', array($this, 'vs_field_id_mapping') );
 
-      add_submenu_page( 'virtue-survey-settings', 'Donwnload Previous Survey Versions', 'Download Previous Verisions', $capability, 'current-version-upload', array($this,'vs_version_uploads' ));
+      add_submenu_page( 'virtue-survey-settings', 'Download Backups', 'Download Backups', $capability, 'download-backups', array($this,'vs_version_downloads' ));
 
-      add_submenu_page( 'virtue-survey-settings', 'Upload Current Survey Version', 'Upload Current Survey Version', $capability, 'previous-version-download', array($this,'vs_version_downloads' ));
+      add_submenu_page( 'virtue-survey-settings', 'Upload Backups', 'Upload Backups', $capability, 'upload-backups', array($this,'vs_version_uploads' ));
 
-      add_submenu_page( 'virtue-survey-settings', 'Virtue Definitions and Resources', 'Result Settings', $capability, 'virtue-definitions-and-links', array($this, 'vs_definitions_and_links') );
+      add_submenu_page( 'virtue-survey-settings', 'Virtue Definitions and Resources', 'Question Settings', $capability, 'virtue-definitions', array($this, 'vs_definitions') );
 
     }
 
@@ -40,7 +40,7 @@ class Virtue_Survey_Settings
      * @return void
      */
 
-    public function vs_settings_panel(){
+    public function vs_settings_main(){
         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/admin-main-panel.php';
     }
 
@@ -59,7 +59,7 @@ class Virtue_Survey_Settings
      */
 
     public function vs_version_downloads(){
-        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/previous-version-download.php';
+        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/download-backups.php';
     }
 
     /**
@@ -67,8 +67,8 @@ class Virtue_Survey_Settings
      * @return void
      */
 
-    public function vs_definitions_and_links(){
-        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/virtue-definitions-and-links.php';
+    public function vs_definitions(){
+        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/virtue-definitions.php';
     }
 
     /**
@@ -77,7 +77,7 @@ class Virtue_Survey_Settings
      */
 
     public function vs_version_uploads(){
-        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/upload-current-survey-version.php';
+        require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'admin-page-templates/upload-backups.php';
     }
 
     /**

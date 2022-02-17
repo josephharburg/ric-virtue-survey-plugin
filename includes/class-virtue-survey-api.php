@@ -25,10 +25,10 @@ public function vs_register_plugin_routes(){
       'permission_callback' => array($this, 'vs_plugin_permission_callback'),
     )
   );
-  register_rest_route($this->namespace, '/upload-survey/',
+  register_rest_route($this->namespace, '/upload-backups/',
     array(
       'methods' => 'POST',
-      'callback' => array($this,'vs_upload_survey'),
+      'callback' => array($this,'vs_upload_backup'),
       'permission_callback' => array($this, 'vs_plugin_permission_callback'),
     )
   );
@@ -89,38 +89,39 @@ function vs_map_field_ids(){
 
 
 
-function vs_upload_survey(){
+function vs_upload_backup(){
   // Get the current version number
   $version_number = get_option('current_vs_version');
 
   // Get the uploads directory path
   $uploads_folder = wp_upload_dir();
 
+  $directory_name = $_POST['upload_type'];
+  $file_upload_type = ($_POST['upload_type'] == 'surveys') ? "survey" : $_POST['upload_type'];
+  $file_type_extension = ($_POST['upload_type'] == 'surveys') ? ".json" : ".csv";
   // The path to the custom plugin directory
-  $upload_dir = $uploads_folder['basedir'] . '/virtue-survey';
+  $upload_dir = $uploads_folder['basedir'] . "/virtue-survey/$directory_name";
+  $upload_date = date("Y-m-d H:i:s");
+    // Make sure the directory exists
+    if (is_dir($upload_dir)) {
+      $file_name = "$file_upload_type-version-number-$version_number-$upload_date$file_type_extension";
+      $target_file = $upload_dir . "/$file_name";
 
-  // Make sure the directory exists
-  if (is_dir($upload_dir)) {
-    $file_name = "survey-version-number-$version_number.json";
-    $target_file = $upload_dir . "/$file_name";
+      // Check to see that file doesnt already exist.
+      if (file_exists($target_file)) {
+        return wp_send_json_error("$file_name backup already exists!");
+      }
 
-    // Check to see that file doesnt already exist.
-    if (file_exists($target_file)) {
-      echo "This survey already exists";
-      return wp_send_json_error("This version of survey already exists!");
+      // Check to see file is larger than 1mb
+      if ($_FILES["{$file_upload_type}ToUpload"]["size"] > 1000000) {
+        return wp_send_json_error( "Sorry, the filesize is too large." );
+      }
+
+      //Try to move file into uploads directory or send error if applicable.
+      if (move_uploaded_file($_FILES["{$file_upload_type}ToUpload"]["tmp_name"], $target_file)) {
+      return wp_send_json_success( "The file ". htmlspecialchars($file_name). " has been uploaded to the virtue survey directory!" ) ;
+      }
     }
-
-    // Check to see file is larger than 1mb
-    if ($_FILES["surveyToUpload"]["size"] > 1000000) {
-      echo "Sorry, the filesize is too large.";
-      return wp_send_json_error( "Sorry, the filesize is too large." );
-    }
-
-    //Try to move file into uploads directory or send error if applicable.
-    if (move_uploaded_file($_FILES["surveyToUpload"]["tmp_name"], $target_file)) {
-    return wp_send_json_success( "The file ". htmlspecialchars($file_name). " has been uploaded to the virtue survey directory!" ) ;
-    }
-  }
   // If the file upload does not make it through the validation send error
   // by default.
     return wp_send_json_error("Whoops! There was an error uploading your file.");

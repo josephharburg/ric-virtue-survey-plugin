@@ -45,6 +45,8 @@
       */
 
       function virtue_survey_plugin_activate() {
+
+        //Require Gravity Forms to be installed or deactivate plugin
         if(!is_plugin_active('gravityforms/gravityforms.php')){
           deactivate_plugins( VIRTUE_SURVEY_PLUGIN_NAME );
           // Link to gravity forms page
@@ -58,13 +60,25 @@
           wp_die( $message );
         }
 
-
+      // Here we are creating the upload directories for backup storage
       $uploads = wp_upload_dir();
       $upload_dir = $uploads['basedir'];
       $upload_dir = $upload_dir . '/virtue-survey';
       if (! is_dir($upload_dir)) {
          mkdir( $upload_dir, 0700 );
       }
+
+      //Survey upload directory
+      $survey_upload_dir = $upload_dir. "/surveys";
+      if(! is_dir($survey_upload_dir)){
+        mkdir( $survey_upload_dir, 0700 );
+      }
+      //Entry upload directory
+      $entry_upload_dir = $upload_dir. "/entries";
+      if(! is_dir($entry_upload_dir)){
+           mkdir( $entry_upload_dir, 0700 );
+      }
+
       if(get_option('current_vs_version') == false){
         add_option( 'current_vs_version', (float)1.0);
       }

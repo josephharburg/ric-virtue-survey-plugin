@@ -1,10 +1,10 @@
 (function($){
   $('#uploadSurveyForm').submit(uploadFileToDirectory);
-
-  function uploadFileToDirectory($){
-    var surveyAPIURL = surveyUploadObject.apiURL;
-    var wpNonce = surveyUploadObject.nonce;
-
+  $('#uploadEntryForm').submit(uploadFileToDirectory);
+  function uploadFileToDirectory(e){
+    e.preventDefault();
+    var surveyAPIURL = uploadDataObject.apiURL;
+    var wpNonce = uploadDataObject.nonce;
     $.ajax({
       beforeSend: (xhr) => {
         xhr.setRequestHeader('X-WP-Nonce', wpnonce);
@@ -17,6 +17,7 @@
       },
       success: (response) => {
         $('#uploadSuccess').show();
+        $('#uploadSuccess').text(response);
       },
       error: (response) => {
         $('#uploadError').show();

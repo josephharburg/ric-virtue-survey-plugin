@@ -7,9 +7,9 @@
      <?php
      ob_start();
       $uploads_folder = wp_upload_dir();
-      $upload_dir = $uploads_folder['basedir'] . '/virtue-survey';
+      $upload_dir = $uploads_folder['basedir'] . '/virtue-survey/surveys';
       $uploaded_forms = scandir($upload_dir);
-      foreach($uploadedforms as $key => $form){
+      foreach($uploaded_forms as $key => $form){
        echo "<option value='$form'>$key</option>";
       }
       ob_get_clean();
