@@ -49,6 +49,14 @@ public function vs_register_plugin_routes(){
       )
     );
 
+    register_rest_route($this->namespace, '/get-virtue-definition/',
+      array(
+      'methods' => 'GET',
+      'callback' => array($this,'vs_get_definition'),
+      'permission_callback' => array($this, 'vs_plugin_permission_callback'),
+      )
+    );
+
     register_rest_route($this->namespace, '/save-user-survey/',
       array(
       'methods' => 'POST',
@@ -146,6 +154,16 @@ function vs_upload_backup(){
 // Add callback to update virtue definitions
   function vs_update_definitions(){
 
+  }
+
+// Add callback to update virtue definitions
+  function vs_get_definition($data){
+    if(isset($data['virtue'])){
+        $virtue_to_get = strtolower($data['virtue']);
+        $definition_default = (get_option("vs_{$virtue_to_get}_defintion") !== '' || get_option("vs_{$virtue_to_get}_defintion") !== false) ? get_option("vs_{$virtue_to_get}_defintion") : "Enter Definition Here";
+        return wp_send_json_success( $definition_default );
+    }
+    return wp_send_json_error( "There was an error getting that virtues definition, please refresh the page and try again." );
   }
 
 // Add callback for saving transient result after logging in or registering (Not sure if this is necessary).

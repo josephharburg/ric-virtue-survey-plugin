@@ -20,8 +20,9 @@
 
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-actions-and-shortcodes.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-result-object.php';
+         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/class-virtue-survey-plugin-tools.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/admin/class-virtue-survey-settings.php';
-         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-api.php';
+         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/class-virtue-survey-api.php';
          $survey_actions_and_shortcodes = new Virtue_Survey_Actions_And_Shortcodes;
          $admin_interface = new  Virtue_Survey_Settings;
          $plugin_rest_api = new Virtue_Survey_API;
@@ -82,6 +83,43 @@
       if(get_option('current_vs_version') == false){
         add_option( 'current_vs_version', (float)1.0);
       }
+      // if(get_option('virtue_list') == false){
+      //   $virtues = array(
+      //     'prudence',
+      //     'justice',
+      //     'fortitude',
+      //     'temperance',
+      //     'affability',
+      //     'courtesy',
+      //     'gratitude',
+      //     'kindness',
+      //     'loyalty',
+      //     'obedience',
+      //     'patriotism',
+      //     'prayerfulness',
+      //     'religion',
+      //     'respect',
+      //     'responsibility',
+      //     'sincerity',
+      //     'trustworhiness',
+      //     'circumspection',
+      //     'docility',
+      //     'foresight',
+      //     'industriousness',
+      //     'magnanimity',
+      //     'magnificence',
+      //     'patience',
+      //     'perseverance',
+      //     'honesty',
+      //     'humiliy',
+      //     'meekness',
+      //     'moderation',
+      //     'modesty',
+      //     'orderliness',
+      //     'self-control'
+      //   );
+      //   add_option( 'virtue_list' , $virtues);
+      // }
     }
   }
 }

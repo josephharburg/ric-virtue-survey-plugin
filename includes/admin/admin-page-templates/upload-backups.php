@@ -3,7 +3,7 @@
   <h1 class="vs-admin-h1"><?php echo esc_html( get_admin_page_title() ); ?></h1>
   <h3>When uploading the filename of the file will be automatically generated based on the current version number of the survey.</h3>
   <div id="uploadError"></div>
-  <div id="uploadSucess">Your survey upload was a sucess!</div>
+  <div id="uploadSuccess">Your survey upload was a sucess!</div>
   <h4>Upload Survey Backup</h4>
  <form id="uploadSurveyForm" onSubmit="return false" method="post" enctype="multipart/form-data">
    Select survey to upload:
