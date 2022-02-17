@@ -1,23 +1,27 @@
 
 <div class="vs-admin-settings-wrapper">
+  <div class="formError" id="uploadError"></div>
+  <div class="formSuccess" id="uploadSuccess">Your upload was a success!</div>
   <h1 class="vs-admin-h1"><?php echo esc_html( get_admin_page_title() ); ?></h1>
   <h3>When uploading the filename of the file will be automatically generated based on the current version number of the survey.</h3>
-  <div id="uploadError"></div>
-  <div id="uploadSuccess">Your survey upload was a sucess!</div>
-  <h4>Upload Survey Backup</h4>
- <form id="uploadSurveyForm" onSubmit="return false" method="post" enctype="multipart/form-data">
-   Select survey to upload:
-   <input type="file" name="surveyToUpload" id="surveyToUpload">
-   <input type='hidden' name='upload_type' value='surveys'>
-   <input type="submit" value="Upload Survey" name="submit">
- </form>
-<h4>Upload Entry Backup</h4>
- <form id="uploadEntryForm" onSubmit="return false" method="post" enctype="multipart/form-data">
+  <div>
+    <h4>Upload Survey Backup</h4>
+    <form id="uploadSurveyForm" onSubmit="return false" method="post" enctype="multipart/form-data">
+     Select survey to upload:
+     <input type="file" name="surveyToUpload" id="surveyToUpload">
+     <input type='hidden' name='upload_type' value='surveys'>
+     <input type="submit" value="Upload Survey" name="submit">
+     </form>
+  </div>
+  <div>
+   <h4>Upload Entry Backup</h4>
+   <form id="uploadEntryForm" onSubmit="return false" method="post" enctype="multipart/form-data">
    Select Entry to upload:
    <input type="file" name="entryToUpload" id="entryToUpload">
    <input type='hidden' name='upload_type' value='entries'>
    <input type="submit" value="Upload Entry" name="submit">
- </form>
+   </form>
+  </div>
 </div>
 <?php
 $js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_FILE_PATH. 'assets/js/upload-backups.min.js'));

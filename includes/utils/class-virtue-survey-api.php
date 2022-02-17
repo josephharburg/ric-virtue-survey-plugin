@@ -57,13 +57,13 @@ public function vs_register_plugin_routes(){
       )
     );
 
-    register_rest_route($this->namespace, '/save-user-survey/',
-      array(
-      'methods' => 'POST',
-      'callback' => array($this,'vs_save_user_survey'),
-      'permission_callback' => array($this, 'vs_plugin_permission_callback'),
-      )
-    );
+    // register_rest_route($this->namespace, '/save-user-survey/',
+    //   array(
+    //   'methods' => 'POST',
+    //   'callback' => array($this,'vs_save_user_survey'),
+    //   'permission_callback' => array($this, 'vs_plugin_permission_callback'),
+    //   )
+    // );
 }
 
 /**
@@ -89,8 +89,8 @@ function vs_plugin_permission_callback(){
 function vs_map_field_ids(){
   // Everytime we update the field ids it should be represented
   // as a new version of the survey incremented by .1
-  $new_version_number = get_option('current_vs_version') + 0.1;
-  update_option('current_vs_version', $new_version_number);
+  // $new_version_number = get_option('current-vs-version') + 0.1;
+  // update_option('current-vs-version', $new_version_number);
 
 
 }
@@ -99,7 +99,7 @@ function vs_map_field_ids(){
 
 function vs_upload_backup(){
   // Get the current version number
-  $version_number = get_option('current_vs_version');
+  $version_number = get_option('current-vs-version');
 
   // Get the uploads directory path
   $uploads_folder = wp_upload_dir();
@@ -153,21 +153,26 @@ function vs_upload_backup(){
 
 // Add callback to update virtue definitions
   function vs_update_definitions(){
-
+    if(isset($_POST['virtue'])){
+      $virtue_to_update = $_POST['virtue'];
+      update_option("vs-$virtue_to_update-definition", wp_kses($_POST['definitionContent']));
+      return wp_send_json_success( "$virtue_to_update definition has been updated!" );
+    }
+      return wp_send_json_error( "There was an error updating $virtue_to_update's definition." );
   }
 
 // Add callback to update virtue definitions
   function vs_get_definition($data){
     if(isset($data['virtue'])){
         $virtue_to_get = strtolower($data['virtue']);
-        $definition_default = (get_option("vs_{$virtue_to_get}_defintion") !== '' || get_option("vs_{$virtue_to_get}_defintion") !== false) ? get_option("vs_{$virtue_to_get}_defintion") : "Enter Definition Here";
+        $definition_default = (get_option("vs-{$virtue_to_get}-definition") !== '' || get_option("vs-{$virtue_to_get}-definition") !== false) ? get_option("vs-{$virtue_to_get}-definition") : "Enter Definition Here";
         return wp_send_json_success( $definition_default );
     }
     return wp_send_json_error( "There was an error getting that virtues definition, please refresh the page and try again." );
   }
 
-// Add callback for saving transient result after logging in or registering (Not sure if this is necessary).
-  function vs_save_user_survey(){
-
-  }
+// // Add callback for saving transient result after logging in or registering (Not sure if this is necessary).
+//   function vs_save_user_survey(){
+//
+//   }
 }

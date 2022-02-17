@@ -3,25 +3,27 @@
  * This template handles the admin page for
  * updating the definitions of the virtues
  */
+require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
 ob_start();
  ?>
-
+ 
 <div class="vs-admin-settings-wrapper">
-  <div id="updateError"></div>
-  <div id="updateSuccess"></div>
+  <div class="formError" id="updateError"></div>
+  <div class="formSuccess" id="updateSuccess"></div>
   <h1 class="vs-admin-h1"><?php echo esc_html( get_admin_page_title() ); ?></h1>
+  <h2>Select a Virtue to update its definition.</h2>
   <select id="virtueSelect">
     <?php
-      $virtues = get_option('virtue_list');
+      $virtues = get_virtue_list();
       foreach($virtues as $virtue){
         echo "<option value='$virtue'>".ucfirst($virtue)."</option>";
       }
     ?>
   </select>
   <form id="updateDefinitionsForm" onSubmit="return false" method="post" >
-    <label for="definition">Enter the definition</label>
+    <label for="definition">Enter the Definition Here:</label>
     <?php
-    $default = (get_option('vs_prudence_defintion') !== '' || get_option('vs_prudence_defintion') !== false) ? get_option('vs_prudence_defintion') : "Enter Definition Here";
+    $default = (get_option('vs-prudence-defintion') !== '' || get_option('vs-prudence-definition') !== false) ? get_option('vs-prudence-definition') : "Enter Definition Here";
     wp_editor( $default, 'definitionContent', array()); ?>
     <input type="hidden" id="selectedVirtue" name="virtue" value="prudence">
     <input type="submit" value="Edit Definition" name="submit">
