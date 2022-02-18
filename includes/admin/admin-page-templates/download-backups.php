@@ -16,13 +16,13 @@
         $survey_upload_dir = $uploads_folder['basedir'] . '/virtue-survey/surveys';
         $uploaded_forms = scandir($survey_upload_dir);
         foreach($uploaded_forms as $key => $form){
-         echo "<option value='$form'>$key</option>";
+         echo "<option value='$form'>$form</option>";
         }
         ob_end_clean();
         ?>
      </select>
     </form>
-    <a id="formSurveyDownloadButton" href="<?php echo "$upload_dir/$uploaded_forms[0]" ?>">Download!</a>
+    <a id="formSurveyDownloadButton" href="<?php echo get_site_url()."/wp-content/uploads/virtue-survey/entries/".$uploaded_entries[2]; ?>" download>Download!</a>
   </div>
   <div id="entries-download-form">
     <h3>The list of available downloadable entries is below.</h3>
@@ -35,13 +35,13 @@
         $entries_upload_dir = $uploads_folder['basedir'] . '/virtue-survey/entries';
         $uploaded_entries = scandir($entries_upload_dir);
         foreach($uploaded_entries as $key => $entries_file){
-         echo "<option value='$entries_file'>$key</option>";
+         echo "<option value='$entries_file'>$entries_file</option>";
         }
         ob_end_clean();
         ?>
      </select>
    </form>
-   <a id="formEntriesDownloadButton" href="<?php echo "$upload_dir/$uploaded_forms[0]" ?>">Download!</a>
+   <a id="formEntriesDownloadButton" href="<?php echo get_site_url()."/wp-content/uploads/virtue-survey/entries/".$uploaded_entries[2] ?>" download>Download!</a>
   </div>
 </div>
 
@@ -57,11 +57,12 @@
       }
     );
 
-    $('#downloadSurveyDropdown').on('change', function($) {
-      $('#formSurveyDownloadButton').attr('href',<?php echo wp_upload_dir()['basedir'] . '/virtue-survey/surveys/'; ?>$(this).val() );});
+    $('#downloadSurveyDropdown').on('change', function(e) {
+      var file = $(this).val();
+      $('#formSurveyDownloadButton').attr('href',`<?php echo get_site_url(). '/wp-content/uploads/virtue-survey/surveys/'; ?>${file}` );});
 
     $('#downloadEntriesDropdown').on('change', function($) {
-      $('#formEntriesDownloadButton').attr('href',<?php echo wp_upload_dir()['basedir'] . '/virtue-survey/entries/'; ?>$(this).val() );
+      $('#formEntriesDownloadButton').attr('href',`<?php echo  get_site_url(). '/wp-content/uploads/virtue-survey/entries/'; ?>${file}`;
     } );
   })(jQuery)
 </script>
