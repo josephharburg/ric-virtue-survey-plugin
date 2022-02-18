@@ -9,9 +9,9 @@
 class Virtue_Survey_Settings
 {
     public function __construct(){
-      add_action('admin_menu', array($this, 'add_virtue_survey_admin_menus'));
-      add_filter('plugin_action_links_'.VIRTUE_SURVEY_PLUGIN_NAME, array($this, 'admin_settings_link'), 10, 1);
-      wp_enqueue_scripts('plugin-admin-style', array($this, 'enqueue_admin_scripts'));
+      add_action('admin_menu', array($this, 'vs_add_admin_menus'));
+      add_filter('plugin_action_links_'.VIRTUE_SURVEY_PLUGIN_NAME, array($this, 'vs_plugin_settings_link'), 10, 1);
+      wp_enqueue_scripts('plugin-admin-style', array($this, 'vs_enqueue_admin_scripts'));
     }
 
     /**
@@ -20,7 +20,7 @@ class Virtue_Survey_Settings
      * @return void
      */
 
-    public function add_virtue_survey_admin_menus(){
+    public function vs_add_admin_menus(){
       $capability = 'manage_options';
 
       add_menu_page( 'Virtue Survey Settings', 'Virtue Survey', $capability, 'virtue-survey-settings', array($this,'vs_settings_main'), 'dashicons-media-spreadsheet', 5);
@@ -85,7 +85,7 @@ class Virtue_Survey_Settings
      * @return void
      */
 
-    public function enqueue_admin_scripts(){
+    public function vs_enqueue_admin_scripts(){
       if(!is_admin()) return;
       $current_css_ver  = date("ymd-Gis", filemtime(   VIRTUE_SURVEY_FILE_PATH. 'assets/css/admin-styles-min.css'));
       wp_enqueue_style( 'virtue-survey-admin-styles', VIRTUE_SURVEY_FILE_PATH. 'assets/css/admin-styles-min.css', array(), $current_css_ver );
@@ -101,7 +101,7 @@ class Virtue_Survey_Settings
      * @return array
      */
 
-    public function admin_settings_link($links){
+    public function vs_plugin_settings_link($links){
       $settings_link = '<a href="admin.php?page=virtue-survey-settings">Settings</a>';
       array_push($links, $settings_link);
       return $links;

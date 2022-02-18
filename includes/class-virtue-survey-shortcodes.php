@@ -12,18 +12,18 @@ class Virtue_Survey_Shortcodes
   function __construct(){
     require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
     add_shortcode( 'survey_results', array($this, 'output_survey_results'));
-    add_shortcode( 'student_survey_results_table', array($this, 'output_student_table' ));
+    // add_shortcode( 'student_survey_results_table', array($this, 'output_student_table' ));
   }
 
   public function output_survey_results(){
     if(is_user_logged_in()){
         $survey_completions = get_user_meta( $user_id, "total_surveys_completed", true);
         $result_object = get_user_meta( get_current_user_id(), "user_virtue_survey_result_$survey_completions", true );
-        return output_results_table($result_object->ranked_virtues);
+        return vs_output_results_table($result_object->ranked_virtues);
     }
     $results_meta_key = $_GET['uid']. "-". $_GET['quiz-results'];
     $result_object = get_transient( $results_meta_key );
-    return output_results_table($result_object->ranked_virtues);
+    return vs_output_results_table($result_object->ranked_virtues);
   }
 
   //  function output_student_table(){

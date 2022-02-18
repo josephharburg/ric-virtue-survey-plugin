@@ -3,9 +3,9 @@
 /** The Virtue Survey Result Object
 *
 * For every survey result, this is the object created.
-* The object is capable of calculating and serving survey results as well as raw survey entries.
+* The object is capable of calculating and serving survey results.
+*
 * @package ric-virtue-survey-plugin
-* @access public
 * @version 1.1
 */
 
@@ -16,20 +16,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Virtue_Survey_Result {
-  public $entry_id = 0;
-  public $form_id = 11;
+  public $entry_id;
+  public $form_id;
+  public $survey_version;
+  public $id_map = [];
   public $results = [];
   public $ranked_virtues = [];
-  public $survey_version = "";
-  private $mapped_ids = "";
 
-  function __construct($entry_id = 1, $form_id = 11)
-  {
+
+  function __construct($entry_id = 1, $form_id = 11) {
     require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
     $this->entry_id = $entry_id;
-    $this->form_id = $entry_id;
-    $this->results = self::calculate_survey_results($entry_id, $form_id);
+    $this->form_id = $form_id;
     $this->survey_version = get_option("vs-current-version");
+    $this->id_map = $this->save_id_map($form_id);
+    $this->results = self::vs_calculate_survey_results($entry_id, $form_id);
     $this->ranked_virtues = array_keys($this->results);
   }
 
@@ -40,8 +41,7 @@ class Virtue_Survey_Result {
    * @return array
    */
 
-
-  public static function calculate_survey_results($entry_id, $form_id){
+  public static function vs_calculate_survey_results($entry_id, $form_id){
     $entry = GFAPI::get_entry( $entry_id );
     $form = GFAPI::get_form( $form_id );
     $optional_question_ids = get_option('optional_questions');
@@ -51,7 +51,7 @@ class Virtue_Survey_Result {
     }
 
     // Get all the values set in admin interface
-    $virtue_questions = map_field_ids_to_array($form);
+    $virtue_questions = vs_map_field_ids_to_array($form);
 
     foreach($virtue_questions as $current_virtue_name => $question_set){
       foreach($question_set as $key => $field_id){
@@ -60,7 +60,7 @@ class Virtue_Survey_Result {
      }
 
     // Do the calculation after collecting all values
-     $current_virtue_calculation = ceil( array_sum($current_virtue) / count($current_virtue) );
+     $current_virtue_calculation =  array_sum($current_virtue) / count($current_virtue);
      $calculated_survey_results[$current_virtue_name] = $current_virtue_calculation;
     }
     // Sort it by highest value
@@ -68,20 +68,60 @@ class Virtue_Survey_Result {
     return $calculated_survey_results;
   }
 
+  /**
+   * Get the top virtue
+   *
+   * @return string
+   */
+
   public function get_top_virtue(){
     return array_key_first($this->results);
   }
+
+  /**
+   * Get the weakest virtue
+   *
+   * @return string
+   */
 
   public function get_weakest_virtue(){
     return array_key_last($this->results);
   }
 
+  /**
+   * Get the top 6 virtues
+   *
+   * @return array
+   */
+
   public function get_top_six_virtues(){
     return array_keys(array_slice($this->results, 0, 6, true));
   }
 
+  /**
+   * Get the all virtues ranked by score
+   *
+   * @return array
+   */
+
   public function get_ranked_virtues(){
     return $this->ranked_virtues;
+  }
+
+  /**
+   * Save the filed id to virtue map
+   *
+   * We need this to make sure we know which
+   * questions matched which field at the time
+   * this was taken in case the form is ever
+   * changed in the future.
+   *
+   * @return string
+   */
+
+  public function save_id_map($form_id){
+    $form = GFAPI::get_form( $form_id );
+    return vs_map_field_ids_to_array($form);
   }
 
 

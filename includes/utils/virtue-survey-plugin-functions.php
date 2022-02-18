@@ -11,7 +11,7 @@
  * @return array
  */
 
-  function get_virtue_list(){
+  function vs_get_virtue_list(){
     return array(
         'prudence',
         'justice',
@@ -55,7 +55,7 @@
    * @return string
    */
 
- function output_results_table($results = []){
+ function vs_output_results_table($results = []){
     $html_to_return ="<div><ul>";
     $rank = 1;
     foreach($results as $virtue){
@@ -73,8 +73,8 @@
    * @return array       a multidimensional array
    */
 
-  function map_field_ids_to_array($form){
-      $virtue_list = get_virtue_list();
+  function vs_map_field_ids_to_array($form){
+      $virtue_list = vs_get_virtue_list();
       $mapped_fields_ids = array();
       foreach ( $form['fields'] as $field ) {
         if(!empty($field->adminLabel)){

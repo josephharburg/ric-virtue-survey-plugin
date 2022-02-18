@@ -14,7 +14,7 @@ ob_start();
   <h2>Select a Virtue to update its definition.</h2>
   <select id="virtueSelect">
     <?php
-      $virtues = get_virtue_list();
+      $virtues = vs_get_virtue_list();
       foreach($virtues as $virtue){
         echo "<option value='$virtue'>".ucfirst($virtue)."</option>";
       }

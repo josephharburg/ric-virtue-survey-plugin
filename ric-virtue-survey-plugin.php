@@ -19,7 +19,7 @@
          if ( ! defined( 'VIRTUE_SURVEY_FILE_PATH' ) ) define( 'VIRTUE_SURVEY_FILE_PATH', plugin_dir_url(__FILE__) );
 
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-shortcodes.php';
-         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-gf-changes.php';
+         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-gf-integration.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-result-object.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/admin/class-virtue-survey-settings.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/class-virtue-survey-api.php';

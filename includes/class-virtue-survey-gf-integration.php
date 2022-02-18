@@ -3,22 +3,30 @@
 class Virtue_Survey_Gravity_Forms_Integration
 {
   function __construct(){
-    require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
-    add_action( 'gform_after_submission_11', array($this, 'calculate_data_results'), 10, 2 );
-    add_action( 'gform_after_submission_12', array($this, 'calculate_data_results'), 10, 2 );
-      // add_action( 'gform_after_save_form', 'log_and_email_alert_form_saved', 10, 1);
+    // require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
+    add_action( 'gform_after_submission_11', array($this, 'vs_create_and_save_results'), 10, 2 );
+    add_action( 'gform_after_submission_12', array($this, 'vs_create_and_save_results'), 10, 2 );
+      // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
 //     add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
 //     $fields['form_options']['fields'][] = array( 'type' => 'number', 'name' => 'version' );
 //     return $fields;
 // }, 10, 2 );
   }
 
-  /*We cant assume the user is logged in because this works on non logged in users. What we
-  * when we prerender the user_id_field it either uses the current users ID or generate a random one
-  * in the form.
-  */
+/**
+ * Creates and Saves Survey Results
+ *
+ * We save the results in a custom object to make it
+ * easier to output results in the front end and maintain
+ * data integrety
+ *
+ * @param  array|object $entry          The entry object from GF.
+ * @param  array|object $form           The form object from GF.
+ * @return void
+ */
 
-  function calculate_data_results($entry, $form){
+
+  function vs_create_and_save_results($entry, $form){
     // Leave if no Virtue Survey Result class
     if(! class_exists('Virtue_Survey_Result')){
       exit;
@@ -37,7 +45,7 @@ class Virtue_Survey_Gravity_Forms_Integration
       $user_id = get_current_user_id();
       // Get the number of completed surveys
       $survey_completions = get_user_meta( $user_id, "total_surveys_completed", true );
-      
+
       // We collect survey result objects individually as separate meta keys and values.
       // Later, we will iterate through all the meta value results to calculate the
       // increase or decrease of virute values.
@@ -64,7 +72,7 @@ class Virtue_Survey_Gravity_Forms_Integration
    */
 
 
-  function log_and_email_alert_form_saved( $form ) {
+  function vs_form_saved_alerts( $form ) {
       $log_file = VIRTUE_SURVEY_PLUGIN_DIR_PATH . '/assets/logs/gf_saved_forms.log';
       $f = fopen( $log_file, 'a' );
       $user = wp_get_current_user();
