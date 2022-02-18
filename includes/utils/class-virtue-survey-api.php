@@ -18,13 +18,6 @@ class Virtue_Survey_API
  */
 
 public function vs_register_plugin_routes(){
-  register_rest_route($this->namespace, '/map-field-ids/',
-    array(
-      'methods' => 'POST',
-      'callback' => array($this,'vs_map_field_ids'),
-      'permission_callback' => array($this, 'vs_plugin_permission_callback'),
-    )
-  );
   register_rest_route($this->namespace, '/upload-backups/',
     array(
       'methods' => 'POST',
@@ -33,15 +26,7 @@ public function vs_register_plugin_routes(){
     )
   );
 
-  // Add path to retrive previous survey versions (NOT NECESSARY)
-  // register_rest_route($this->namespace, '/retrieve-stored-survey/',
-  //   array(
-  //     'methods' => 'GET',
-  //     'callback' => array($this,'vs_retrieve_stored_survey'),
-  //     'permission_callback' => array($this, 'vs_plugin_permission_callback'),
-  //   ));
-
-    register_rest_route($this->namespace, '/update-virtue-definitions/',
+  register_rest_route($this->namespace, '/update-virtue-definitions/',
       array(
       'methods' => 'POST',
       'callback' => array($this,'vs_update_definitions'),
@@ -49,21 +34,13 @@ public function vs_register_plugin_routes(){
       )
     );
 
-    register_rest_route($this->namespace, '/get-virtue-definition/',
+  register_rest_route($this->namespace, '/get-virtue-definition/',
       array(
       'methods' => 'GET',
       'callback' => array($this,'vs_get_definition'),
       'permission_callback' => array($this, 'vs_plugin_permission_callback'),
       )
     );
-
-    // register_rest_route($this->namespace, '/save-user-survey/',
-    //   array(
-    //   'methods' => 'POST',
-    //   'callback' => array($this,'vs_save_user_survey'),
-    //   'permission_callback' => array($this, 'vs_plugin_permission_callback'),
-    //   )
-    // );
 }
 
 /**

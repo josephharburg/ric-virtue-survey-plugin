@@ -6,7 +6,7 @@
 require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
 ob_start();
  ?>
- 
+
 <div class="vs-admin-settings-wrapper">
   <div class="formError" id="updateError"></div>
   <div class="formSuccess" id="updateSuccess"></div>
