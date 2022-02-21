@@ -18,8 +18,8 @@ class Virtue_Survey_Shortcodes
   public function output_survey_results(){
     if(is_user_logged_in()){
         $survey_completions = get_user_meta( $user_id, "total_surveys_completed", true);
-        $result_object = get_user_meta( get_current_user_id(), "user_virtue_survey_result_$survey_completions", true );
-        return vs_output_results_table($result_object->ranked_virtues);
+        $result_object = get_user_meta( get_current_user_id(), "user-virtue-survey-result-$survey_completions", true );
+        return vs_output_results_table($result_object->ranked_virtues, $survey_completions);
     }
     $results_meta_key = $_GET['uid']. "-". $_GET['quiz-results'];
     $result_object = get_transient( $results_meta_key );

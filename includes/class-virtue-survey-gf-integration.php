@@ -16,9 +16,7 @@ class Virtue_Survey_Gravity_Forms_Integration
 /**
  * Creates and Saves Survey Results
  *
- * We save the results in a custom object to make it
- * easier to output results in the front end and maintain
- * data integrety
+ * @see #VS_RESULT_OBJ
  *
  * @param  array|object $entry          The entry object from GF.
  * @param  array|object $form           The form object from GF.
@@ -36,8 +34,11 @@ class Virtue_Survey_Gravity_Forms_Integration
     $form_id = $form['id'];
     $virtue_result_object = new Virtue_Survey_Result($entry_id, $form_id);
 
-    // Map result numbers to hidden fields on form so we have
-    // results in two places for data integrety.
+    if( !is_serialized( $virtue_result_object ) ) {
+    $serialized_result = maybe_serialize($virtue_result_object);
+    }
+
+    /** @see #VS_STORAGE */
     // $_POST['input_135'] = $virtue_result_object->results['prudence'];
 
     // If user is logged in add it to their user meta.
@@ -46,21 +47,19 @@ class Virtue_Survey_Gravity_Forms_Integration
       // Get the number of completed surveys
       $survey_completions = get_user_meta( $user_id, "total_surveys_completed", true );
 
-      // We collect survey result objects individually as separate meta keys and values.
-      // Later, we will iterate through all the meta value results to calculate the
-      // increase or decrease of virute values.
+      /** @see #CALC_INC_DEC */
       if($survey_completions == '' || $survey_completions == false){
-        add_user_meta($user_id, "user_virtue_survey_result_1",$virtue_result_object, true);
+        add_user_meta($user_id, "user-virtue-survey-result-1",$serialized_result, true);
         add_user_meta($user_id, "total_surveys_completed", 1, true);
       } else{
         $survey_completions++;
-        add_user_meta($user_id, "user_virtue_survey_result_$survey_completions", $virtue_result_object, true);
+        add_user_meta($user_id, "user-virtue-survey-result-$survey_completions", $serialized_result, true);
         update_user_meta($user_id, "total_surveys_completed", $survey_completions, $survey_completions--);
       }
     } else{
       $user_id = rgar($entry, 19);
       $user_results_meta_key = "$user_id-".rgar($entry,'id')."";
-      set_transient($user_results_meta_key, $virtue_result_object, DAY_IN_SECONDS );
+      set_transient($user_results_meta_key, $serialized_result, DAY_IN_SECONDS );
     }
   }
 
