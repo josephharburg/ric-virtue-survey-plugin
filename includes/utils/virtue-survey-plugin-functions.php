@@ -51,11 +51,13 @@
   /**
    * This returns an html table of survey results
    *
-   * @param  array  $results
+   * @param  array  $results required
+   * @param array $virtue_increases optional
+   * @param array $virtue_decreases optional
    * @return string
    */
 
- function vs_output_results_table($results = [], $number_of_surveys = 1){
+ function vs_output_results_table($results = [], $positive_increases){
     $html_to_return ="<div><ul>";
     $rank = 1;
     foreach($results as $virtue){
@@ -63,27 +65,11 @@
       $rank++;
     }
     $html_to_return .="</ul></div>";
-    if($number_of_surveys > 1){
-      $iteration_count = ($number_of_surveys < 3)? 2: 3;
-      for($i = $number_of_surveys; $i > $number_of_surveys - $iteration_count; $i--){
-        $current_result_object = get_user_meta( get_current_user_id(), "user-virtue-survey-result-$i", true );
-        $results_array[] = $current_result_object->results;
-      }
 
-  // Positive results array
-   $positive_increases = vs_calculate_positive_results($results_array);
+    //pull positive results
 
-  //negative results calculation
-  foreach($results_array as $first_array_key => $result){
-    if($first_array_key = 2){break;}
-    foreach($result as $key => $virtue_result){
-      if(!empty($results_array[$first_array_key + 1][$key])){
+    //pull negative results
 
-      }
-    }
-  }
-
-    }
     return $html_to_return;
   }
 
@@ -114,15 +100,20 @@
   /**
    * Calculate and save users increased virtues.
    *
-   * @see #CALC_INC_DEC_FN
-   * @param  array $results_array
-   * @return array
+   * @see #CALC_INC_FN
+   * @param  int $survey_completions
    */
 
-  function vs_calculate_positive_results($results_array){
-    // Get two most recent results by getting first two items in array
-    $two_most_recent_results = array_slice($results_array, 2);
+  function vs_calculate_and_save_increases($survey_completions){
+    if($survey_completions == 1){ return; }
     $increased_virtues = [];
+
+    // Iterate twice from highest to lowest to get two most recent results
+    for($i = $survey_completions; $i > $survey_completions - 2; $i--){
+      $current_object = get_user_meta( get_current_user_id(), "user-virtue-survey-result-$i", true );
+      $two_most_recent_results[] = $current_object->results;
+    }
+
     // Iterate through the first array of virtue score pairs.
     foreach($two_most_recent_results[0] as $virtue_name => $score){
       $previous_score = $two_most_recent_results[1][$virtue_name];
@@ -138,9 +129,30 @@
     }
 
     if( !is_serialized( $increased_virtues ) ) {
-    $data = maybe_serialize($increased_virtues);
+    $serialized_increases = maybe_serialize($increased_virtues);
     }
 
-    update_user_meta( get_current_user_id(), 'survey-positive-increases', $data);
-    return $increased_virtues;
+    update_user_meta( get_current_user_id(), 'survey-virtue-increases', $serialized_increases);
+  }
+
+  /**
+   * Calculate and save users decreased virtues.
+   *
+   * @see #CALC_DEC_FN
+   * @param  int $survey_completions
+   */
+
+
+  function vs_calculate_and_save_decreases($survey_completions){
+    if($survey_completions < 3){ return; }
+    $decreased_virtues = [];
+
+    // Iterate twice from highest to lowest to get two most recent results
+    for($i = $survey_completions; $i > $survey_completions - 3; $i--){
+      $current_object = get_user_meta( get_current_user_id(), "user-virtue-survey-result-$i", true );
+      $three_most_recent_results[] = $current_object->results;
+    }
+
+
+
   }

@@ -65,6 +65,8 @@ class Virtue_Survey_Result {
     }
     // Sort it by highest value
      arsort($calculated_survey_results);
+     // Positive results array
+      // vs_calculate_and_save_positive_results($results_array);
     return $calculated_survey_results;
   }
 

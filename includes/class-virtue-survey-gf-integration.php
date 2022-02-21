@@ -6,7 +6,7 @@ class Virtue_Survey_Gravity_Forms_Integration
     // require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
     add_action( 'gform_after_submission_11', array($this, 'vs_create_and_save_results'), 10, 2 );
     add_action( 'gform_after_submission_12', array($this, 'vs_create_and_save_results'), 10, 2 );
-      // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
+    // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
 //     add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
 //     $fields['form_options']['fields'][] = array( 'type' => 'number', 'name' => 'version' );
 //     return $fields;
@@ -45,16 +45,18 @@ class Virtue_Survey_Gravity_Forms_Integration
     if(is_user_logged_in()){
       $user_id = get_current_user_id();
       // Get the number of completed surveys
-      $survey_completions = get_user_meta( $user_id, "total_surveys_completed", true );
+      $survey_completions = get_user_meta( $user_id, "total-surveys-completed", true );
 
       /** @see #CALC_INC_DEC */
-      if($survey_completions == '' || $survey_completions == false){
+      if($survey_completions == ''){
         add_user_meta($user_id, "user-virtue-survey-result-1",$serialized_result, true);
-        add_user_meta($user_id, "total_surveys_completed", 1, true);
+        add_user_meta($user_id, "total-surveys-completed", 1, true);
       } else{
         $survey_completions++;
         add_user_meta($user_id, "user-virtue-survey-result-$survey_completions", $serialized_result, true);
-        update_user_meta($user_id, "total_surveys_completed", $survey_completions, $survey_completions--);
+        update_user_meta($user_id, "total-surveys-completed", $survey_completions, $survey_completions--);
+        vs_calculate_and_save_increases($survey_completions);
+        vs_calculate_and_save_decreases($survey_completions);
       }
     } else{
       $user_id = rgar($entry, 19);
@@ -69,7 +71,6 @@ class Virtue_Survey_Gravity_Forms_Integration
    * @param  array $form
    * @return void
    */
-
 
   function vs_form_saved_alerts( $form ) {
       $log_file = VIRTUE_SURVEY_PLUGIN_DIR_PATH . '/assets/logs/gf_saved_forms.log';
@@ -87,7 +88,5 @@ class Virtue_Survey_Gravity_Forms_Integration
       $message = "Warning:<br><br>This is an alert to let you know that the virtue survey has been edited by {$user->user_login}.";
       wp_mail($to, $subject, $message, $headers);
   }
-
-
 
 }

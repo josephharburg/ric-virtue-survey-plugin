@@ -17,13 +17,15 @@ class Virtue_Survey_Shortcodes
 
   public function output_survey_results(){
     if(is_user_logged_in()){
-        $survey_completions = get_user_meta( $user_id, "total_surveys_completed", true);
+        $survey_completions = get_user_meta( $user_id, "total-surveys-completed", true);
         $result_object = get_user_meta( get_current_user_id(), "user-virtue-survey-result-$survey_completions", true );
-        return vs_output_results_table($result_object->ranked_virtues, $survey_completions);
+        $increased_virtues = get_user_meta( get_current_user_id(), "survey-virtue-increases", true );
+        $decreased_virtues = get_user_meta( get_current_user_id(), "survey-virtue-decreases", true );
+        return vs_output_results_table($result_object->get_ranked_virtues(), $increased_virtues, $decreased_virtues);
     }
     $results_meta_key = $_GET['uid']. "-". $_GET['quiz-results'];
     $result_object = get_transient( $results_meta_key );
-    return vs_output_results_table($result_object->ranked_virtues);
+    return vs_output_results_table($result_object->get_ranked_virtues());
   }
 
   //  function output_student_table(){

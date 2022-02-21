@@ -5,6 +5,7 @@
  * Version: 1.0
  * Author: Joseph Harburg
  * License: GPL2
+ * Requires: PHP 7.4 or Higher, Wordpress 5.8.3 or Higher
  */
 
    if ( ! defined( 'ABSPATH' ) ) 	exit; // Exit if accessed directly
@@ -32,6 +33,7 @@
 
        /**
         * Create an instance of plugin object
+        *
         * @return OBJECT
         */
        public static function instance() {
@@ -44,6 +46,7 @@
 
      /**
       * Activation function
+      * 
       * @return void
       */
 

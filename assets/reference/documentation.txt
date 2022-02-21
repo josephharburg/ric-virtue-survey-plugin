@@ -1,0 +1,36 @@
+Here is an overall step by step explanation of the process for storing virtue results and displaying.
+
+  1. User takes survey.
+  2. On Submission =>
+    If user is logged in:
+      a. Calculate and store results in an object.
+      b. Store result object in user meta.
+      (See #CALC_INC_DEC below for more info )
+      c. Calculate increase and/or decrease of virtues from previous tests.
+    If user is not logged in:
+      a. Calculate and store results in an object.
+      b. Store result object in a transient that lasts a day.
+  3. On the results page, use a shortcode to pull either the transient using URL parameters from form submissions or user meta if user is logged in.
+    a. If logged in AND there are positive and/or negative results, display them.
+  4. Offer a form to register and log in if the user is not logged in; once completed, the user's transient data will be stored in the user's meta information.
+
+#CALC_INC_DEC
+We collect survey result objects individually with separate meta keys.
+Later, we will iterate through all the meta key values to calculate the
+increase or decrease of virtue values.
+
+#CALC_INC_FN
+Positive results are calculated by comparing the two most recent results.
+Based on these results, we can determine if the user has increased any score by more than 3% and return the percentage and the score increase in an array.
+
+#CALC_DEC_FN
+Negative results are calculated by comparing the last three results. The
+negative number has to be steadily decreasing between 1, 2, and 3. If on
+a survey result there is any increase then it does not count as a decreased
+virtue.
+
+#VS_RESULT_OBJ
+Save the results in a custom object to make it easier to output results in the front end and maintain data integrity.
+
+#VS_STORAGE
+Map result numbers to hidden fields on form so we have results in two places for data integrity.
