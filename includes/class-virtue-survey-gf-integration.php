@@ -3,7 +3,7 @@
 class Virtue_Survey_Gravity_Forms_Integration
 {
   function __construct(){
-    // require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
+    require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
     add_action( 'gform_after_submission_11', array($this, 'vs_create_and_save_results'), 10, 2 );
     add_action( 'gform_after_submission_12', array($this, 'vs_create_and_save_results'), 10, 2 );
     // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
@@ -88,5 +88,4 @@ class Virtue_Survey_Gravity_Forms_Integration
       $message = "Warning:<br><br>This is an alert to let you know that the virtue survey has been edited by {$user->user_login}.";
       wp_mail($to, $subject, $message, $headers);
   }
-
 }

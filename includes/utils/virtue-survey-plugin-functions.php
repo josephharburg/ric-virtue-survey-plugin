@@ -52,23 +52,38 @@
    * This returns an html table of survey results
    *
    * @param  array  $results required
-   * @param array $virtue_increases optional
-   * @param array $virtue_decreases optional
    * @return string
    */
 
- function vs_output_results_table($results = [], $positive_increases){
-    $html_to_return ="<div><ul>";
-    $rank = 1;
+ function vs_output_results_table($results){
+    $html_to_return ="<div><ol>";
     foreach($results as $virtue){
-      $html_to_return .= "<li><span style='font-weight: bold'>$rank. $virtue</span> <br/>".get_option('vs-'. $virtue .'-definition')."  </li>";
-      $rank++;
+      $html_to_return .= "<li><span style='font-weight: bold'>$virtue</span> <br/>".get_option('vs-'. $virtue .'-definition')."  </li>";
     }
-    $html_to_return .="</ul></div>";
+    $html_to_return .="</ol></div>";
 
-    //pull positive results
+    if(is_user_logged_in()){
+      $user_id = get_current_user_id();
+      //pull positive results
+      if(metadata_exists( 'user',$user_id  , 'survey-virtue-increases' )){
+        $positive_results = get_user_meta( $user_id, 'survey-virtue-increases', true );
+        $html_to_return .= '<div><h3>Your answers indicate the you have grown in the following virtues since the last survey you took: </h3><ul>';
+        foreach($positive_results as $virtue_name => $array){
+          $html_to_return .= "<li>$virtue_name +{$array['Raw Score Increase']} score. This is a {$array['Percent Increase']}% increase.</li>";
+        }
+        $html_to_return .= '</ul></div>';
+      };
 
-    //pull negative results
+      //pull negative results
+      if(metadata_exists( 'user', $user_id , 'survey-virtue-decreases' )){
+        $negative_results = get_user_meta( $user_id, 'survey-virtue-decreases', true );
+        $html_to_return .= '<div>';
+        foreach($negative_results as $virtue_name => $array){
+          $html_to_return .= "<li>$virtue_name - {$array['Score Decrease']} points. This represents a {$array['Percent Decrease']}% decrease.</li>";
+        }
+        $html_to_return .= '</div>';
+      };
+    }
 
     return $html_to_return;
   }
@@ -120,18 +135,16 @@
       if($previous_score > $score){
         // Calculate percentage increase
         $perecent_increase = (($previous_score - $score) / $score) * 100;
-
+        $score_increase = $previous_score - $score;
         // If greater than 3% store in array.
         if($perecent_increase > 3) {
-          $increased_virtues[$virtue_name] = array('Percent Increase' => $perecent_increase, "Raw Score Increase" => $previous_score - $score);
+          $increased_virtues[$virtue_name] = array('Percent Increase' => $perecent_increase, "Raw Score Increase" => $score_increase);
         }
       }
     }
-
     if( !is_serialized( $increased_virtues ) ) {
     $serialized_increases = maybe_serialize($increased_virtues);
     }
-
     update_user_meta( get_current_user_id(), 'survey-virtue-increases', $serialized_increases);
   }
 
@@ -148,11 +161,25 @@
     $decreased_virtues = [];
 
     // Iterate twice from highest to lowest to get two most recent results
-    for($i = $survey_completions; $i > $survey_completions - 3; $i--){
+    for($i = $survey_completions - 2; $i < $survey_completions - 3; $i++){
       $current_object = get_user_meta( get_current_user_id(), "user-virtue-survey-result-$i", true );
       $three_most_recent_results[] = $current_object->results;
     }
+    $first_result = $three_most_recent_results[0];
+    foreach($first_result as $virtue_name => $score){
+      $second_score = $three_most_recent_results[1][$virtue_name];
+      $third_score = $three_most_recent_results[2][$virtue_name];
+      if($score > $second_score && $second_score > $third_score){
+        $percentage_decrease = (($score - $third_score)/$score) * 100;
+        $score_decrease = $third_score - $score;
+        if($percentage_decrease >= 5){
+          $decreased_virtues[$virtue_name] = array('Percent Decrease'=> $percentage_decrease, 'Score Decrease' => $score_decrease);
+        }
+      }
+    }
 
-
-
+    if( !is_serialized( $decreased_virtues ) ) {
+    $serialized_decreases = maybe_serialize($decreased_virtues);
+    }
+    update_user_meta( get_current_user_id(), 'survey-virtue-decreases', $serialized_increases);
   }
