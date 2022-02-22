@@ -9,7 +9,7 @@ class Virtue_Survey_API
 
   function __construct()
   {
-    $this->namespace = 'vs_api/v1';
+    $this->namespace = 'vs-api/v1';
     add_action('rest_api_init', array($this, 'vs_register_plugin_routes'));
   }
 
@@ -51,9 +51,9 @@ class Virtue_Survey_API
   * @return mixed
   */
 
-  function vs_plugin_permission_callback(){
-    if(!wp_verify_nonce( $_POST['nonce'], 'wp_rest' )){
-      wp_send_json_error( "Nonce was not verified", 403 );
+  function vs_plugin_permission_callback(WP_REST_Request $request){
+    if(!wp_verify_nonce( $request->get_header('X-WP-Nonce'), 'wp_rest' )){
+      wp_send_json_error( "Nonce was not verified". var_dump($_POST), 403 );
       return false;
     }
     return true;
@@ -65,39 +65,51 @@ class Virtue_Survey_API
    * @return string|object
    */
 
-  function vs_upload_backup(){
-    // Get the current version number
+  function vs_upload_backup(WP_REST_Request $request){
+    $files = $request->get_file_params();
+    $headers = $request->get_headers();
+    $upload_type = $request->get_param('upload-type');
+    if ( !empty( $files ) && !empty( $files['file'] ) ) {
+      $file = $files['file'];
+      $file_upload_type = ($upload_type == 'surveys') ? "survey" : $request->get_param('upload-type');
+    }
+      // Get the current version number
     $version_number = get_option('current-vs-version');
-
+    // return wp_send_json_error( "test" , 403 );
     // Get the uploads directory path
     $uploads_folder = wp_upload_dir();
-
-    $directory_name = $_POST['upload_type'];
-    $file_upload_type = ($_POST['upload_type'] == 'surveys') ? "survey" : $_POST['upload_type'];
-    $file_type_extension = ($_POST['upload_type'] == 'surveys') ? ".json" : ".csv";
+    $directory_name = $upload_type;
+    $file_upload_type = ($upload_type == 'surveys') ? "survey" : $upload_type;
+    $file_type_extension = ($upload_type == 'surveys') ? ".json" : ".csv";
     // The path to the custom plugin directory
-    $upload_dir = $uploads_folder['basedir'] . "/virtue-survey/$directory_name";
-    $upload_date = date("Y-m-d H:i:s");
+    // $upload_dir = $uploads_folder['baseurl'] . "/virtue-survey/$directory_name";
+    // $upload_dir = $uploads_folder['basedir'] . "/virtue-survey/$directory_name";
+    $upload_date = date("Y-m-d");
       // Make sure the directory exists
-      if (is_dir($upload_dir)) {
+      // if (is_dir($upload_dir)) {
+
         $file_name = "$file_upload_type-version-number-$version_number-$upload_date$file_type_extension";
-        $target_file = $upload_dir . "/$file_name";
+        // THIS IS FOR LOCAL DEVELOPMENT
+        $target_file = $_SERVER["DOCUMENT_ROOT"] . "/wp-content/uploads/virtue-survey/$directory_name/$file_name";
+        // $target_file = $upload_dir . "/$file_name";
 
         // Check to see that file doesnt already exist.
         if (file_exists($target_file)) {
-          return wp_send_json_error("$file_name backup already exists!");
+          return wp_send_json_error("$file_name backup already exists!", 400);
         }
 
         // Check to see file is larger than 1mb
-        if ($_FILES["{$file_upload_type}ToUpload"]["size"] > 1000000) {
-          return wp_send_json_error( "Sorry, the filesize is too large." );
+        if ($file["size"] > 1000000) {
+          return wp_send_json_error( "Sorry, the filesize is too large.", 400 );
         }
 
         //Try to move file into uploads directory or send error if applicable.
-        if (move_uploaded_file($_FILES["{$file_upload_type}ToUpload"]["tmp_name"], $target_file)) {
+        if(move_uploaded_file($file["tmp_name"], $target_file)) {
         return wp_send_json_success( "The file ". htmlspecialchars($file_name). " has been uploaded to the virtue survey directory!" ) ;
-        }
+      }else{
+        return wp_send_json_error($file["error"], 400);
       }
+      // }
     // If the file upload does not make it through the validation send error
     // by default.
       return wp_send_json_error("Whoops! There was an error uploading your file.", 400);

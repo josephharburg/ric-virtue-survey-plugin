@@ -24,7 +24,7 @@
     </form>
     <a id="formSurveyDownloadButton" href="<?php echo get_site_url()."/wp-content/uploads/virtue-survey/entries/".$uploaded_entries[2]; ?>" download>Download!</a>
   </div>
-  <div id="entries-download-form">
+  <div id="entries-download-form" style='display: none;'>
     <h3>The list of available downloadable entries is below.</h3>
    <form id="downloadEntriesForm" onSubmit="return false" method="get">
      <label for="downloadEntriesDropdown">Select which entry file to download:</label>
@@ -48,7 +48,6 @@
 <script type="text/javascript">
   (function($){
     $('#vs-select-type').on('change', function(e){
-      console.log($(this).val());
       var item = `#${$(this).val()}`;
       $('.active').hide();
       $('.active').removeClass('active');
@@ -62,7 +61,7 @@
       $('#formSurveyDownloadButton').attr('href',`<?php echo get_site_url(). '/wp-content/uploads/virtue-survey/surveys/'; ?>${file}` );});
 
     $('#downloadEntriesDropdown').on('change', function($) {
-      $('#formEntriesDownloadButton').attr('href',`<?php echo  get_site_url(). '/wp-content/uploads/virtue-survey/entries/'; ?>${file}`;
+      $('#formEntriesDownloadButton').attr('href',`<?php echo  get_site_url(). '/wp-content/uploads/virtue-survey/entries/'; ?>${file}`);
     } );
   })(jQuery)
 </script>
