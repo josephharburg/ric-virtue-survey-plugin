@@ -71,21 +71,21 @@ class Virtue_Survey_Gravity_Forms_Integration
    * @param  array $form
    * @return void
    */
-
-  function vs_form_saved_alerts( $form ) {
-      $log_file = VIRTUE_SURVEY_PLUGIN_DIR_PATH . '/assets/logs/gf_saved_forms.log';
-      $f = fopen( $log_file, 'a' );
-      $user = wp_get_current_user();
-      fwrite( $f, date( 'c' ) . " - Form updated by {$user->user_login}. Form ID: {$form["id"]}. n" );
-      fclose( $f );
-
-      $old_version = get_option('current-vs-version');
-      update_option('current-vs-version', $old_version + .1 );
-
-      $to = array("jharburg@sistersofmary.org");
-      $subject = "Alert: Someone has changed the virtue survey form";
-      $headers = array('Content-Type: text/html; charset=UTF-8');
-      $message = "Warning:<br><br>This is an alert to let you know that the virtue survey has been edited by {$user->user_login}.";
-      wp_mail($to, $subject, $message, $headers);
-  }
+  //
+  // function vs_form_saved_alerts( $form ) {
+  //     $log_file = VIRTUE_SURVEY_PLUGIN_DIR_PATH . '/assets/logs/gf_saved_forms.log';
+  //     $f = fopen( $log_file, 'a' );
+  //     $user = wp_get_current_user();
+  //     fwrite( $f, date( 'c' ) . " - Form updated by {$user->user_login}. Form ID: {$form["id"]}. n" );
+  //     fclose( $f );
+  //
+  //     $old_version = get_option('current-vs-version');
+  //     update_option('current-vs-version', $old_version + .1 );
+  //
+  //     $to = array("jharburg@sistersofmary.org");
+  //     $subject = "Alert: Someone has changed the virtue survey form";
+  //     $headers = array('Content-Type: text/html; charset=UTF-8');
+  //     $message = "Warning:<br><br>This is an alert to let you know that the virtue survey has been edited by {$user->user_login}.";
+  //     wp_mail($to, $subject, $message, $headers);
+  // }
 }
