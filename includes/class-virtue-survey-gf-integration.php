@@ -4,13 +4,42 @@ class Virtue_Survey_Gravity_Forms_Integration
 {
   function __construct(){
     require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
-    add_action( 'gform_after_submission_11', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_action( 'gform_after_submission_12', array($this, 'vs_create_and_save_results'), 10, 2 );
+    add_action( 'gform_after_submission_1', array($this, 'vs_create_and_save_results'), 10, 2 );
+    add_filter( 'gform_pre_render_1', array($this,'vs_populate_user_id'),10, 1 );
+    // add_action( 'gform_after_submission_12', array($this, 'vs_create_and_save_results'), 10, 2 );
     // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
 //     add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
 //     $fields['form_options']['fields'][] = array( 'type' => 'number', 'name' => 'version' );
 //     return $fields;
 // }, 10, 2 );
+  }
+
+
+  /**
+  * Method to add readonly to org name field
+  *
+  * @param object $form
+  *
+  * @return boolean
+  */
+
+  function vs_populate_user_id($form){
+    $current_page = GFFormDisplay::get_current_page( $form['id'] );
+    if ( $current_page == 1 ) {
+       foreach ( $form['fields'] as &$field ) {
+        //gather form data
+         if ( $field->id == 19 && $field->type != 'page' ) {
+           if(is_user_logged_in()){
+             $field->defaultValue = get_current_user_id();
+           } else{
+             $letters = 'abcdefghijklmnopqrstuvwxyz';
+             $rand = $letters[rand(0, 28)];
+             $field->defaultValue = rand(1000,10000).$rand;
+           }
+         }
+       }
+     }
+   return $form;
   }
 
 /**
@@ -33,11 +62,6 @@ class Virtue_Survey_Gravity_Forms_Integration
     $entry_id = rgar( $entry, 'id' );
     $form_id = $form['id'];
     $virtue_result_object = new Virtue_Survey_Result($entry_id, $form_id);
-
-    if( !is_serialized( $virtue_result_object ) ) {
-    $serialized_result = maybe_serialize($virtue_result_object);
-    }
-
     /** @see #VS_STORAGE */
     // $_POST['input_135'] = $virtue_result_object->results['prudence'];
 
@@ -48,20 +72,25 @@ class Virtue_Survey_Gravity_Forms_Integration
       $survey_completions = get_user_meta( $user_id, "total-surveys-completed", true );
 
       /** @see #CALC_INC_DEC */
-      if($survey_completions == ''){
-        add_user_meta($user_id, "user-virtue-survey-result-1",$serialized_result, true);
+      if($survey_completions == '' || $survey_completions == false){
+        add_user_meta($user_id, "user-virtue-survey-result-1",$virtue_result_object, true);
         add_user_meta($user_id, "total-surveys-completed", 1, true);
       } else{
         $survey_completions++;
-        add_user_meta($user_id, "user-virtue-survey-result-$survey_completions", $serialized_result, true);
-        update_user_meta($user_id, "total-surveys-completed", $survey_completions, $survey_completions--);
-        vs_calculate_and_save_increases($survey_completions);
-        vs_calculate_and_save_decreases($survey_completions);
+        add_user_meta($user_id, "user-virtue-survey-result-$survey_completions", $virtue_result_object, true);
+        update_user_meta($user_id, "total-surveys-completed", $survey_completions);
+        if($survey_completions > 1){
+            vs_calculate_and_save_increases($survey_completions);
+            if($survey_completions > 2){
+              vs_calculate_and_save_decreases($survey_completions);
+            }
+        }
+
       }
     } else{
       $user_id = rgar($entry, 19);
       $user_results_meta_key = "$user_id-".rgar($entry,'id')."";
-      set_transient($user_results_meta_key, $serialized_result, DAY_IN_SECONDS );
+      set_transient($user_results_meta_key, $virtue_result_object, DAY_IN_SECONDS );
     }
   }
 

@@ -26,7 +26,7 @@ ob_start();
     $default = get_option('vs-prudence-definition', "Enter Definition Here");
     wp_editor( $default, 'definitionContent', array());?>
     <input type="hidden" id="selectedVirtue" name="virtue" value="prudence">
-    <input type="submit" value="Edit Definition" name="submit">
+    <input class="vs-button-style" type="submit" value="Save Prudence Definition" name="submit">
   </form>
 </div>
 

@@ -65,7 +65,7 @@
     if(is_user_logged_in()){
       $user_id = get_current_user_id();
       //pull positive results
-      if(metadata_exists( 'user',$user_id  , 'survey-virtue-increases' )){
+      if(metadata_exists( 'user', $user_id  , 'survey-virtue-increases' )){
         $positive_results = get_user_meta( $user_id, 'survey-virtue-increases', true );
         $html_to_return .= '<div><h3>Your answers indicate the you have grown in the following virtues since the last survey you took: </h3><ul>';
         foreach($positive_results as $virtue_name => $array){
@@ -132,20 +132,18 @@
     // Iterate through the first array of virtue score pairs.
     foreach($two_most_recent_results[0] as $virtue_name => $score){
       $previous_score = $two_most_recent_results[1][$virtue_name];
-      if($previous_score > $score){
+      $score_increase = $previous_score - $score;
+      if($score_increase > 2){
         // Calculate percentage increase
-        $perecent_increase = (($previous_score - $score) / $score) * 100;
-        $score_increase = $previous_score - $score;
+        $perecent_increase = ($score_increase / $score) * 100;
+
         // If greater than 3% store in array.
-        if($perecent_increase > 3) {
+        if($perecent_increase > 50) {
           $increased_virtues[$virtue_name] = array('Percent Increase' => $perecent_increase, "Raw Score Increase" => $score_increase);
         }
       }
     }
-    if( !is_serialized( $increased_virtues ) ) {
-    $serialized_increases = maybe_serialize($increased_virtues);
-    }
-    update_user_meta( get_current_user_id(), 'survey-virtue-increases', $serialized_increases);
+    update_user_meta( get_current_user_id(), 'survey-virtue-increases', $increased_virtues);
   }
 
   /**
@@ -178,8 +176,5 @@
       }
     }
 
-    if( !is_serialized( $decreased_virtues ) ) {
-    $serialized_decreases = maybe_serialize($decreased_virtues);
-    }
-    update_user_meta( get_current_user_id(), 'survey-virtue-decreases', $serialized_increases);
+    update_user_meta( get_current_user_id(), 'survey-virtue-decreases', $decreased_virtues);
   }

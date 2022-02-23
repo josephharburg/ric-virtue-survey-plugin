@@ -44,11 +44,11 @@ class Virtue_Survey_Result {
   public static function vs_calculate_survey_results($entry_id, $form_id){
     $entry = GFAPI::get_entry( $entry_id );
     $form = GFAPI::get_form( $form_id );
-    $optional_question_ids = get_option('optional_questions');
-    $optional_questions= array();
-    foreach($optional_question_ids as $field_id){
-      $optional_questions[] = (stripos($key, 'reverse') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
-    }
+    // $optional_question_ids = get_option('optional_questions');
+    // $optional_questions= array();
+    // foreach($optional_question_ids as $field_id){
+    //   $optional_questions[] = (stripos($key, 'reverse') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
+    // }
 
     // Get all the values set in admin interface
     $virtue_questions = vs_map_field_ids_to_array($form);

@@ -3,7 +3,7 @@
   <div class="formError" id="uploadError"></div>
   <div class="formSuccess" id="uploadSuccess">Your upload was a success!</div>
   <h1 class="vs-admin-h1"><?php echo esc_html( get_admin_page_title() ); ?></h1>
-  <h3>When uploading the filename of the file will be automatically generated based on the current version number of the survey.</h3>
+
   <h2>Select what you want to upload:</h2>
   <select id="vs-select-type">
     <option value="survey-uploads-form">Survey</option>
@@ -15,7 +15,7 @@
      Select survey to upload:
      <input type="file" name="fileToUpload" id="surveyToUpload">
      <input type='hidden' name='upload-type' id="surveyUploadType" value='surveys'>
-     <input type="submit" value="Upload Survey" name="submit">
+     <input class="vs-button-style" type="submit" value="Upload Survey" name="submit">
      </form>
   </div>
   <div id="entries-uploads-form" style="display: none;">
@@ -24,9 +24,10 @@
    Select Entry to upload:
    <input type="file" name="fileToUpload" id="entryToUpload">
    <input type='hidden' name='upload-type' value='entries'>
-   <input type="submit" value="Upload Entry" name="submit">
+   <input class="vs-button-style" type="submit" value="Upload Entry" name="submit">
    </form>
   </div>
+  <h4>When uploading backups the filename of the file will be automatically generated based on the current version number of the survey.</h3>
 </div>
 <?php
 $js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/upload-backups.js'));

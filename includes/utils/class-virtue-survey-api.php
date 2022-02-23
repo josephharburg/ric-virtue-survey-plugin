@@ -130,7 +130,7 @@ class Virtue_Survey_API
       }
       if(!empty($definition)){
         update_option("vs-$virtue_to_update-definition", wp_kses($definition, 'post'));
-        return wp_send_json_success( "<h2 style='color: #4BB543;'>The update to $virtue_to_update's definition has been sucesseful!</h2>", 200 );
+        return wp_send_json_success( "<h2 style='color: white;'>The update to $virtue_to_update's definition has been sucesseful!</h2>", 200 );
       }
 
       return wp_send_json_error( "There was an error updating $virtue_to_update's definition.", 400 );

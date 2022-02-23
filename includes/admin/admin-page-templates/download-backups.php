@@ -28,7 +28,7 @@
         ?>
      </select>
     </form>
-    <a id="formSurveyDownloadButton" href="<?php echo get_site_url()."/wp-content/uploads/virtue-survey/entries/".$uploaded_entries[0]; ?>" download>Download!</a>
+    <a class="vs-button-style" id="formSurveyDownloadButton" href="<?php echo get_site_url()."/wp-content/uploads/virtue-survey/entries/".$uploaded_entries[0]; ?>" download>Download!</a>
   </div>
   <div id="entries-download-form" style='display: none;'>
     <h3>The list of available downloadable entries is below.</h3>
@@ -49,7 +49,7 @@
         ?>
      </select>
    </form>
-   <a id="formEntriesDownloadButton" href="<?php echo get_site_url()."/wp-content/uploads/virtue-survey/entries/".$uploaded_entries[2] ?>" download>Download!</a>
+   <a class="vs-button-style" id="formEntriesDownloadButton" href="<?php echo get_site_url()."/wp-content/uploads/virtue-survey/entries/".$uploaded_entries[2] ?>" download>Download!</a>
   </div>
 </div>
 

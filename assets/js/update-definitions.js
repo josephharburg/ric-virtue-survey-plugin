@@ -1,8 +1,10 @@
 (function($){
   $('#updateDefinitionsForm').submit(updateDefinitionsForm);
   $('#virtueSelect').on('change', function(e){
+    $('.formSuccess, .formError').hide();
     var virtue = $(this).val()
     $('#selectedVirtue').val(virtue);
+    $('.vs-button-style').val(`Save ${virtue} Definition`);
     var getDefinitionUrl = definitionsData.getVirtueDefinition;
     var wpNonce = definitionsData.nonce;
     $.ajax({
