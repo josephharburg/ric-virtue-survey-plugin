@@ -12,6 +12,7 @@ class Virtue_Survey_Settings
       add_action('admin_menu', array($this, 'vs_add_admin_menus'));
       add_filter('plugin_action_links_'.VIRTUE_SURVEY_PLUGIN_NAME, array(__CLASS__, 'vs_plugin_settings_link'), 10, 1);
       add_action('admin_enqueue_scripts', array($this, 'vs_enqueue_admin_scripts'));
+      add_action('wp_enqueue_scripts', array($this, 'vs_enqueue_admin_scripts'));
     }
 
     /**
@@ -75,9 +76,13 @@ class Virtue_Survey_Settings
      */
 
     public function vs_enqueue_admin_scripts(){
-      if(!is_admin()) return;
+      if(!is_admin()){
+        wp_enqueue_style( 'virtue-survey-fonts', VIRTUE_SURVEY_FILE_PATH .'assets/css/fonts.css', array());
+      return;
+      }
       $current_css_ver  = date("ymd-Gis", filemtime(   VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/css/admin-styles.css'));
       wp_enqueue_style( 'virtue-survey-admin-styles', VIRTUE_SURVEY_FILE_PATH .'assets/css/admin-styles.css', array());
+      wp_enqueue_style( 'virtue-survey-fonts', VIRTUE_SURVEY_FILE_PATH .'assets/css/fonts.css', array());
     }
 
     /**

@@ -21,12 +21,11 @@ ob_start();
     ?>
   </select>
   <form id="updateDefinitionsForm" onSubmit="return false" method="post" >
-    <label for="definition">Enter the Definition Here:</label>
     <?php
     $default = get_option('vs-prudence-definition', "Enter Definition Here");
     wp_editor( $default, 'definitionContent', array());?>
     <input type="hidden" id="selectedVirtue" name="virtue" value="prudence">
-    <input class="vs-button-style" type="submit" value="Save Prudence Definition" name="submit">
+    <input class="vs-button-style vs-space" type="submit" value="Save Prudence Definition" name="submit">
   </form>
 </div>
 

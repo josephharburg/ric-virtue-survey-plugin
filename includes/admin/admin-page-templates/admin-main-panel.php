@@ -4,15 +4,15 @@
   <div class="vs-navigation">
     <div class="vs-navigation-wrapper">
         <div class="vs-nav-btn-container">
-        <a href="<?php echo get_admin_url().'admin.php?page=virtue-definitions' ?>" class="vs-button-style">Virtue Definitions and Links</a>
+        <a href="<?php echo get_admin_url().'admin.php?page=virtue-definitions' ?>" class="vs-button-style">Virtue Definitions</a>
         <div class="vs-nav-btn-desc">Change the virtue definitions and links to resources.</div>
       </div>
       <div class="vs-nav-btn-container">
-        <a href="<?php echo get_admin_url().'admin.php?page=download-backups' ?>" class="vs-button-style">Get Previous Surveys</a>
+        <a href="<?php echo get_admin_url().'admin.php?page=download-backups' ?>" class="vs-button-style">Download Backups</a>
         <div class="vs-nav-btn-desc">Download previous verison of the survey or uploaded entries.</div>
       </div>
       <div class="vs-nav-btn-container">
-        <a href="<?php echo get_admin_url().'admin.php?page=upload-backups' ?>" class="vs-button-style">Upload Previous Surveys and Entries</a>
+        <a href="<?php echo get_admin_url().'admin.php?page=upload-backups' ?>" class="vs-button-style">Upload Backups</a>
         <div class="vs-nav-btn-desc">Upload the currrent version of the survey or entries.</div>
       </div>
     </div>
