@@ -122,13 +122,19 @@ class Virtue_Survey_API
    * @return string|object
    */
 
-    function vs_update_definitions(){
-      if(isset($_POST['virtue'])){
-        $virtue_to_update = $_POST['virtue'];
-        update_option("vs-$virtue_to_update-definition", wp_kses($_POST['definitionContent']));
-        return wp_send_json_success( "$virtue_to_update definition has been updated!" );
-      }
+    function vs_update_definitions(WP_REST_Request $request){
+      $virtue_to_update = $request->get_param('virtue');
+      $definition = $request->get_param('definition');
+      if(empty($virtue_to_update)){
         return wp_send_json_error( "There was an error updating $virtue_to_update's definition.", 400 );
+      }
+      if(!empty($definition)){
+        update_option("vs-$virtue_to_update-definition", wp_kses($definition, 'post'));
+        return wp_send_json_success( "<h2 style='color: #4BB543;'>The update to $virtue_to_update's definition has been sucesseful!</h2>", 200 );
+      }
+
+      return wp_send_json_error( "There was an error updating $virtue_to_update's definition.", 400 );
+
     }
 
     /**
@@ -139,8 +145,8 @@ class Virtue_Survey_API
     function vs_get_definition($data){
       if(isset($data['virtue'])){
           $virtue_to_get = strtolower($data['virtue']);
-          $definition_default = (get_option("vs-{$virtue_to_get}-definition") !== '' || get_option("vs-{$virtue_to_get}-definition") !== false) ? get_option("vs-{$virtue_to_get}-definition") : "Enter Definition Here";
-          return wp_send_json_success( $definition_default );
+          $definition_default = get_option("vs-{$virtue_to_get}-definition", "Enter Definition Here");
+          return wp_send_json_success( $definition_default, 200 );
       }
       return wp_send_json_error( "There was an error getting that virtues definition, please refresh the page and try again.", 400 );
     }

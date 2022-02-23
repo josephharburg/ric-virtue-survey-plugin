@@ -7,7 +7,7 @@
     var wpNonce = definitionsData.nonce;
     $.ajax({
       beforeSend: (xhr) => {
-        xhr.setRequestHeader('X-WP-Nonce', wpnonce);
+        xhr.setRequestHeader('X-WP-Nonce', wpNonce);
       },
       url: getDefinitionUrl,
       type: 'GET',
@@ -17,36 +17,39 @@
         virtue: virtue
       },
       success: (response) => {
-        $('#definitionContent').val(response);
+        tinymce.get("definitionContent").setContent(response.data);
       },
       error: (response) => {
         $('#updateError').show();
-        $('#updateError').text(response);
+        $('#updateError').text(response.responseJSON.data);
       }
     });
   });
 
   function updateDefinitionsForm(e){
-    e.preventDefault();
+    var virtue = $('#selectedVirtue').val();
+    var definition = tinymce.get("definitionContent").getContent();
     var updateApiUrl = definitionsData.apiURL;
     var wpNonce = definitionsData.nonce;
     $.ajax({
       beforeSend: (xhr) => {
-        xhr.setRequestHeader('X-WP-Nonce', wpnonce);
+        xhr.setRequestHeader('X-WP-Nonce', wpNonce);
       },
       url: updateApiUrl,
       type: 'POST',
       data: {
         action: 'wp_rest',
         nonce: wpNonce,
+        virtue: virtue,
+        definition:definition
       },
       success: (response) => {
         $('#updateSuccess').show();
-        $('#updateSuccess').text(response);
+        $('#updateSuccess').html(response.data);
       },
       error: (response) => {
         $('#updateError').show();
-        $('#updateError').text(response);
+        $('#updateError').text(response.responseJSON.data);
       }
     });
   }

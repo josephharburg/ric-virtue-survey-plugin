@@ -23,8 +23,8 @@ ob_start();
   <form id="updateDefinitionsForm" onSubmit="return false" method="post" >
     <label for="definition">Enter the Definition Here:</label>
     <?php
-    $default = (get_option('vs-prudence-defintion') !== '' || get_option('vs-prudence-definition') !== false) ? get_option('vs-prudence-definition') : "Enter Definition Here";
-    wp_editor( $default, 'definitionContent', array()); ?>
+    $default = get_option('vs-prudence-definition', "Enter Definition Here");
+    wp_editor( $default, 'definitionContent', array());?>
     <input type="hidden" id="selectedVirtue" name="virtue" value="prudence">
     <input type="submit" value="Edit Definition" name="submit">
   </form>
@@ -33,7 +33,7 @@ ob_start();
 <?php
 ob_end_flush();
 $js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/update-definitions.js'));
-wp_enqueue_script( 'update_definitions', VIRTUE_SURVEY_FILE_PATH.'assets/js/update-definitions.min.js', array('jquery'), $js_version, true );
+wp_enqueue_script( 'update-definitions', VIRTUE_SURVEY_FILE_PATH.'assets/js/update-definitions.js', array('jquery'), $js_version, true );
 wp_localize_script( 'update-definitions', 'definitionsData', array(
   'nonce' => wp_create_nonce('wp_rest'),
   'apiURL' => get_site_url()."/wp-json/vs-api/v1/update-virtue-definitions/",
