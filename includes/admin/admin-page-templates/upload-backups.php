@@ -8,7 +8,7 @@
     <h4>Upload Survey Backup</h4>
     <form id="uploadSurveyForm" onsubmit="return false" method="post" enctype="multipart/form-data">
      Select survey to upload:
-     <input type="file" name="surveyToUpload" id="surveyToUpload">
+     <input type="file" name="fileToUpload" id="surveyToUpload">
      <input type='hidden' name='upload-type' id="surveyUploadType" value='surveys'>
      <input type="submit" value="Upload Survey" name="submit">
      </form>
@@ -17,7 +17,7 @@
    <h4>Upload Entry Backup</h4>
    <form id="uploadEntryForm" onsubmit="return false" method="post" enctype="multipart/form-data">
    Select Entry to upload:
-   <input type="file" name="entryToUpload" id="entryToUpload">
+   <input type="file" name="fileToUpload" id="entryToUpload">
    <input type='hidden' name='upload-type' value='entries'>
    <input type="submit" value="Upload Entry" name="submit">
    </form>

@@ -68,29 +68,30 @@ class Virtue_Survey_API
   function vs_upload_backup(WP_REST_Request $request){
     $files = $request->get_file_params();
     $headers = $request->get_headers();
-    $upload_type = $request->get_param('upload-type');
-    if ( !empty( $files ) && !empty( $files['file'] ) ) {
-      $file = $files['file'];
-      $file_upload_type = ($upload_type == 'surveys') ? "survey" : $request->get_param('upload-type');
+    // This is also the directory name
+
+    if ( empty( $files ) || empty( $files['file'] ) ) {
+      return wp_send_json_error("Whoops! There was an error uploading your file.", 400);
     }
+
+    $file = $files['file'];
       // Get the current version number
     $version_number = get_option('current-vs-version');
     // return wp_send_json_error( "test" , 403 );
     // Get the uploads directory path
-    $uploads_folder = wp_upload_dir();
-    $directory_name = $upload_type;
+    // $uploads_folder = wp_upload_dir();
+    $upload_type = $request->get_param('upload-type');
     $file_upload_type = ($upload_type == 'surveys') ? "survey" : $upload_type;
     $file_type_extension = ($upload_type == 'surveys') ? ".json" : ".csv";
     // The path to the custom plugin directory
-    // $upload_dir = $uploads_folder['baseurl'] . "/virtue-survey/$directory_name";
-    // $upload_dir = $uploads_folder['basedir'] . "/virtue-survey/$directory_name";
+    // $upload_dir = $uploads_folder['basedir'] . "/virtue-survey/$upload_type";
     $upload_date = date("Y-m-d");
       // Make sure the directory exists
       // if (is_dir($upload_dir)) {
 
         $file_name = "$file_upload_type-version-number-$version_number-$upload_date$file_type_extension";
         // THIS IS FOR LOCAL DEVELOPMENT
-        $target_file = $_SERVER["DOCUMENT_ROOT"] . "/wp-content/uploads/virtue-survey/$directory_name/$file_name";
+        $target_file = $_SERVER["DOCUMENT_ROOT"] . "/wp-content/uploads/virtue-survey/$upload_type/$file_name";
         // $target_file = $upload_dir . "/$file_name";
 
         // Check to see that file doesnt already exist.
@@ -105,7 +106,7 @@ class Virtue_Survey_API
 
         //Try to move file into uploads directory or send error if applicable.
         if(move_uploaded_file($file["tmp_name"], $target_file)) {
-        return wp_send_json_success( "The file ". htmlspecialchars($file_name). " has been uploaded to the virtue survey directory!" ) ;
+        return wp_send_json_success( "The file ". htmlspecialchars($file_name). " has been uploaded to the virtue survey directory!", 201 ) ;
       }else{
         return wp_send_json_error($file["error"], 400);
       }

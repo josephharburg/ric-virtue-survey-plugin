@@ -1,3 +1,7 @@
+CHANGES FOR PRODUCTION
+vs_upload_backup change directory name from SERVER[DOCUMENT_ROOT] and add is_dir conditional
+
+
 Here is an overall step by step explanation of the process for storing virtue results and displaying.
 
   1. User takes survey.

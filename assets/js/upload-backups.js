@@ -5,8 +5,8 @@
     e.preventDefault();
     var uploadApiUrl = uploadDataObject.apiURL;
     var wpNonce = uploadDataObject.nonce;
-    var file = $('#surveyToUpload')[0].files[0];
-    var uploadType = $('#surveyUploadType').val();
+    var file = $(this).find('input[name=fileToUpload]')[0].files[0];
+    var uploadType = $(this).find('input[name=upload-type]').val();
     var formData = new FormData();
     formData.append( 'file', file );
     formData.append( 'upload-type', uploadType );
@@ -24,9 +24,10 @@
         $('#uploadSuccess').text(response.data);
       },
       error: (response) => {
+        // var jsonParsed = JSON.parse(response.responseJSON);
         $('#uploadError').show();
-        $('#uploadError').text(response);
-        console.log(response);
+        $('#uploadError').text(response.responseJSON.data);
+        console.log(response.responseJSON.data);
       }
     });
   }
