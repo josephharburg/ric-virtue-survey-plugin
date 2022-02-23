@@ -7,6 +7,7 @@
     $('.active').show();
     }
   );
+  
   $('#uploadSurveyForm').submit(uploadFileToDirectory);
   $('#uploadEntryForm').submit(uploadFileToDirectory);
   function uploadFileToDirectory(e){
