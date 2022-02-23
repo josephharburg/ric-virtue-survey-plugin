@@ -1,4 +1,12 @@
 (function($){
+  $('#vs-select-type').on('change', function(e){
+    var item = `#${$(this).val()}`;
+    $('.active').hide();
+    $('.active').removeClass('active');
+    $(item).addClass('active');
+    $('.active').show();
+    }
+  );
   $('#uploadSurveyForm').submit(uploadFileToDirectory);
   $('#uploadEntryForm').submit(uploadFileToDirectory);
   function uploadFileToDirectory(e){
@@ -21,10 +29,8 @@
       data: formData,
       success: (response) => {
         $('#uploadSuccess').show();
-        $('#uploadSuccess').text(response.data);
       },
       error: (response) => {
-        // var jsonParsed = JSON.parse(response.responseJSON);
         $('#uploadError').show();
         $('#uploadError').text(response.responseJSON.data);
         console.log(response.responseJSON.data);

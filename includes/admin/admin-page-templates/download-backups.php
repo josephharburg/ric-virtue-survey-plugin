@@ -13,16 +13,22 @@
        <?php
        ob_start();
         $uploads_folder = wp_upload_dir();
-        $survey_upload_dir = $uploads_folder['basedir'] . '/virtue-survey/surveys';
+        $survey_upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/wp-content/uploads/virtue-survey/surveys';
+
+        // $survey_upload_dir = $uploads_folder['basedir'] . '/virtue-survey/surveys';
         $uploaded_forms = scandir($survey_upload_dir);
         foreach($uploaded_forms as $key => $form){
-         echo "<option value='$form'>$form</option>";
+          if($form !== '.' && $form !== '..'){
+            echo "<option value='$form'>$form</option>";
+          }
+
         }
-        ob_end_clean();
+        ob_end_flush();
+
         ?>
      </select>
     </form>
-    <a id="formSurveyDownloadButton" href="<?php echo get_site_url()."/wp-content/uploads/virtue-survey/entries/".$uploaded_entries[2]; ?>" download>Download!</a>
+    <a id="formSurveyDownloadButton" href="<?php echo get_site_url()."/wp-content/uploads/virtue-survey/entries/".$uploaded_entries[0]; ?>" download>Download!</a>
   </div>
   <div id="entries-download-form" style='display: none;'>
     <h3>The list of available downloadable entries is below.</h3>
@@ -31,13 +37,15 @@
      <select id="downloadEntriesDropdown">
        <?php
        ob_start();
-        // $uploads_folder = wp_upload_dir();
-        $entries_upload_dir = $uploads_folder['basedir'] . '/virtue-survey/entries';
+        $entries_upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/wp-content/uploads/virtue-survey/entries';
+        // $entries_upload_dir = $uploads_folder['basedir'] . '/virtue-survey/entries';
         $uploaded_entries = scandir($entries_upload_dir);
         foreach($uploaded_entries as $key => $entries_file){
-         echo "<option value='$entries_file'>$entries_file</option>";
+          if($entries_file !== '.' && $entries_file !== '..'){
+            echo "<option value='$entries_file'>$entries_file</option>";
+          }
         }
-        ob_end_clean();
+        ob_end_flush();
         ?>
      </select>
    </form>

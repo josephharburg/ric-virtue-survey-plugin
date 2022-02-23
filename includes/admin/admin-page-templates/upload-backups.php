@@ -4,7 +4,12 @@
   <div class="formSuccess" id="uploadSuccess">Your upload was a success!</div>
   <h1 class="vs-admin-h1"><?php echo esc_html( get_admin_page_title() ); ?></h1>
   <h3>When uploading the filename of the file will be automatically generated based on the current version number of the survey.</h3>
-  <div>
+  <h2>Select what you want to upload:</h2>
+  <select id="vs-select-type">
+    <option value="survey-uploads-form">Survey</option>
+    <option value="entries-uploads-form">Entry File</option>
+  </select>
+  <div class='active' id="survey-uploads-form">
     <h4>Upload Survey Backup</h4>
     <form id="uploadSurveyForm" onsubmit="return false" method="post" enctype="multipart/form-data">
      Select survey to upload:
@@ -13,7 +18,7 @@
      <input type="submit" value="Upload Survey" name="submit">
      </form>
   </div>
-  <div>
+  <div id="entries-uploads-form" style="display: none;">
    <h4>Upload Entry Backup</h4>
    <form id="uploadEntryForm" onsubmit="return false" method="post" enctype="multipart/form-data">
    Select Entry to upload:
