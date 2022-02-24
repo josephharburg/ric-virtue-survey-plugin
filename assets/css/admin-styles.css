@@ -1,14 +1,28 @@
 :root {
   --primary-black-color: #040F16;
-  /* --primary-plugin-color: #39A9DB; */
   --primary-plugin-color: #2F6690;
 	--secondary-plugin-color: #3A7CA5;
-	/* --secondary-plugin-color: #0CA4A5; */
   --accent-plugin-color: #0B4F6C;
+  --white-plugin-color: #FAFFFD;
+}
+/* #adminmenuback, #adminmenuwrap, #adminmenu{
+  background-color: var(--accent-plugin-color)!important;
+}
+#adminmenu li.wp-has-current-submenu a.wp-has-current-submenu{
+    background-color: var(--primary-plugin-color)!important;
+}
+#adminmenu a{
+  color: #FAFFFD !important;
+}
+#adminmenu .wp-submenu{
+  background-color: var(--primary-black-color) !important;
+}
+.dashicons::before{
+  color:var(--accent-plugin-color)!important;
 }
 .wp-admin {
   background: #FAFFFD;
-}
+} */
 .vs-admin-settings-wrapper{
   font-family: 'Raleway', sans-serif;
   margin: 2.5%;

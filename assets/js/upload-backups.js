@@ -7,7 +7,7 @@
     $('.active').show();
     }
   );
-  
+
   $('#uploadSurveyForm').submit(uploadFileToDirectory);
   $('#uploadEntryForm').submit(uploadFileToDirectory);
   function uploadFileToDirectory(e){
@@ -39,29 +39,3 @@
     });
   }
 })(jQuery);
-
-// $.ajax({
-//   beforeSend: (xhr) => {
-//     xhr.setRequestHeader('X-WP-Nonce', wpNonce);
-//   },
-//   processData: false,
-//   contentType: false,
-//   url: uploadApiUrl,
-//   type: 'POST',
-//   data: {
-//     action: 'wp_rest',
-//     nonce: wpNonce,
-//     file:formData
-//   },
-//   success: (response) => {
-//     $('#uploadSuccess').show();
-//     $('#uploadSuccess').text(response);
-//   },
-//   error: (response) => {
-//     $('#uploadError').show();
-//     $('#uploadError').text(response);
-//     console.log(response);
-//   }
-// });
-// }
-// })(jQuery);

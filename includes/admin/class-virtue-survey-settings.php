@@ -23,14 +23,18 @@ class Virtue_Survey_Settings
 
     public function vs_add_admin_menus(){
       $capability = 'create_users';
+      $plugin_icon ='data:image/svg+xml;base64,'. base64_encode(file_get_contents(VIRTUE_SURVEY_FILE_PATH.'/assets/fonts/file-icon.svg'));
 
-      add_menu_page( 'Virtue Survey Settings', 'Virtue Survey', $capability, 'virtue-survey-settings', array($this,'vs_settings_main'), 'dashicons-media-spreadsheet', 5);
+      add_menu_page( 'Virtue Survey', 'Virtue Survey', $capability, 'virtue-survey-settings', array($this,'vs_settings_main'), $plugin_icon, 5);
+
+      add_submenu_page( 'virtue-survey-settings', 'Virtue Survey Settings', 'Settings', 'create_users', 'virtue-survey-settings', array($this,'vs_settings_main' ));
 
       add_submenu_page( 'virtue-survey-settings', 'Download Backups', 'Download Backups', 'create_users', 'download-backups', array($this,'vs_version_downloads' ));
 
       add_submenu_page( 'virtue-survey-settings', 'Upload Backups', 'Upload Backups', 'create_users', 'upload-backups', array($this,'vs_version_uploads' ));
 
       add_submenu_page( 'virtue-survey-settings', 'Virtue Definitions and Resources', 'Question Settings', 'create_users', 'virtue-definitions', array($this, 'vs_definitions') );
+
 
     }
 
