@@ -18,13 +18,18 @@ class Virtue_Survey_Shortcodes
   public function output_survey_results(){
     if(is_user_logged_in()){
       $user_id =  get_current_user_id();
+      if(!metadata_exists( 'user', $user_id, 'user-virtue-survey-result-1' )){
+        return "<div>Please take a survey first to see results!</div>";
+      }
         $survey_completions = get_user_meta( $user_id, "total-surveys-completed", true);
         $result_object = get_user_meta( $user_id, "user-virtue-survey-result-$survey_completions", true );
-        // var_dump($result_object->results);
         return vs_output_results_table($result_object->get_ranked_virtues());
     }
     $results_meta_key = $_GET['uid']. "-". $_GET['quiz-results'];
     $result_object = get_transient( $results_meta_key );
+    if(empty($result_object)){
+      return "<div>Please take a survey first to see results!</div>";
+    }
     return vs_output_results_table($result_object->get_ranked_virtues());
   }
 

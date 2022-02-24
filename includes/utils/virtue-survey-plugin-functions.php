@@ -56,6 +56,7 @@
    */
 
  function vs_output_results_table($results){
+
     $html_to_return ="<div><ol>";
     foreach($results as $virtue){
         $virtue_style = ucfirst($virtue);
@@ -69,11 +70,13 @@
       if(metadata_exists( 'user', $user_id  , 'survey-virtue-increases' )){
         $positive_results = get_user_meta( $user_id, 'survey-virtue-increases', true );
         $html_to_return .= '<div><h3>Your answers indicate the you have grown in the following virtues since the last survey you took: </h3><ul>';
-        foreach($positive_results as $virtue_name => $array){
+        foreach($positive_results as $virtue_name => $value){
           $virtue_style = ucfirst($virtue_name);
-          $rounded_score = ceil($array['Raw Score Increase']);
-          $rounded_percentage = ceil($array['Percent Increase']);
-          $html_to_return .= "<li>$virtue_style +$rounded_score score. This is a $rounded_percentage% increase.</li>";
+          $rounded_score = round($value, 0, PHP_ROUND_HALF_UP);
+          $html_to_return .= "<li>$virtue_style +$rounded_score score.</li>";
+          // $rounded_score = round($array['Raw Score Increase'], 0, PHP_ROUND_HALF_UP);
+          // $rounded_percentage = ceil($array['Percent Increase']);
+          // $html_to_return .= "<li>$virtue_style +$rounded_score score. This is a $rounded_percentage% increase.</li>";
         }
         $html_to_return .= '</ul></div>';
       };
@@ -81,11 +84,13 @@
       //pull negative results
       if(metadata_exists( 'user', $user_id , 'survey-virtue-decreases' )){
         $negative_results = get_user_meta( $user_id, 'survey-virtue-decreases', true );
-        $html_to_return .= '<div>';
-        foreach($negative_results as $virtue_name => $array){
-          $html_to_return .= "<li>$virtue_name - {$array['Score Decrease']} points. This represents a {$array['Percent Decrease']}% decrease.</li>";
+        $html_to_return .= '<div><h3>Your answers indicate the you have decreased in the following virtues since the last three surveys you took: </h3><ul>';
+        foreach($negative_results as $virtue_name => $value){
+          $uppercase_virtue = ucfirst($virtue_name);
+          $rounded_score = round($value, 0, PHP_ROUND_HALF_UP);
+          $html_to_return .= "<li>$uppercase_virtue -$rounded_score points.</li>";
         }
-        $html_to_return .= '</div>';
+        $html_to_return .= '</ul></div>';
       };
     }
 
@@ -134,21 +139,28 @@
     }
 
     // Iterate through the first array of virtue score pairs.
-    foreach($two_most_recent_results[0] as $virtue_name => $score){
-      $previous_score = $two_most_recent_results[1][$virtue_name];
-      $score_increase = $previous_score - $score;
-      if($score_increase > 2){
+    foreach($two_most_recent_results[0] as $virtue_name => $score_average){
+      $previous_score_average = $two_most_recent_results[1][$virtue_name];
+      $score_average_increase = $score_average - $previous_score_average;
+      if($score_average_increase > 0.5){
         // Calculate percentage increase
-        $perecent_increase = ($score_increase / $score) * 100;
-
-        // If greater than 3% store in array.
-        if($perecent_increase > 50) {
-          $increased_virtues[$virtue_name] = array('Percent Increase' => $perecent_increase, "Raw Score Increase" => $score_increase);
-          update_user_meta( get_current_user_id(), 'survey-virtue-increases', $increased_virtues);
-        }
+        /** @see #NOTE_2 */
+        // $perecent_increase = ($score_increase / $score) * 100;
+        // // If greater than 50% store in array.
+        // if($perecent_increase > 3) {
+          // $increased_virtues[$virtue_name] = array('Percent Increase' => $perecent_increase, "Raw Score Increase" => $score_increase);
+          $increased_virtues[$virtue_name] = $score_average_increase;
+        // }
       }
     }
+    // If there are increases update usermeta otherwise delete as
+    // its no longer applicable
+    if(!empty($increased_virtues)){
+      update_user_meta( get_current_user_id(), 'survey-virtue-increases', $increased_virtues);
+      return;
+    }
 
+    delete_user_meta( get_current_user_id(), 'survey-virtue-increases');
   }
 
   /**
@@ -158,13 +170,12 @@
    * @param  int $survey_completions
    */
 
-
   function vs_calculate_and_save_decreases($survey_completions){
     if($survey_completions < 3){ return; }
     $decreased_virtues = [];
 
-    // Iterate twice from highest to lowest to get two most recent results
-    for($i = $survey_completions - 2; $i < $survey_completions - 3; $i++){
+    // Iterate three times
+    for($i = $survey_completions - 2; $i < $survey_completions + 1; $i++){
       $current_object = get_user_meta( get_current_user_id(), "user-virtue-survey-result-$i", true );
       $three_most_recent_results[] = $current_object->results;
     }
@@ -173,14 +184,20 @@
       $second_score = $three_most_recent_results[1][$virtue_name];
       $third_score = $three_most_recent_results[2][$virtue_name];
       if($score > $second_score && $second_score > $third_score){
-        $percentage_decrease = (($score - $third_score)/$score) * 100;
-        $score_decrease = $third_score - $score;
-        if($percentage_decrease >= 5){
-          $decreased_virtues[$virtue_name] = array('Percent Decrease'=> $percentage_decrease, 'Score Decrease' => $score_decrease);
-          update_user_meta( get_current_user_id(), 'survey-virtue-decreases', $decreased_virtues);
+        /** @see #NOTE_2 */
+        // $percentage_decrease = (($score - $third_score)/$score) * 100;
+        $score_decrease = $score - $third_score;
+        if($score_decrease >= .5){
+          $decreased_virtues[$virtue_name] = $score_decrease;
+          // $decreased_virtues[$virtue_name] = array('Percent Decrease'=> $percentage_decrease, 'Score Decrease' => $score_decrease);
         }
       }
     }
-
-
+    // If there are decreases update usermeta otherwise delete as
+    // its no longer applicable
+    if(!empty($decreased_virtues)){
+      update_user_meta( get_current_user_id(), 'survey-virtue-decreases', $decreased_virtues);
+      return;
+    }
+    delete_user_meta( get_current_user_id(), 'survey-virtue-decreases');
   }

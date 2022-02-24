@@ -42,3 +42,6 @@ Map result numbers to hidden fields on form so we have results in two places for
 
 #FIELD_MAPPING
 We need this to make sure we know which questions matched which field at the time this was taken in case the form is ever changed in the future.
+
+#NOTE_2
+These percentages are more difficult than what I had there. Will have to revist later. 

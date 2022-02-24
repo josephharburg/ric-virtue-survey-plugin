@@ -6,7 +6,6 @@ class Virtue_Survey_Gravity_Forms_Integration
     require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
     add_action( 'gform_after_submission_1', array($this, 'vs_create_and_save_results'), 10, 2 );
     add_filter( 'gform_pre_render_1', array($this,'vs_populate_user_id'),10, 1 );
-    // add_action( 'gform_after_submission_12', array($this, 'vs_create_and_save_results'), 10, 2 );
     // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
 //     add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
 //     $fields['form_options']['fields'][] = array( 'type' => 'number', 'name' => 'version' );
@@ -63,7 +62,10 @@ class Virtue_Survey_Gravity_Forms_Integration
     $form_id = $form['id'];
     $virtue_result_object = new Virtue_Survey_Result($entry_id, $form_id);
     /** @see #VS_STORAGE */
-    // $_POST['input_135'] = $virtue_result_object->results['prudence'];
+    
+    GFAPI::update_entry_field( $entry_id, 20, (string)$virtue_result_object->results['prudence'] );
+    GFAPI::update_entry_field( $entry_id, 21, (string)$virtue_result_object->results['justice'] );
+    GFAPI::update_entry_field( $entry_id, 22, (string)$virtue_result_object->results['temperance'] );
 
     // If user is logged in add it to their user meta.
     if(is_user_logged_in()){
