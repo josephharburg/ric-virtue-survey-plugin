@@ -44,29 +44,28 @@ class Virtue_Survey_Result {
   public static function vs_calculate_survey_results($entry_id, $form_id){
     $entry = GFAPI::get_entry( $entry_id );
     $form = GFAPI::get_form( $form_id );
-    $optional_question_ids = get_option('optional_questions');
-    $optional_questions= array();
-    foreach($optional_question_ids as $field_id){
-      $optional_questions[] = (stripos($key, 'reverse') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
-    }
+    // $optional_question_ids = get_option('optional_questions');
+    // $optional_questions= array();
+    // foreach($optional_question_ids as $field_id){
+    //   $optional_questions[] = (stripos($key, 'reverse') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
+    // }
 
-    // Get all the values set in admin interface
+    /** @see #MAPPING_FIELDS */
     $virtue_questions = vs_map_field_ids_to_array($form);
-
     foreach($virtue_questions as $current_virtue_name => $question_set){
+      // Make SURE THE CURRENT VIRTUE ARRAY IS EMPTY DERPPPP!!! I cant believe I forgot to do this. (* ￣︿￣)
+      $current_virtue = [];
       foreach($question_set as $key => $field_id){
       // If the key of the array has reverse in it make sure to do reverese calculation
-       $current_virtue[] = (stripos($key, 'reverse') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
+       $current_virtue[] = (stripos($key, 'neg') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
      }
-
-    // Do the calculation after collecting all values
+     // Do the calculation after collecting all values
      $current_virtue_calculation =  array_sum($current_virtue) / count($current_virtue);
      $calculated_survey_results[$current_virtue_name] = $current_virtue_calculation;
     }
+
     // Sort it by highest value
-     arsort($calculated_survey_results);
-     // Positive results array
-      // vs_calculate_and_save_positive_results($results_array);
+    arsort($calculated_survey_results);
     return $calculated_survey_results;
   }
 

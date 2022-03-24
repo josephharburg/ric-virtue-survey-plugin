@@ -1,3 +1,8 @@
+CHANGES FOR PRODUCTION
+IN DOWNLOAD Backsups change directory name.
+vs_upload_backup change directory name from SERVER[DOCUMENT_ROOT] and add is_dir conditional
+
+
 Here is an overall step by step explanation of the process for storing virtue results and displaying.
 
   1. User takes survey.
@@ -37,3 +42,9 @@ Map result numbers to hidden fields on form so we have results in two places for
 
 #FIELD_MAPPING
 We need this to make sure we know which questions matched which field at the time this was taken in case the form is ever changed in the future.
+
+#MAPPING_FIELDS
+This function will take the list of virtues and check the admin label of each question of the form that taken by the user and create an associative array with admin label as key and field id as value.
+
+#NOTE_2
+These percentages are more difficult than what I had there. Will have to revist later.

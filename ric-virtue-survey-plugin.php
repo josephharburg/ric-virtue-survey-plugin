@@ -46,7 +46,7 @@
 
      /**
       * Activation function
-      * 
+      *
       * @return void
       */
 
