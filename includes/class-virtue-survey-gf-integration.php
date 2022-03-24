@@ -8,38 +8,7 @@ class Virtue_Survey_Gravity_Forms_Integration
     add_filter( 'gform_pre_render_1', array($this,'vs_populate_user_id'),10, 1 );
     add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
     add_filter( 'gform_pre_render_2', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_3', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_3', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_4', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_4', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_5', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_5', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_6', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_6', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_5', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_5', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_6', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_6', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_7', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_7', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_8', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_8', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_9', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_9', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_10', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_10', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_11', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_11', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_12', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_12', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_13', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_13', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_14', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_14', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_15', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_15', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_16', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_16', array($this,'vs_populate_user_id'),10, 1 );
+    add_action( 'gform_field_validation_1_27', array($this,'validate_return_code'), 10, 4 );
     // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
 //     add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
 //     $fields['form_options']['fields'][] = array( 'type' => 'number', 'name' => 'version' );
@@ -47,9 +16,19 @@ class Virtue_Survey_Gravity_Forms_Integration
 // }, 10, 2 );
   }
 
+function validate_return_code ( $result, $value, $form, $field ) {
+    $return_code = rgpost( 'input_19' );
+    if ( $result['is_valid'] && $value == $master ) {
+        $result['is_valid'] = false;
+        $result['message']  = 'That doesnt match the code we gave you please try again!';
+    }
+
+    return $result;
+}
+
 
   /**
-  * Method to add readonly to org name field
+  * Method to create a random return code for user.
   *
   * @param object $form
   *
@@ -58,17 +37,24 @@ class Virtue_Survey_Gravity_Forms_Integration
 
   function vs_populate_user_id($form){
     $current_page = GFFormDisplay::get_current_page( $form['id'] );
+
     if ( $current_page == 1 ) {
+      $letters = 'abcdefghijklmnopqrstuvwxyz123456789';
+      $rand_one = $letters[rand(0, 35)];
+      $rand_two = $letters[rand(0, 35)];
+      $rand_three = $letters[rand(0, 35)];
+      $return_code = str_shuffle(rand(1000,10000).$rand_one.$rand_two.$rand_three);
        foreach ( $form['fields'] as &$field ) {
         //gather form data
          if ( $field->id == 19 && $field->type != 'page' ) {
            if(is_user_logged_in()){
              $field->defaultValue = get_current_user_id();
            } else{
-             $letters = 'abcdefghijklmnopqrstuvwxyz';
-             $rand = $letters[rand(0, 28)];
-             $field->defaultValue = rand(1000,10000).$rand;
+             $field->defaultValue = $return_code;
            }
+         }elseif ($field->id == 25 && $field->type != 'page') {
+           $field->content = "<div>Welcome to the survey! Your first task is to write down this code!
+<br> Your Code Is:$return_code</div>";
          }
        }
      }
