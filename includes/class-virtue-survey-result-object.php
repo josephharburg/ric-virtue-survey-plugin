@@ -113,11 +113,7 @@ class Virtue_Survey_Result {
   /**
    * Save the filed id to virtue map
    *
-   * We need this to make sure we know which
-   * questions matched which field at the time
-   * this was taken in case the form is ever
-   * changed in the future.
-   *
+   * @see #FIELD_MAPPING
    * @return string
    */
 
