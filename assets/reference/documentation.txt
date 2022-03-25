@@ -3,7 +3,7 @@ IN DOWNLOAD Backsups change directory name.
 vs_upload_backup change directory name from SERVER[DOCUMENT_ROOT] and add is_dir conditional
 
 
-Here is an overall step by step explanation of the process for storing virtue results and displaying.
+V1 -> Here is an overall step by step explanation of the process for storing virtue results and displaying them.
 
   1. User takes survey.
   2. On Submission =>
@@ -18,6 +18,15 @@ Here is an overall step by step explanation of the process for storing virtue re
   3. On the results page, use a shortcode to pull either the transient using URL parameters from form submissions or user meta if user is logged in.
     a. If logged in AND there are positive and/or negative results, display them.
   4. Offer a form to register and log in if the user is not logged in; once completed, the user's transient data will be stored in the user's meta information.
+
+V2 -> Here is an overall step by step explanation of the process for storing virtue results and displaying them.
+
+  1. User takes first survey.
+  2. After submission the return code is saved in entry.
+  3. Upon return for second part of survey, user will enter the return code into a form which will check all the entries to see if there are any matches for that code. The form id of that return code will determine the next survey to be taken and will redirect user to that survey. The return code field and previous form id field is populated based on URL parameters we pass to the redirect URL.
+  4. On Submission, the plugin will collect both entries based on return code, combine the form values in one array and then run the result calculation on those values and store results in a transient object with a meta key that has the return code in it.
+  3. On the results page, use a shortcode to pull the transient using URL parameters.
+    a. If a user comes back to see results again, we will use the form for viewing results again to create a results URL parameter as the code entered in form field.
 
 #CALC_INC_DEC
 We collect survey result objects individually with separate meta keys.
@@ -48,3 +57,6 @@ This function will take the list of virtues and check the admin label of each qu
 
 #NOTE_2
 These percentages are more difficult than what I had there. Will have to revist later.
+
+#PUBLIC_CALC_LOOP
+This loop takes the form id and entry associative array, iterates through it and gets the form using the GFAPI. Then it maps that form in the current iteration and iterates through the multidimensional array. Which will do the calculation on each value in the current entry associated with that form. It then adds those values to the calculated average in the $calculated_survey_results with the virtue as the key. Then we sort the value by the values.

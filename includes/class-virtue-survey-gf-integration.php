@@ -5,10 +5,11 @@ class Virtue_Survey_Gravity_Forms_Integration
   function __construct(){
     require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
     add_action( 'gform_after_submission_1', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_1', array($this,'vs_populate_user_id'),10, 1 );
-    add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_filter( 'gform_pre_render_2', array($this,'vs_populate_user_id'),10, 1 );
+    add_filter( 'gform_pre_render_1', array($this,'vs_populate_return_code'),10, 1 );
+    // add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
+    // add_filter( 'gform_pre_render_2', array($this,'vs_populate_return_code'),10, 1 );
     add_action( 'gform_field_validation_1_27', array($this,'validate_return_code'), 10, 4 );
+    // add_filter( 'gform_field_value_return_code', array($this,'my_custom_population_function') );
     // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
 //     add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
 //     $fields['form_options']['fields'][] = array( 'type' => 'number', 'name' => 'version' );
@@ -16,11 +17,20 @@ class Virtue_Survey_Gravity_Forms_Integration
 // }, 10, 2 );
   }
 
+  // function my_custom_population_function( $value ) {
+  //   $letters = 'abcdefghijklmnopqrstuvwxyz';
+  //   $rand_one = $letters[rand(0, 26)];
+  //   $rand_two = $letters[rand(0, 26)];
+  //   $rand_three = $letters[rand(0, 26)];
+  //   $return_code = str_shuffle(rand(1000,10000).$rand_one.$rand_two.$rand_three);
+  //   return  $return_code;
+  // }
+
 function validate_return_code ( $result, $value, $form, $field ) {
     $return_code = rgpost( 'input_19' );
-    if ( $result['is_valid'] && $value == $master ) {
+    if ( $result['is_valid'] && $value !== $return_code ) {
         $result['is_valid'] = false;
-        $result['message']  = 'That doesnt match the code we gave you please try again!';
+        $result['message']  = 'That code doesnt match the code we gave you please try again!';
     }
 
     return $result;
@@ -35,24 +45,24 @@ function validate_return_code ( $result, $value, $form, $field ) {
   * @return boolean
   */
 
-  function vs_populate_user_id($form){
+  function vs_populate_return_code($form){
     $current_page = GFFormDisplay::get_current_page( $form['id'] );
 
     if ( $current_page == 1 ) {
-      $letters = 'abcdefghijklmnopqrstuvwxyz123456789';
-      $rand_one = $letters[rand(0, 35)];
-      $rand_two = $letters[rand(0, 35)];
-      $rand_three = $letters[rand(0, 35)];
+      $letters = 'abcdefghijklmnopqrstuvwxyz';
+      $rand_one = $letters[rand(0, 26)];
+      $rand_two = $letters[rand(0, 26)];
+      $rand_three = $letters[rand(0, 26)];
       $return_code = str_shuffle(rand(1000,10000).$rand_one.$rand_two.$rand_three);
        foreach ( $form['fields'] as &$field ) {
-        //gather form data
-         if ( $field->id == 19 && $field->type != 'page' ) {
-           if(is_user_logged_in()){
-             $field->defaultValue = get_current_user_id();
-           } else{
+         if ( $field->id == 19 && $field->type != 'page' && empty(rgpost( 'input_19' ))) {
              $field->defaultValue = $return_code;
+         }
+
+         if ($field->id == 25 && $field->type != 'page') {
+           if(rgpost( 'input_19' )){
+            $return_code = rgpost( 'input_19' );
            }
-         }elseif ($field->id == 25 && $field->type != 'page') {
            $field->content = "<div>Welcome to the survey! Your first task is to write down this code!
 <br> Your Code Is:$return_code</div>";
          }
@@ -77,43 +87,19 @@ function validate_return_code ( $result, $value, $form, $field ) {
     if(! class_exists('Virtue_Survey_Result')){
       exit;
     }
-
-    $entry_id = rgar( $entry, 'id' );
-    $form_id = $form['id'];
-    $virtue_result_object = new Virtue_Survey_Result($entry_id, $form_id);
-
     /** @see #VS_STORAGE */
-    GFAPI::update_entry_field( $entry_id, 20, (string)$virtue_result_object->results['prudence'] );
-    GFAPI::update_entry_field( $entry_id, 21, (string)$virtue_result_object->results['justice'] );
-    GFAPI::update_entry_field( $entry_id, 22, (string)$virtue_result_object->results['temperance'] );
+    // GFAPI::update_entry_field( $entry_id, 20, (string)$virtue_result_object->results['prudence'] );
+    // GFAPI::update_entry_field( $entry_id, 21, (string)$virtue_result_object->results['justice'] );
+    // GFAPI::update_entry_field( $entry_id, 22, (string)$virtue_result_object->results['temperance'] );
 
-    // If user is logged in add it to their user meta.
-    if(is_user_logged_in()){
-      $user_id = get_current_user_id();
-      // Get the number of completed surveys
-      $survey_completions = get_user_meta( $user_id, "total-surveys-completed", true );
-
-      /** @see #CALC_INC_DEC */
-      if($survey_completions == '' || $survey_completions == false){
-        add_user_meta($user_id, "user-virtue-survey-result-1",$virtue_result_object, true);
-        add_user_meta($user_id, "total-surveys-completed", 1, true);
-      } else{
-        $survey_completions++;
-        add_user_meta($user_id, "user-virtue-survey-result-$survey_completions", $virtue_result_object, true);
-        update_user_meta($user_id, "total-surveys-completed", $survey_completions);
-        if($survey_completions > 1){
-            vs_calculate_and_save_increases($survey_completions);
-            if($survey_completions > 2){
-              vs_calculate_and_save_decreases($survey_completions);
-            }
-        }
-
-      }
-    } else{
-      $user_id = rgar($entry, 19);
-      $user_results_meta_key = "$user_id-".rgar($entry,'id')."";
-      set_transient($user_results_meta_key, $virtue_result_object, DAY_IN_SECONDS );
-    }
+     $return_code = rgar($entry, 19);
+     // $entry_id = rgar( $entry, 'id' );
+     // $form_id = $form['id'];
+     // $virtue_result_object = new Virtue_Survey_Result($entry_id, $form_id, $return_code);
+     $virtue_result_object = new Virtue_Survey_Result($entry, $form, $return_code);
+     
+     // $user_results_meta_key = "return-results-$return_code";
+     // set_transient($user_results_meta_key, $virtue_result_object, DAY_IN_SECONDS );
   }
 
   /**

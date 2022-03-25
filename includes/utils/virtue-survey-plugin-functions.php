@@ -63,7 +63,33 @@
   }
 
   /**
-   * This returns an html table of survey results
+   * Returns the complimentary survey form
+   *
+   * @return object
+   */
+
+  function vs_get_matching_form($form_id){
+    $matching_form = [];
+    switch ($form_id) {
+      case '1':
+        $matching_form['id'] = 3;
+        $matching_form['form'] = GFAPI::get_form(3);
+        break;
+      case '2':
+        $matching_form = GFAPI::get_form(5);
+        break;
+      case '3':
+        $matching_form = GFAPI::get_form(5);
+        break;
+      default:
+        $matching_form = GFAPI::get_form(3);
+        break;
+    }
+    return $matching_form;
+  }
+
+  /**
+   * Returns an html table of survey results
    *
    * @param  array  $results required
    * @return string
@@ -120,9 +146,8 @@
    * @return array       a multidimensional array
    */
 
-  function vs_map_field_ids_to_array($form){
+  function vs_map_field_ids_to_array($form,$mapped_fields_ids = array()){
       $virtue_list = vs_get_virtue_list();
-      $mapped_fields_ids = array();
       foreach ( $form['fields'] as $field ) {
         if(!empty($field->adminLabel)){
           $admin_label = $field->adminLabel;
@@ -219,4 +244,43 @@
       return;
     }
     delete_user_meta( get_current_user_id(), 'survey-virtue-decreases');
+  }
+
+  /**
+   * Create a results array with form and entry ids
+   *
+   * @see  #PUBLIC_CALC_LOOP
+   * @param  int $entry_id
+   * @param  int $form_id
+   *
+   * @return array
+   */
+
+  // @see #PUBLIC_CALC_LOOP
+  function vs_create_results_array(int $entry_id,int $form_id, $return_code){
+    $entry_one = GFAPI::get_entry( $entry_id );
+    $matching_form_id = vs_get_matching_form_id($form_id);
+    $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $return_code );
+    $matching_entry = GFAPI::get_entries( $matching_form_id, $search_criteria);
+    $entry_two = reset($matching_entry);
+    $both_entries = array($form_id => $entry_one, $matching_form_id => $entry_two);
+    foreach($both_entries as $form_id => $entry){
+      $current_form = GFAPI::get_form( $form_id );
+      /** @see #MAPPING_FIELDS */
+      $virtue_questions = vs_map_field_ids_to_array($current_form);
+      foreach($virtue_questions as $current_virtue_name => $field_id_set){
+        // Make SURE THE CURRENT VIRTUE ARRAY IS EMPTY DERPPPP!!! I cant believe I forgot to do this. (* ￣︿￣)
+        $current_virtue = [];
+        foreach($field_id_set as $field_key => $field_id){
+        // If the key(admin_label) of the array has reverse in it make sure to do reverese calculation
+         $current_virtue[] = (stripos($field_key, 'neg') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
+       }
+       // Do the calculation after collecting all values
+       $current_virtue_calculation =  array_sum($current_virtue) / count($current_virtue);
+       $calculated_survey_results[$current_virtue_name] = $current_virtue_calculation;
+      }
+    }
+    // Sort it by highest value
+    arsort($calculated_survey_results);
+    return $calculated_survey_results;
   }
