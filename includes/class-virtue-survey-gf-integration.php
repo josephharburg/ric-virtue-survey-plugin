@@ -97,9 +97,8 @@ function validate_return_code ( $result, $value, $form, $field ) {
      // $form_id = $form['id'];
      // $virtue_result_object = new Virtue_Survey_Result($entry_id, $form_id, $return_code);
      $virtue_result_object = new Virtue_Survey_Result($entry, $form, $return_code);
-     
-     // $user_results_meta_key = "return-results-$return_code";
-     // set_transient($user_results_meta_key, $virtue_result_object, DAY_IN_SECONDS );
+     $user_results_meta_key = "return-results-$return_code";
+     set_transient($user_results_meta_key, $virtue_result_object, DAY_IN_SECONDS );
   }
 
   /**
