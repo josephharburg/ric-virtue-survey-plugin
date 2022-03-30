@@ -22,6 +22,7 @@
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-shortcodes.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-gf-integration.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-result-object.php';
+         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-template-additions.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/admin/class-virtue-survey-settings.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/class-virtue-survey-api.php';
 
@@ -29,6 +30,7 @@
          $survey_shortcodes = new Virtue_Survey_Shortcodes;
          $admin_interface = new  Virtue_Survey_Settings;
          $plugin_rest_api = new Virtue_Survey_API;
+         $page_templates = new Virtue_Survey_Page_Templates;
        }
 
        /**

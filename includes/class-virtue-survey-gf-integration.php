@@ -4,12 +4,13 @@ class Virtue_Survey_Gravity_Forms_Integration
 {
   function __construct(){
     require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
-    add_action( 'gform_after_submission_1', array($this, 'vs_create_and_save_results'), 10, 2 );
+    add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
     add_filter( 'gform_pre_render_1', array($this,'vs_populate_return_code'),10, 1 );
     // add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
     // add_filter( 'gform_pre_render_2', array($this,'vs_populate_return_code'),10, 1 );
-    add_action( 'gform_field_validation_1_27', array($this,'validate_return_code'), 10, 4 );
-    // add_filter( 'gform_field_value_return_code', array($this,'my_custom_population_function') );
+    add_action( 'gform_field_validation_1_27', array($this,'validate_code_saved'), 10, 4 );
+    // add_action( 'gform_field_validation_2_27', array($this,'validate_return_code'), 10, 4 );
+    add_filter( 'gform_field_value_return_code', array($this,'add_return_code_to_hidden_field') );
     // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
 //     add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
 //     $fields['form_options']['fields'][] = array( 'type' => 'number', 'name' => 'version' );
@@ -17,16 +18,34 @@ class Virtue_Survey_Gravity_Forms_Integration
 // }, 10, 2 );
   }
 
-  // function my_custom_population_function( $value ) {
-  //   $letters = 'abcdefghijklmnopqrstuvwxyz';
-  //   $rand_one = $letters[rand(0, 26)];
-  //   $rand_two = $letters[rand(0, 26)];
-  //   $rand_three = $letters[rand(0, 26)];
-  //   $return_code = str_shuffle(rand(1000,10000).$rand_one.$rand_two.$rand_three);
-  //   return  $return_code;
-  // }
+  function add_return_code_to_hidden_field($value){
+    return $_GET['return-code'];
+  }
 
-function validate_return_code ( $result, $value, $form, $field ) {
+/**
+ * Validates the code written into DERP THIS IS NOT HANDLED HERE ON FORM
+ * @param  array $result               Current validation result object
+ * @param  mixed $value                Value from the field
+ * @param  array $form                 The form object
+ * @param  mixed $field                The field object
+ * @return array
+ */
+//
+//
+// function validate_return_code( $result, $value, $form, $field ) {
+//   $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $value );
+//   $is_entry = GFAPI::get_entries( 0, $search_criteria);
+//
+//   if ( $result['is_valid'] && $is_entry ) {
+//       $result['is_valid'] = false;
+//       $result['message']  = 'That code doesnt match the code we gave you please try again!';
+//   }
+//
+//   return $result;
+// }
+
+
+function validate_code_saved( $result, $value, $form, $field ) {
     $return_code = rgpost( 'input_19' );
     if ( $result['is_valid'] && $value !== $return_code ) {
         $result['is_valid'] = false;
@@ -93,9 +112,6 @@ function validate_return_code ( $result, $value, $form, $field ) {
     // GFAPI::update_entry_field( $entry_id, 22, (string)$virtue_result_object->results['temperance'] );
 
      $return_code = rgar($entry, 19);
-     // $entry_id = rgar( $entry, 'id' );
-     // $form_id = $form['id'];
-     // $virtue_result_object = new Virtue_Survey_Result($entry_id, $form_id, $return_code);
      $virtue_result_object = new Virtue_Survey_Result($entry, $form, $return_code);
      $user_results_meta_key = "return-results-$return_code";
      set_transient($user_results_meta_key, $virtue_result_object, DAY_IN_SECONDS );
