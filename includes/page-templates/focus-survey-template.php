@@ -53,8 +53,10 @@
 		</div><!-- #primary -->
 		</div><!-- #content -->
 	</div><!-- #page -->
-
+<footer>
 <?php wp_footer(); ?>
+</footer>
+
 
 </body>
 </html>

@@ -14,6 +14,7 @@ class Virtue_Survey_Shortcodes
     add_shortcode( 'survey_results', array($this, 'vs_output_survey_results'));
     // add_shortcode( 'student_survey_results_table', array($this, 'output_student_table' ));
     add_shortcode( 'random-survey-button', array($this, 'vs_ouput_random_survey_button') );
+    add_shortcode( 'output_part_two', array($this, 'vs_ouput_random_survey_part_two') );
   }
 
   /**
@@ -76,6 +77,23 @@ class Virtue_Survey_Shortcodes
     $button_text = ($shortcode_atts['retake'] == 'false') ? "Take Survey" : "Take Another Survey";
     $button_to_return = "<div class='wp-block-button'> <a class='survey-rdm-button wp-block-button__link $button_style' href='$site_url/survey-version-{$available_surveys[$random_key]}'>$button_text</a></div>";
     return $button_to_return;
+  }
+
+  /**
+   * Outputs a random survey button
+   * @param  array $atts               shortcode attributes
+   * @return string
+   */
+
+  function vs_ouput_random_survey_part_two($atts){
+    // $atts = array_change_key_case( (array) $atts, CASE_LOWER );
+    // $shortcode_atts = shortcode_atts(array('retake' => 'false'), $atts);
+    if(!$_GET['form-id']){
+      return "<div>Oops something broke. ¯\(°_o)/¯ <br/> Please click back and enter your code again.</div>";
+    }
+
+    return do_shortcode( '[gravityform id="'.$_GET['form-id'].'" title="false" description="false" ajax="true"]' );
+
   }
 
   //  function output_student_table(){
