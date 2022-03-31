@@ -23,7 +23,7 @@ class Virtue_Survey_Gravity_Forms_Integration
   /**
    * Creates and Saves Return Code, Form ID, and next Form ID
    *
-   * @see #RETURN_CODE_FORM_ID
+   * @see #RETURN_CODE_TRANSIENT
    *
    * @param  array|object $entry          The entry object from GF.
    * @param  array|object $form           The form object from GF.
@@ -46,7 +46,7 @@ class Virtue_Survey_Gravity_Forms_Integration
 
   function vs_update_matching_form_id($form){
     // Get the return code value from the post data
-    $return_code                        = $_POST['input_1'];
+    $return_code = $_POST['input_1'];
     $matching_survey_data = get_transient( "$return_code-data");
     if($matching_survey_data){
       // Get the matching form id from transient data
@@ -56,12 +56,12 @@ class Virtue_Survey_Gravity_Forms_Integration
       // as the return code is unique to the entry it will return the
       // one we need
       $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $return_code );
-      $matching_entry                     = GFAPI::get_entries( 1, $search_criteria);
-      $entry_with_code                    = reset($matching_entry);
+      $matching_entry = GFAPI::get_entries( 1, $search_criteria);
+      $entry_with_code = reset($matching_entry);
       // Get the form associated with the entry
-      $previous_form_id                   = rgar($entry_with_code, 'form-id');
+      $previous_form_id = rgar($entry_with_code, 'form-id');
       // Use our matching function to get the matching form id
-      $matching_form_id                   = vs_get_matching_form_id($previous_form_id);
+      $matching_form_id = vs_get_matching_form_id($previous_form_id);
     }
 
     $_POST['input_3'] = $matching_form_id;

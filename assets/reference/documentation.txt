@@ -60,3 +60,6 @@ These percentages are more difficult than what I had there. Will have to revist 
 
 #PUBLIC_CALC_LOOP
 This loop takes the form id and entry associative array, iterates through it and gets the form using the GFAPI. Then it maps that form in the current iteration and iterates through the multidimensional array. Which will do the calculation on each value in the current entry associated with that form. It then adds those values to the calculated average in the $calculated_survey_results with the virtue as the key. Then we sort the value by the values.
+
+#RETURN_CODE_TRANSIENT
+When the first form is submitted the form id, entry id, and complimenting form id are added to a transient that uses the return code in its key so we can retrieve that data later when directing the user to the next form and when calculating the results.  
