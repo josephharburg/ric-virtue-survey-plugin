@@ -36,7 +36,7 @@
        /**
         * Create an instance of plugin object
         *
-        * @return OBJECT
+        * @return object
         */
        public static function instance() {
          if ( is_null( self::$instance ) ) {

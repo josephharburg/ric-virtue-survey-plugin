@@ -146,10 +146,6 @@ class Virtue_Survey_Result {
     foreach($matched_items as $item){
       $field_maps[$item['form']['id']] = vs_map_field_ids_to_array($item['form']);
     }
-    // php v 8.1
-    // $array_one = vs_map_field_ids_to_array($matched_items[0]['form']);
-    // $array_two = vs_map_field_ids_to_array($matched_items[1]['form']);
-    // $field_maps = [...$array_one,...$array_two];
     return $field_maps;
   }
 

@@ -1,23 +1,22 @@
 <?php
+/**
+* This class handles all the gravity form customizations
+*
+* @package ric-virtue-survey-plugins
+* @version 1.0
+*/
 
 class Virtue_Survey_Gravity_Forms_Integration
 {
   function __construct(){
     require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
-    add_action( 'gform_after_submission_1', array($this, 'vs_save_return_code_and_form_id'), 10, 2 );
     add_action( 'gform_after_submission_3', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_action( 'gform_pre_submission_4', array($this, 'vs_update_matching_form_id'), 10, 1);
     add_filter( 'gform_pre_render_1', array($this,'vs_populate_return_code'),10, 1 );
-    // add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
-    // add_filter( 'gform_pre_render_2', array($this,'vs_populate_return_code'),10, 1 );
+    add_action( 'gform_after_submission_1', array($this, 'vs_save_return_code_data'), 10, 2 );
     add_action( 'gform_field_validation_1_27', array($this,'vs_validate_code_saved'), 10, 4 );
-    // add_action( 'gform_field_validation_2_27', array($this,'validate_return_code'), 10, 4 );
+    add_action( 'gform_field_validation_4', array($this,'vs_validate_return_code_exists'), 10, 4 );
+    add_action( 'gform_pre_submission_4', array($this, 'vs_update_matching_form_id'), 10, 1);
     add_filter( 'gform_field_value_return_code', array($this,'add_return_code_to_hidden_field') );
-    // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
-//     add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
-//     $fields['form_options']['fields'][] = array( 'type' => 'number', 'name' => 'version' );
-//     return $fields;
-// }, 10, 2 );
   }
 
   /**
@@ -30,7 +29,7 @@ class Virtue_Survey_Gravity_Forms_Integration
    * @return void
    */
 
-  function vs_save_return_code_and_form_id($entry, $form){
+  function vs_save_return_code_data($entry, $form){
     $return_code = rgar($entry, 19);
     $data        = array('entry-id'=> rgar($entry, 'id'),'form-id' =>  $form['id'], 'next-form-id' => vs_get_matching_form_id($form['id']));
     set_transient( "$return_code-data", $data, WEEK_IN_SECONDS*2 );
@@ -79,17 +78,19 @@ class Virtue_Survey_Gravity_Forms_Integration
     return $_GET['return-code'];
   }
 
-/**
- * Validates the code written into DERP THIS IS NOT HANDLED HERE ON FORM
- * @param  array $result               Current validation result object
- * @param  mixed $value                Value from the field
- * @param  array $form                 The form object
- * @param  mixed $field                The field object
- * @return array
- */
+  /**
+   * Validates the code was written down by user
+   *
+   * @param  array $result               Current validation result object
+   * @param  mixed $value                Value from the field
+   * @param  array $form                 The form object
+   * @param  mixed $field                The field object
+   * @return array
+   */
 
-  function vs_validate_code_saved( $result, $value, $form, $field ) {
+  function vs_validate_return_code_exists( $result, $value, $form, $field ) {
       $return_code = rgpost( 'input_19' );
+
       if ( $result['is_valid'] && $value !== $return_code ) {
           $result['is_valid'] = false;
           $result['message']  = 'That code doesnt match the code we gave you please try again!';
@@ -98,13 +99,36 @@ class Virtue_Survey_Gravity_Forms_Integration
       return $result;
   }
 
+  /**
+   * Validates the code was written down by user
+   *
+   * @param  array $result               Current validation result object
+   * @param  mixed $value                Value from the field
+   * @param  array $form                 The form object
+   * @param  mixed $field                The field object
+   * @return array
+   */
+
+  function vs_validate_code_saved( $result, $value, $form, $field ) {
+      $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $value );
+      $is_entry = GFAPI::get_entries( 0, $search_criteria);
+
+      if ( $result['is_valid'] && $is_entry ) {
+          $result['is_valid'] = false;
+          $result['message']  = 'That code doesnt exist, please try again!';
+      }
+
+      return $result;
+  }
+
+
+
 
   /**
   * Method to create a random return code for user.
   *
-  * @param object $form
-  *
-  * @return boolean
+  * @param array $form
+  * @return array
   */
 
   function vs_populate_return_code($form){
@@ -137,10 +161,8 @@ class Virtue_Survey_Gravity_Forms_Integration
  * Creates and Saves Survey Results
  *
  * @see #VS_RESULT_OBJ
- *
  * @param  array|object $entry          The entry object from GF.
  * @param  array|object $form           The form object from GF.
- * @return void
  */
 
 
@@ -149,8 +171,6 @@ class Virtue_Survey_Gravity_Forms_Integration
     if(! class_exists('Virtue_Survey_Result')){
       exit;
     }
-
-
      $return_code = rgar($entry, 28);
      $virtue_result_object = new Virtue_Survey_Result($entry, $form, $return_code);
      /** @see #VS_STORAGE */

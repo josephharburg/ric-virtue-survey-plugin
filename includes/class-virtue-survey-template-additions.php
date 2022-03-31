@@ -1,24 +1,13 @@
 <?php
 
 class Virtue_Survey_Page_Templates {
-
-    /**
-     * Templates folder inside the plugin
-     */
+    //Templates folder inside the plugin
     private $template_dir;
-
-    /**
-     * Templates to be merged with WP
-     */
+    //Templates to be merged with WP
     private $templates;
 
-    /**
-     * Filtering and loading templates
-     */
-    public function __construct ( ) {
+    public function __construct(){
         $this->template_dir = VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/page-templates/';
-        // $this->template_dir = VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/page-templates/';
-
         $this->templates = $this->vs_load_plugin_templates();
 
         add_filter('theme_page_templates', array($this, 'vs_register_plugin_templates'),10, 1);
@@ -27,35 +16,30 @@ class Virtue_Survey_Page_Templates {
 
     /**
      * Loading templates from the templates folder inside the plugin
+     *
+     * @return array
      */
+
     private function vs_load_plugin_templates(){
-
         $template_dir = $this->template_dir;
-
         // Reads all templates from the folder
         if (is_dir($template_dir)) {
             if ($dh = opendir($template_dir)) {
                 while (($file = readdir($dh)) !== false) {
-
                     $full_path = $template_dir . $file;
-
                     if (filetype($full_path) == 'dir') {
                         continue;
                     }
-
                     // Gets Template Name from the file
                     $filedata = get_file_data($full_path, array(
                         'Template Name' => 'Template Name',
                     ));
-
                     $template_name = $filedata['Template Name'];
-
                     $templates[$full_path] = $template_name;
-
                 }
                 closedir($dh);
             }
-      }
+        }
 
       return $templates;
     }

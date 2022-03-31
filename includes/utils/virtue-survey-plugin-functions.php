@@ -5,6 +5,13 @@
  * @package ric-virtue-survey-plugin
  */
 
+ /**
+  * Enqueues script to update the take another survey button url
+  *
+  * @param int|string $form_id
+  * @return int
+  */
+
  function vs_enqueue_random_url(){
    if(is_front_page() || is_page('Survey Results')){
      $js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-random-survey-url.js'));
@@ -32,11 +39,12 @@
      );
      return $mapped_form_id_matches[(int)$form_id];
    }
-/**
- * Returns an array of the virtue names
- *
- * @return array
- */
+
+  /**
+   * Returns an array of the virtue names
+   *
+   * @return array
+   */
 
   function vs_get_virtue_list(){
     return array(
@@ -99,7 +107,6 @@
    */
 
  function vs_output_results_table($results){
-
     $html_to_return ="<div><ol>";
     foreach($results as $virtue){
       $virtue_style = ucfirst($virtue);
@@ -260,7 +267,6 @@
    * @return array
    */
 
-  // @see #PUBLIC_CALC_LOOP
   function vs_create_results_array(int $entry_id,int $form_id, $return_code){
     $entry_one = GFAPI::get_entry( $entry_id );
     $matching_form_id = vs_get_matching_form_id($form_id);

@@ -2,9 +2,10 @@
 /**
  * This REST API handles updates and settings for plugin.
  *
+ * @package ric-virtue-survey-plugin
  */
-class Virtue_Survey_API
-{
+
+class Virtue_Survey_API {
   private $namespace;
 
   function __construct()
@@ -15,7 +16,7 @@ class Virtue_Survey_API
 
 /**
  * Registers the REST endpoints for plugin
- * @return void
+ *
  */
 
   public function vs_register_plugin_routes(){
@@ -76,7 +77,6 @@ class Virtue_Survey_API
   function vs_upload_backup(WP_REST_Request $request){
     $files = $request->get_file_params();
     $headers = $request->get_headers();
-    // This is also the directory name
 
     if ( empty( $files ) || empty( $files['file'] ) ) {
       return wp_send_json_error("Whoops! There was an error uploading your file.", 400);
@@ -96,28 +96,27 @@ class Virtue_Survey_API
     $upload_date = date("Y-m-d");
       // Make sure the directory exists
       // if (is_dir($upload_dir)) {
+      $file_name = "$file_upload_type-version-number-$version_number-$upload_date$file_type_extension";
+      // THIS IS FOR LOCAL DEVELOPMENT
+      $target_file = $_SERVER["DOCUMENT_ROOT"] . "/wp-content/uploads/virtue-survey/$upload_type/$file_name";
+      // $target_file = $upload_dir . "/$file_name";
 
-        $file_name = "$file_upload_type-version-number-$version_number-$upload_date$file_type_extension";
-        // THIS IS FOR LOCAL DEVELOPMENT
-        $target_file = $_SERVER["DOCUMENT_ROOT"] . "/wp-content/uploads/virtue-survey/$upload_type/$file_name";
-        // $target_file = $upload_dir . "/$file_name";
-
-        // Check to see that file doesnt already exist.
-        if (file_exists($target_file)) {
-          return wp_send_json_error("$file_name backup already exists!", 400);
-        }
-
-        // Check to see file is larger than 1mb
-        if ($file["size"] > 1000000) {
-          return wp_send_json_error( "Sorry, the filesize is too large.", 400 );
-        }
-
-        //Try to move file into uploads directory or send error if applicable.
-        if(move_uploaded_file($file["tmp_name"], $target_file)) {
-        return wp_send_json_success( "The file ". htmlspecialchars($file_name). " has been uploaded to the virtue survey directory!", 201 ) ;
-      }else{
-        return wp_send_json_error($file["error"], 400);
+      // Check to see that file doesnt already exist.
+      if (file_exists($target_file)) {
+        return wp_send_json_error("$file_name backup already exists!", 400);
       }
+
+      // Check to see file is larger than 1mb
+      if ($file["size"] > 1000000) {
+        return wp_send_json_error( "Sorry, the filesize is too large.", 400 );
+      }
+
+      //Try to move file into uploads directory or send error if applicable.
+      if(move_uploaded_file($file["tmp_name"], $target_file)) {
+      return wp_send_json_success( "The file ". htmlspecialchars($file_name). " has been uploaded to the virtue survey directory!", 201 ) ;
+    }else{
+      return wp_send_json_error($file["error"], 400);
+    }
       // }
     // If the file upload does not make it through the validation send error
     // by default.
@@ -157,11 +156,12 @@ class Virtue_Survey_API
     /**
      * Callback for getting definitions
      *
+     * @param object $request
      * @return string|object
      */
-    function vs_get_virtue_result($data){
-      if(isset($data['virtue'])){
-          $virtue_to_get = strtolower($data['virtue']);
+    function vs_get_virtue_result(WP_REST_Request $request){
+      if(isset($request['virtue'])){
+          $virtue_to_get = strtolower($request['virtue']);
           $definition_default = get_option("vs-{$virtue_to_get}-definition", "Enter Definition Here");
           $image_id = get_option("$virtue_to_get-icon-id", '');
           $image = wp_get_attachment_image_src( $image_id );
@@ -175,8 +175,10 @@ class Virtue_Survey_API
     /**
      * Create a randomly generated url for the take survey button.
      *
+     * @param object $request
+     * @return string
      */
-    function vs_generate_random_url($data){
+    function vs_generate_random_url(WP_REST_Request $request){
       session_start();
       $available_surveys = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
 
@@ -186,9 +188,9 @@ class Virtue_Survey_API
       }
 
       // Add completed survey ID to Session Variable if on the results page
-      if($data['retake'] == 'YES'){
-        if(!in_array($data['formID'], $_SESSION['surveys-taken'])){
-          $_SESSION['surveys-taken'][] = $data['formID'];
+      if($request['retake'] == 'YES'){
+        if(!in_array($request['formID'], $_SESSION['surveys-taken'])){
+          $_SESSION['surveys-taken'][] = $request['formID'];
         }
       }
 
