@@ -4,7 +4,7 @@ class Virtue_Survey_Gravity_Forms_Integration
 {
   function __construct(){
     require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
-    add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
+    add_action( 'gform_after_submission_3', array($this, 'vs_create_and_save_results'), 10, 2 );
     add_filter( 'gform_pre_render_1', array($this,'vs_populate_return_code'),10, 1 );
     // add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
     // add_filter( 'gform_pre_render_2', array($this,'vs_populate_return_code'),10, 1 );
@@ -106,13 +106,14 @@ function validate_code_saved( $result, $value, $form, $field ) {
     if(! class_exists('Virtue_Survey_Result')){
       exit;
     }
-    /** @see #VS_STORAGE */
-    // GFAPI::update_entry_field( $entry_id, 20, (string)$virtue_result_object->results['prudence'] );
-    // GFAPI::update_entry_field( $entry_id, 21, (string)$virtue_result_object->results['justice'] );
-    // GFAPI::update_entry_field( $entry_id, 22, (string)$virtue_result_object->results['temperance'] );
 
-     $return_code = rgar($entry, 19);
+
+     $return_code = rgar($entry, 28);
      $virtue_result_object = new Virtue_Survey_Result($entry, $form, $return_code);
+     /** @see #VS_STORAGE */
+     // GFAPI::update_entry_field( $entry_id, 20, (string)$virtue_result_object->results['prudence'] );
+     // GFAPI::update_entry_field( $entry_id, 21, (string)$virtue_result_object->results['justice'] );
+     // GFAPI::update_entry_field( $entry_id, 22, (string)$virtue_result_object->results['temperance'] );
      $user_results_meta_key = "return-results-$return_code";
      set_transient($user_results_meta_key, $virtue_result_object, DAY_IN_SECONDS );
   }

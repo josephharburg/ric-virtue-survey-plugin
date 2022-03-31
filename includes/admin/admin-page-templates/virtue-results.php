@@ -24,22 +24,22 @@ ob_start();
   <form id="updateVirtueResults" onSubmit="return false" method="post" >
     <div class="vs-image-upload">
       <?php
-      $image_id = get_option('prudence-icon-id');
+      $image_id = get_option('judgment-icon-id');
       if( $image = wp_get_attachment_image_src( $image_id ) ) {
     	echo '<a href="#" class="virtue-image-upl"><img id="currentVirtueImg" src="' . $image[0] . '" /></a>
     	      <a href="#" class="virtue-image-rmv vs-button-style">Remove Icon</a>
     	      <input id="virtue-image-id" type="hidden" name="virtue-img" value="' . $image_id . '">';
     } else {
-    	echo '<a href="#" class="virtue-image-upl vs-button-style">Upload image for <span id="currentSelectedVirtue">Prudence</span></a>
+    	echo '<a href="#" class="virtue-image-upl vs-button-style">Upload image for <span id="currentSelectedVirtue">Judgment</span></a>
     	      <a href="#" class="virtue-image-rmv vs-button-style" style="display:none">Remove Image</a>
     	      <input id="virtue-image-id" type="hidden" name="virtue-img" value="">';
     } ?>
     </div>
     <?php
-    $default = get_option('vs-prudence-definition', "Enter Definition Here");
+    $default = get_option('vs-judgment-definition', "Enter Definition Here");
     wp_editor( $default, 'definitionContent', array());?>
-    <input type="hidden" id="selectedVirtue" name="virtue" value="prudence">
-    <input class="vs-button-style vs-space" type="submit" value="Save Prudence Result" name="submit">
+    <input type="hidden" id="selectedVirtue" name="virtue" value="judgment">
+    <input class="vs-button-style vs-space" type="submit" value="Save Judgment Result" name="submit">
   </form>
 </div>
 

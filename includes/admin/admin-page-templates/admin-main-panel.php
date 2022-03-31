@@ -4,7 +4,7 @@
   <div class="vs-navigation">
     <div class="vs-navigation-wrapper">
         <div class="vs-nav-btn-container">
-        <a href="<?php echo get_admin_url().'admin.php?page=virtue-definitions' ?>" class="vs-button-style">Virtue Definitions</a>
+        <a href="<?php echo get_admin_url().'admin.php?page=virtue-results' ?>" class="vs-button-style">Virtue Results</a>
         <div class="vs-nav-btn-desc">Change the virtue definitions and links to resources.</div>
       </div>
       <div class="vs-nav-btn-container">

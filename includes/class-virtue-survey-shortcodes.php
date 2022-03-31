@@ -92,7 +92,7 @@ class Virtue_Survey_Shortcodes
       return "<div>Oops something broke. ¯\(°_o)/¯ <br/> Please click back and enter your code again.</div>";
     }
 
-    return do_shortcode( '[gravityform id="'.$_GET['form-id'].'" title="false" description="false" ajax="true"]' );
+    return do_shortcode( '[gravityform id="'.$_GET['form-id'].'" title="false" description="false"]' );
 
   }
 

@@ -70,16 +70,18 @@
 
   function vs_get_matching_form($form_id){
     $matching_form = [];
-    switch ($form_id) {
-      case '1':
+    switch ((int)$form_id) {
+      case 1:
         $matching_form['id'] = 3;
         $matching_form['form'] = GFAPI::get_form(3);
         break;
-      case '2':
-        $matching_form = GFAPI::get_form(5);
+      case 2:
+      $matching_form['id'] = 3;
+      $matching_form['form'] = GFAPI::get_form(3);
         break;
-      case '3':
-        $matching_form = GFAPI::get_form(5);
+      case 3:
+      $matching_form['id'] = 1;
+      $matching_form['form'] = GFAPI::get_form(1);
         break;
       default:
         $matching_form = GFAPI::get_form(3);
@@ -106,34 +108,34 @@
     }
     $html_to_return .="</ol></div>";
 
-    if(is_user_logged_in()){
-      $user_id = get_current_user_id();
-      //pull positive results
-      if(metadata_exists( 'user', $user_id  , 'survey-virtue-increases' )){
-        $positive_results = get_user_meta( $user_id, 'survey-virtue-increases', true );
-        $html_to_return .= '<div><h3>Your answers indicate the you have grown in the following virtues since the last survey you took: </h3><ul style="list-style: none;font-weight:400">';
-        foreach($positive_results as $virtue_name => $value){
-          $virtue_style = ucfirst($virtue_name);
-          $virtue_icon =  wp_get_attachment_image_src( get_option("$virtue_name-icon-id", '') );
-          $virtue_icon_html = (!empty($virtue_icon))? "<img id='currentVirtueImg' src='$virtue_icon[0]'>": '';
-          $rounded_score = round($value, 0, PHP_ROUND_HALF_UP);
-          $html_to_return .= "<li class='$virtue_name-style'><span class='virtue-result-icon'>$virtue_icon_html</span> $virtue_style +$rounded_score score.</li>";
-        }
-        $html_to_return .= '</ul></div>';
-      };
-
-      //pull negative results
-      if(metadata_exists( 'user', $user_id , 'survey-virtue-decreases' )){
-        $negative_results = get_user_meta( $user_id, 'survey-virtue-decreases', true );
-        $html_to_return .= '<div><h3>Your answers indicate the you have decreased in the following virtues since the last three surveys you took: </h3><ul>';
-        foreach($negative_results as $virtue_name => $value){
-          $uppercase_virtue = ucfirst($virtue_name);
-          $rounded_score = round($value, 0, PHP_ROUND_HALF_UP);
-          $html_to_return .= "<li>$uppercase_virtue -$rounded_score points.</li>";
-        }
-        $html_to_return .= '</ul></div>';
-      };
-    }
+    // if(is_user_logged_in()){
+    //   $user_id = get_current_user_id();
+    //   //pull positive results
+    //   if(metadata_exists( 'user', $user_id  , 'survey-virtue-increases' )){
+    //     $positive_results = get_user_meta( $user_id, 'survey-virtue-increases', true );
+    //     $html_to_return .= '<div><h3>Your answers indicate the you have grown in the following virtues since the last survey you took: </h3><ul style="list-style: none;font-weight:400">';
+    //     foreach($positive_results as $virtue_name => $value){
+    //       $virtue_style = ucfirst($virtue_name);
+    //       $virtue_icon =  wp_get_attachment_image_src( get_option("$virtue_name-icon-id", '') );
+    //       $virtue_icon_html = (!empty($virtue_icon))? "<img id='currentVirtueImg' src='$virtue_icon[0]'>": '';
+    //       $rounded_score = round($value, 0, PHP_ROUND_HALF_UP);
+    //       $html_to_return .= "<li class='$virtue_name-style'><span class='virtue-result-icon'>$virtue_icon_html</span> $virtue_style +$rounded_score score.</li>";
+    //     }
+    //     $html_to_return .= '</ul></div>';
+    //   };
+    //
+    //   //pull negative results
+    //   if(metadata_exists( 'user', $user_id , 'survey-virtue-decreases' )){
+    //     $negative_results = get_user_meta( $user_id, 'survey-virtue-decreases', true );
+    //     $html_to_return .= '<div><h3>Your answers indicate the you have decreased in the following virtues since the last three surveys you took: </h3><ul>';
+    //     foreach($negative_results as $virtue_name => $value){
+    //       $uppercase_virtue = ucfirst($virtue_name);
+    //       $rounded_score = round($value, 0, PHP_ROUND_HALF_UP);
+    //       $html_to_return .= "<li>$uppercase_virtue -$rounded_score points.</li>";
+    //     }
+    //     $html_to_return .= '</ul></div>';
+    //   };
+    // }
 
     return $html_to_return;
   }
@@ -160,6 +162,7 @@
           }
         }
       }
+
       return $mapped_fields_ids;
   }
 
