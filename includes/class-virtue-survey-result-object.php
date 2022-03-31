@@ -29,9 +29,9 @@ class Virtue_Survey_Result {
     }
 
     $this->return_code = $return_code;
-    $this->matched_items = $this->vs_match_forms_and_entries($form, $entry);
+    $this->matched_items = $this->vs_match_forms_and_entries($form, $entry, $return_code);
     $this->field_id_maps = $this->vs_save_form_field_id_maps($this->matched_items);
-    $this->results = $this->vs_calculate_survey_results($this->matched_items,$this->field_id_maps, $this->return_code);
+    $this->results = $this->vs_calculate_survey_results($this->matched_items,$this->field_id_maps);
     $this->ranked_virtues = array_keys($this->results);
   }
 
@@ -44,14 +44,22 @@ class Virtue_Survey_Result {
    * @return array
    */
 
-  public function vs_match_forms_and_entries($form_one,$entry_one){
-    $matching_form = vs_get_matching_form($form_one['id']);
-    $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $return_code );
-    $matching_entry = GFAPI::get_entries( $matching_form['id'], $search_criteria);
-    $entry_two = reset($matching_entry);
+  public function vs_match_forms_and_entries($form_one, $entry_one, $return_code){
+    $transient_data = get_transient( "$return_code-data" );
+    if($transient_data){
+      $matching_form = GFAPI::get_form($transient_data['form-id']);
+      $entry_two = GFAPI::get_entry($transient_data['entry-id']);
+    } else{
+      $matching_form_data = vs_get_matching_form($form_one['id']);
+      $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $return_code );
+      $matching_entry = GFAPI::get_entries( $matching_form_data['id'], $search_criteria);
+      $entry_two = reset($matching_entry);
+      $matching_form = $matching_form_data['form'];
+    }
+
     $matched_items = array(
       array('form'=> $form_one,'entry'=> $entry_one),
-      array('form'=> $matching_form['form'],'entry'=>$entry_two)
+      array('form'=> $matching_form,'entry'=> $entry_two)
     );
     return $matched_items;
   }
@@ -63,7 +71,7 @@ class Virtue_Survey_Result {
    * @return array
    */
 
-  public function vs_calculate_survey_results($matched_items, $field_id_maps, $return_code){
+  public function vs_calculate_survey_results($matched_items, $field_id_maps){
     foreach($matched_items as $item){
       $current_form = $item['form'];
       $entry = $item['entry'];

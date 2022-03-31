@@ -18,6 +18,20 @@
  }
  add_action('wp_enqueue_scripts', 'vs_enqueue_random_url');
 
+ /**
+  * Returns an the corresponding form id
+  *
+  * @param int|string $form_id
+  * @return int
+  */
+
+   function vs_get_matching_form_id($form_id){
+      $mapped_form_id_matches = array(
+       1 => 3,
+       3 => 1
+     );
+     return $mapped_form_id_matches[(int)$form_id];
+   }
 /**
  * Returns an array of the virtue names
  *
@@ -69,24 +83,11 @@
    */
 
   function vs_get_matching_form($form_id){
-    $matching_form = [];
-    switch ((int)$form_id) {
-      case 1:
-        $matching_form['id'] = 3;
-        $matching_form['form'] = GFAPI::get_form(3);
-        break;
-      case 2:
-      $matching_form['id'] = 3;
-      $matching_form['form'] = GFAPI::get_form(3);
-        break;
-      case 3:
-      $matching_form['id'] = 1;
-      $matching_form['form'] = GFAPI::get_form(1);
-        break;
-      default:
-        $matching_form = GFAPI::get_form(3);
-        break;
-    }
+    $matching_form_id = vs_get_matching_form_id($form_id);
+    $matching_form = array(
+      'id' => $matching_form_id,
+      'form'=> GFAPI::get_form($matching_form_id)
+  );
     return $matching_form;
   }
 
@@ -287,3 +288,17 @@
     arsort($calculated_survey_results);
     return $calculated_survey_results;
   }
+
+  // /**
+  //  * Decodes the return code
+  //  *
+  //  * @see  #DECODE_RETURN_CODE
+  //  * @param  string $return_code
+  //  *
+  //  * @return array
+  //  */
+  //
+  //   function vs_decode_return_code($return_code){
+  //     $entry_id_index = strpos($return_code, "EID");
+  //     $form_id_index =
+  //   }

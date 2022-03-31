@@ -4,11 +4,13 @@ class Virtue_Survey_Gravity_Forms_Integration
 {
   function __construct(){
     require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
+    add_action( 'gform_after_submission_1', array($this, 'vs_save_return_code_and_form_id'), 10, 2 );
     add_action( 'gform_after_submission_3', array($this, 'vs_create_and_save_results'), 10, 2 );
+    add_action( 'gform_pre_submission_4', array($this, 'vs_update_matching_form_id'), 10, 1);
     add_filter( 'gform_pre_render_1', array($this,'vs_populate_return_code'),10, 1 );
     // add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
     // add_filter( 'gform_pre_render_2', array($this,'vs_populate_return_code'),10, 1 );
-    add_action( 'gform_field_validation_1_27', array($this,'validate_code_saved'), 10, 4 );
+    add_action( 'gform_field_validation_1_27', array($this,'vs_validate_code_saved'), 10, 4 );
     // add_action( 'gform_field_validation_2_27', array($this,'validate_return_code'), 10, 4 );
     add_filter( 'gform_field_value_return_code', array($this,'add_return_code_to_hidden_field') );
     // add_action( 'gform_after_save_form', 'vs_form_saved_alerts', 10, 1);
@@ -17,6 +19,61 @@ class Virtue_Survey_Gravity_Forms_Integration
 //     return $fields;
 // }, 10, 2 );
   }
+
+  /**
+   * Creates and Saves Return Code, Form ID, and next Form ID
+   *
+   * @see #RETURN_CODE_FORM_ID
+   *
+   * @param  array|object $entry          The entry object from GF.
+   * @param  array|object $form           The form object from GF.
+   * @return void
+   */
+
+  function vs_save_return_code_and_form_id($entry, $form){
+    $return_code = rgar($entry, 19);
+    $data        = array('entry-id'=> rgar($entry, 'id'),'form-id' =>  $form['id'], 'next-form-id' => vs_get_matching_form_id($form['id']));
+    set_transient( "$return_code-data", $data, WEEK_IN_SECONDS*2 );
+  }
+
+  /**
+   * Adds code into field value based on url parameter
+   *
+   * @param  mixed $form
+   * @return array
+   */
+
+
+  function vs_update_matching_form_id($form){
+    // Get the return code value from the post data
+    $return_code                        = $_POST['input_1'];
+    $matching_survey_data = get_transient( "$return_code-data");
+    if($matching_survey_data){
+      // Get the matching form id from transient data
+      $matching_form_id = $matching_survey_data['next-form-id'];
+    } else{
+      // Use that return code to search entries with that return code
+      // as the return code is unique to the entry it will return the
+      // one we need
+      $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $return_code );
+      $matching_entry                     = GFAPI::get_entries( 1, $search_criteria);
+      $entry_with_code                    = reset($matching_entry);
+      // Get the form associated with the entry
+      $previous_form_id                   = rgar($entry_with_code, 'form-id');
+      // Use our matching function to get the matching form id
+      $matching_form_id                   = vs_get_matching_form_id($previous_form_id);
+    }
+
+    $_POST['input_3'] = $matching_form_id;
+    return;
+  }
+  /**
+   * Adds code into field value based on url parameter
+   *
+   * @param  mixed $value                Value from the field
+   * @return array
+   */
+
 
   function add_return_code_to_hidden_field($value){
     return $_GET['return-code'];
@@ -30,30 +87,16 @@ class Virtue_Survey_Gravity_Forms_Integration
  * @param  mixed $field                The field object
  * @return array
  */
-//
-//
-// function validate_return_code( $result, $value, $form, $field ) {
-//   $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $value );
-//   $is_entry = GFAPI::get_entries( 0, $search_criteria);
-//
-//   if ( $result['is_valid'] && $is_entry ) {
-//       $result['is_valid'] = false;
-//       $result['message']  = 'That code doesnt match the code we gave you please try again!';
-//   }
-//
-//   return $result;
-// }
 
+  function vs_validate_code_saved( $result, $value, $form, $field ) {
+      $return_code = rgpost( 'input_19' );
+      if ( $result['is_valid'] && $value !== $return_code ) {
+          $result['is_valid'] = false;
+          $result['message']  = 'That code doesnt match the code we gave you please try again!';
+      }
 
-function validate_code_saved( $result, $value, $form, $field ) {
-    $return_code = rgpost( 'input_19' );
-    if ( $result['is_valid'] && $value !== $return_code ) {
-        $result['is_valid'] = false;
-        $result['message']  = 'That code doesnt match the code we gave you please try again!';
-    }
-
-    return $result;
-}
+      return $result;
+  }
 
 
   /**
@@ -115,7 +158,7 @@ function validate_code_saved( $result, $value, $form, $field ) {
      // GFAPI::update_entry_field( $entry_id, 21, (string)$virtue_result_object->results['justice'] );
      // GFAPI::update_entry_field( $entry_id, 22, (string)$virtue_result_object->results['temperance'] );
      $user_results_meta_key = "return-results-$return_code";
-     set_transient($user_results_meta_key, $virtue_result_object, DAY_IN_SECONDS );
+     set_transient($user_results_meta_key, $virtue_result_object, MONTH_IN_SECONDS*2 );
   }
 
   /**
