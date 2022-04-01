@@ -2,10 +2,7 @@
 /**
  * Template Name: Focus Survey Template
  * The template for displaying a survey
- *
- *
  */
-
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?> <?php twentytwentyone_the_html_classes(); ?>>
@@ -21,8 +18,6 @@
 		<div id="content" class="site-content">
 			<div id="primary" class="content-area">
 				<main id="main" class="site-main">
-
-
 	<?php
 	/* Start the Loop */
 	while ( have_posts() ) :
@@ -30,7 +25,7 @@
 		?>
 
 		<div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-			<div class="entry-content">
+			<div class="entry-content" style="margin-top: 10%;">
 				<?php
 
 				the_content();
@@ -49,14 +44,12 @@
 	endwhile; // End of the loop.
 
 	?>
-			</main><!-- #main -->
-		</div><!-- #primary -->
+				</main><!-- #main -->
+			</div><!-- #primary -->
 		</div><!-- #content -->
 	</div><!-- #page -->
-<footer>
-<?php wp_footer(); ?>
-</footer>
-
-
+	<footer>
+	<?php wp_footer(); ?>
+	</footer>
 </body>
 </html>

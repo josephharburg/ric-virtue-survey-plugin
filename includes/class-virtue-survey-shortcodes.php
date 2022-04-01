@@ -23,6 +23,7 @@ class Virtue_Survey_Shortcodes
    */
 
   public function vs_output_survey_results(){
+    if(is_admin()){return;}
     $return_code = $_GET['return-code'];
     $result_object = get_transient( "return-results-$return_code" );
     if(empty($result_object)){

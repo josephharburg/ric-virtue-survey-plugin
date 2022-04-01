@@ -88,6 +88,14 @@ class Virtue_Survey_Gravity_Forms_Integration
    */
 
   function vs_validate_return_code_exists( $result, $value, $form, $field ) {
+    $return_code_already_used = get_transient( "return-results-$value" );
+
+    if($return_code_already_used){
+      $result['is_valid'] = false;
+      $result['message']  = 'That return code has already been used to take the second part!';
+      return $result;
+    }
+
     //Search for entries with that return code, if there arent any return false
     $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $value );
     $is_entry = GFAPI::get_entries( 0, $search_criteria);
