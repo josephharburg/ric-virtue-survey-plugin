@@ -153,8 +153,8 @@ class Virtue_Survey_Gravity_Forms_Integration
            if(rgpost( 'input_19' )){
             $return_code = rgpost( 'input_19' );
            }
-           $field->content = "<div>Welcome to the survey! Your first task is to write down this code!
-<br> Your Code Is:$return_code</div>";
+           $field->content = "<div style='text-align:center'>Welcome to the survey! <br/>Your first task is to write down your <strong></strong>return code</strong>.
+<br/><strong> Your Return Code</strong>: $return_code</div>";
          }
        }
      }

@@ -107,7 +107,7 @@
    */
 
  function vs_create_results_html($results){
-    $html_to_return ="<div><ol>";
+    $html_to_return ="<div><h1 style='font-weight: 500;'>Virtue Survey Results</h1><h2>Below are your virtue survey results! <br/>They are ranked strongest to weakest.</h2><ol>";
     foreach($results as $virtue){
       $virtue_style = ucfirst($virtue);
       $virtue_icon =  wp_get_attachment_image_src( get_option("$virtue-icon-id", '') );
