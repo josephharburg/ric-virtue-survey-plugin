@@ -21,7 +21,6 @@ class Virtue_Survey_Result {
   public $return_code;
 
   function __construct($entry = null, $form = null, $return_code='') {
-    require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
     // Make sure both entry and form is passed
     if($entry == null ||  $form == null){
       $error = new WP_Error( 'Form Submission Error', __( "Oops, something went wrong please click the back link below and click submit again.") );

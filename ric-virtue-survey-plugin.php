@@ -2,7 +2,7 @@
  /**
  * Plugin Name: Restored in Christ Virtue Survey
  * Description: Creates the Restored in Christ Virtue Survey.
- * Version: 1.0
+ * Version: 2.0
  * Author: Joseph Harburg
  * License: GPL2
  * Requires: PHP 7.4 or Higher, Wordpress 5.8.3 or Higher
@@ -25,6 +25,7 @@
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/class-virtue-survey-template-additions.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/admin/class-virtue-survey-settings.php';
          require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/class-virtue-survey-api.php';
+         require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
 
          $gf_integrations = new Virtue_Survey_Gravity_Forms_Integration;
          $survey_shortcodes = new Virtue_Survey_Shortcodes;

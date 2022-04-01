@@ -9,7 +9,6 @@
 class Virtue_Survey_Gravity_Forms_Integration
 {
   function __construct(){
-    require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
     add_action( 'gform_after_submission_3', array($this, 'vs_create_and_save_results'), 10, 2 );
     add_filter( 'gform_pre_render_1', array($this,'vs_populate_return_code'),10, 1 );
     add_action( 'gform_after_submission_1', array($this, 'vs_save_return_code_data'), 10, 2 );
@@ -79,7 +78,7 @@ class Virtue_Survey_Gravity_Forms_Integration
   }
 
   /**
-   * Validates the code was written down by user
+   * Validates that the return code exists
    *
    * @param  array $result               Current validation result object
    * @param  mixed $value                Value from the field
@@ -89,14 +88,16 @@ class Virtue_Survey_Gravity_Forms_Integration
    */
 
   function vs_validate_return_code_exists( $result, $value, $form, $field ) {
-      $return_code = rgpost( 'input_19' );
+    //Search for entries with that return code, if there arent any return false
+    $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $value );
+    $is_entry = GFAPI::get_entries( 0, $search_criteria);
 
-      if ( $result['is_valid'] && $value !== $return_code ) {
-          $result['is_valid'] = false;
-          $result['message']  = 'That code doesnt match the code we gave you please try again!';
-      }
+    if ( $result['is_valid'] && !$is_entry ) {
+        $result['is_valid'] = false;
+        $result['message']  = 'That code doesnt appear to exist, please try again!';
+    }
 
-      return $result;
+    return $result;
   }
 
   /**
@@ -110,19 +111,14 @@ class Virtue_Survey_Gravity_Forms_Integration
    */
 
   function vs_validate_code_saved( $result, $value, $form, $field ) {
-      $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $value );
-      $is_entry = GFAPI::get_entries( 0, $search_criteria);
-
-      if ( $result['is_valid'] && $is_entry ) {
+      $return_code = rgpost( 'input_19' );
+      if ( $result['is_valid'] && $value !== $return_code ) {
           $result['is_valid'] = false;
-          $result['message']  = 'That code doesnt exist, please try again!';
+          $result['message']  = 'That code doesnt match the code we gave you please try again!';
       }
 
       return $result;
   }
-
-
-
 
   /**
   * Method to create a random return code for user.

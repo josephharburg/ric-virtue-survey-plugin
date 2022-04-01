@@ -1,5 +1,5 @@
 CHANGES FOR PRODUCTION
-IN DOWNLOAD Backsups change directory name.
+IN DOWNLOAD Backups change directory name.
 vs_upload_backup change directory name from SERVER[DOCUMENT_ROOT] and add is_dir conditional
 
 
@@ -62,4 +62,35 @@ These percentages are more difficult than what I had there. Will have to revist 
 This loop takes the form id and entry associative array, iterates through it and gets the form using the GFAPI. Then it maps that form in the current iteration and iterates through the multidimensional array. Which will do the calculation on each value in the current entry associated with that form. It then adds those values to the calculated average in the $calculated_survey_results with the virtue as the key. Then we sort the value by the values.
 
 #RETURN_CODE_TRANSIENT
-When the first form is submitted the form id, entry id, and complimenting form id are added to a transient that uses the return code in its key so we can retrieve that data later when directing the user to the next form and when calculating the results.  
+When the first form is submitted the form id, entry id, and complimenting form id are added to a transient that uses the return code in its key so we can retrieve that data later when directing the user to the next form and when calculating the results.
+
+#OUTPUT_SURVEY_TWO_PAGE
+The page that houses the second part of the survey is just a page with a shortcode that outputs a form based on URL parameters.
+When users are redirect to this page it is from the form that asks for
+their return code. The correct corresponding form id is placed within
+the URL parameters. If it is not then we need the user to resubmit the return
+code again.
+
+|REST API INFO|
+The following are the available rest routes:
+
+/upload-backups/ => Handles uploading the backup form and entry files.
+
+/update-virtue-result/ => Handles the updating of a virtues result information.
+Request parameters:
+  virtue (required) => The virtue to update.
+  definition => The definition to be added to the virtue.
+  imageID => This id of the image selected for that virtue.
+
+/get-virtue-result/ => Handles the retrieval of virtue result information.
+Request parameters:
+  virtue (required) => The virtue information to retrieve.
+
+/get-random-survey/ => Handles the creation of a random survey URL.
+Request parameters:
+  formID => The form ID of the survey just taken.
+  retake => A bool as to whether the request is for a retake URL.
+
+/get-survey-result/ => Handles the retrieval of survey results.
+Request parameters:
+  returnCode => The return code of the survey to retrieve.

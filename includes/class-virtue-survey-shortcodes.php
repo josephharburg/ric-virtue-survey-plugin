@@ -10,7 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) 	exit; // Exit if accessed directly
 class Virtue_Survey_Shortcodes
 {
   function __construct(){
-    require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
     add_shortcode( 'survey_results', array($this, 'vs_output_survey_results'));
     add_shortcode( 'random-survey-button', array($this, 'vs_ouput_random_survey_button') );
     add_shortcode( 'output_part_two', array($this, 'vs_ouput_survey_part_two') );
@@ -27,9 +26,27 @@ class Virtue_Survey_Shortcodes
     $return_code = $_GET['return-code'];
     $result_object = get_transient( "return-results-$return_code" );
     if(empty($result_object)){
-      return "<div>Please take a survey first to see results!</div>";
+      ob_start();
+      ?>
+      <div class="formError" id="surveyFormError"></div>
+      <div>
+        <form id="getSurveyResultForm" onSubmit="return false" method="post">
+          <label for='returnCode'>Please enter your return code below to get your results.</label>
+          <input type='text' name='returnCode' id='returnCode' required/>
+          <input class="vs-button-style vs-space" type='submit' value="Get Result"/>
+        </form>
+      </div>
+    <?php
+    ob_end_flush();
+    $results_js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-survey-result.js'));
+    wp_enqueue_script( 'get-survey-results', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-survey-result.js', array('jquery'), $results_js_version, true );
+    wp_localize_script( 'get-survey-results', 'surveyResults', array(
+      'nonce' => wp_create_nonce('wp_rest'),
+      'requestURL' => get_site_url()."/wp-json/vs-api/v1/get-survey-result/",
+    ));
+    return;
     }
-    return vs_output_results_table($result_object->get_ranked_virtues());
+    return vs_create_results_html($result_object->get_ranked_virtues());
   }
 
   /**
@@ -73,13 +90,12 @@ class Virtue_Survey_Shortcodes
   /**
    * Outputs a random survey button
    *
+   * @see #OUTPUT_SURVEY_TWO_PAGE
    * @param  array $atts               shortcode attributes
    * @return string
    */
 
   function vs_ouput_survey_part_two($atts){
-    // $atts = array_change_key_case( (array) $atts, CASE_LOWER );
-    // $shortcode_atts = shortcode_atts(array('retake' => 'false'), $atts);
     if(!$_GET['form-id']){
       return "<div>Oops something broke. ¯\(°_o)/¯ <br/> Please click back and enter your code again.</div>";
     }

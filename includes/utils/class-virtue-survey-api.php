@@ -17,6 +17,7 @@ class Virtue_Survey_API {
 /**
  * Registers the REST endpoints for plugin
  *
+ * @see |REST API INFO|
  */
 
   public function vs_register_plugin_routes(){
@@ -51,6 +52,14 @@ class Virtue_Survey_API {
         'permission_callback' => array($this, 'vs_plugin_permission_callback'),
         )
       );
+
+    register_rest_route($this->namespace, '/get-survey-result/',
+        array(
+        'methods' => 'POST',
+        'callback' => array($this,'vs_get_survey_result'),
+        'permission_callback' => array($this, 'vs_plugin_permission_callback'),
+        )
+      );
   }
 
   /**
@@ -62,7 +71,7 @@ class Virtue_Survey_API {
 
   function vs_plugin_permission_callback(WP_REST_Request $request){
     if(!wp_verify_nonce( $request->get_header('X-WP-Nonce'), 'wp_rest' )){
-      wp_send_json_error( "Nonce was not verified". var_dump($_POST), 403 );
+      wp_send_json_error( "Nonce was not verified", 403 );
       return false;
     }
     return true;
@@ -83,7 +92,7 @@ class Virtue_Survey_API {
     }
 
     $file = $files['file'];
-      // Get the current version number
+    // Get the current version number
     $version_number = get_option('current-vs-version');
     // return wp_send_json_error( "test" , 403 );
     // Get the uploads directory path
@@ -136,9 +145,7 @@ class Virtue_Survey_API {
 
       if(empty($virtue_to_update)){
         return wp_send_json_error( "There was an error updating $virtue_to_update's definition.", 400 );
-      }
-
-      if(empty($definition) && empty($image_id)){
+      } elseif(empty($definition) && empty($image_id)){
         return wp_send_json_error( "There was an error updating $virtue_to_update's definition.", 400 );
       }
 
@@ -209,4 +216,24 @@ class Virtue_Survey_API {
       $url_to_return = "$site_url/survey-version-{$available_surveys[$random_key]}";
       return wp_send_json_success($url_to_return , 200);
     }
+
+    /**
+     * Callback for getting survey results
+     *
+     * @param object $request
+     * @return string|object
+     */
+    function vs_get_survey_result(WP_REST_Request $request){
+      $return_code = $request->get_param('returnCode');
+      if($return_code){
+          $results = get_transient( "return-results-$return_code" );
+          if($results){
+            $html_to_return = vs_create_results_html($results->get_ranked_virtues());
+            return wp_send_json_success( array('resultHTML' => $html_to_return), 200 );
+          }
+          return wp_send_json_error( "Results don not exist for this Return Code: $return_code", 404 );
+      }
+      return wp_send_json_error( "Return Code was not attached to request.", 404 );
+    }
+
 }

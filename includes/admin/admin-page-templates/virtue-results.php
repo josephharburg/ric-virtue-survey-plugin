@@ -21,7 +21,7 @@ ob_start();
     ?>
   </select>
     <small style="display:block">NOTE: To save the settings for either icon and|or definition you must click "Save [Virtue Name] Result" </small>
-  <form id="updateVirtueResults" onSubmit="return false" method="post" >
+  <form id="updateVirtueResults" onsubmit="return false" method="post" >
     <div class="vs-image-upload">
       <?php
       $image_id = get_option('judgment-icon-id');

@@ -106,7 +106,7 @@
    * @return string
    */
 
- function vs_output_results_table($results){
+ function vs_create_results_html($results){
     $html_to_return ="<div><ol>";
     foreach($results as $virtue){
       $virtue_style = ucfirst($virtue);
