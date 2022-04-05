@@ -45,8 +45,8 @@ ob_start();
 
 <?php
 ob_end_flush();
-$js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/update-virtue-results.js'));
-wp_enqueue_script( 'update-virtue-results', VIRTUE_SURVEY_FILE_PATH.'assets/js/update-virtue-results.js', array('jquery'), $js_version, true );
+$js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/update-virtue-results.min.js'));
+wp_enqueue_script( 'update-virtue-results', VIRTUE_SURVEY_FILE_PATH.'assets/js/update-virtue-results.min.js', array('jquery'), $js_version, true );
 wp_localize_script( 'update-virtue-results', 'resultsData', array(
   'nonce' => wp_create_nonce('wp_rest'),
   'apiURL' => get_site_url()."/wp-json/vs-api/v1/update-virtue-result/",

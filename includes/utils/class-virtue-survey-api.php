@@ -187,7 +187,8 @@ class Virtue_Survey_API {
      */
     function vs_generate_random_url(WP_REST_Request $request){
       session_start();
-      $available_surveys = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
+      // $available_surveys = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
+      $available_surveys = array(1,5);
 
       // Set Session variable as array if not set
       if(!isset($_SESSION['surveys-taken'])){
@@ -213,7 +214,7 @@ class Virtue_Survey_API {
       $shuffled = $available_surveys;
       shuffle($shuffled);
       $random_key = array_rand($available_surveys);
-      $url_to_return = "$site_url/survey-version-{$available_surveys[$random_key]}";
+      $url_to_return = "$site_url/survey/?form-id={$available_surveys[$random_key]}";
       return wp_send_json_success($url_to_return , 200);
     }
 

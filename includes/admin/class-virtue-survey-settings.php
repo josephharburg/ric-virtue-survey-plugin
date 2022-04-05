@@ -81,12 +81,12 @@ class Virtue_Survey_Settings
 
     public function vs_enqueue_admin_scripts(){
       if(!is_admin()){
-        wp_enqueue_style( 'virtue-survey-fonts', VIRTUE_SURVEY_FILE_PATH .'assets/css/fonts.css', array());
+        wp_enqueue_style( 'virtue-survey-fonts', VIRTUE_SURVEY_FILE_PATH .'assets/css/fonts.min.css', array());
       return;
       }
-      $current_css_ver  = date("ymd-Gis", filemtime(   VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/css/admin-styles.css'));
-      wp_enqueue_style( 'virtue-survey-admin-styles', VIRTUE_SURVEY_FILE_PATH .'assets/css/admin-styles.css', array());
-      wp_enqueue_style( 'virtue-survey-fonts', VIRTUE_SURVEY_FILE_PATH .'assets/css/fonts.css', array());
+      $current_css_ver  = date("ymd-Gis", filemtime(   VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/css/admin-styles.min.css'));
+      wp_enqueue_style( 'virtue-survey-admin-styles', VIRTUE_SURVEY_FILE_PATH .'assets/css/admin-styles.min.css', array());
+      wp_enqueue_style( 'virtue-survey-fonts', VIRTUE_SURVEY_FILE_PATH .'assets/css/fonts.min.css', array());
     }
 
     /**

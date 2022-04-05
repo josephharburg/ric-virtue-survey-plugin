@@ -30,8 +30,8 @@
   <h4>When uploading backups the filename of the file will be automatically generated based on the current version number of the survey.</h3>
 </div>
 <?php
-$js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/upload-backups.js'));
-wp_enqueue_script( 'upload-backups', VIRTUE_SURVEY_FILE_PATH.'assets/js/upload-backups.js', array('jquery'), $js_version, true );
+$js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/upload-backups.min.js'));
+wp_enqueue_script( 'upload-backups', VIRTUE_SURVEY_FILE_PATH.'assets/js/upload-backups.min.js', array('jquery'), $js_version, true );
 wp_localize_script( 'upload-backups', 'uploadDataObject', array(
   'nonce' => wp_create_nonce('wp_rest'),
   'apiURL' => get_site_url()."/wp-json/vs-api/v1/upload-backups/",

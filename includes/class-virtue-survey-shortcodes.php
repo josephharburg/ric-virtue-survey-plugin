@@ -12,7 +12,8 @@ class Virtue_Survey_Shortcodes
   function __construct(){
     add_shortcode( 'survey_results', array($this, 'vs_output_survey_results'));
     add_shortcode( 'random-survey-button', array($this, 'vs_ouput_random_survey_button') );
-    add_shortcode( 'output_part_two', array($this, 'vs_ouput_survey_part_two') );
+    add_shortcode( 'output_part_two', array($this, 'vs_ouput_survey_based_on_param') );
+    add_shortcode( 'return_survey', array($this, 'vs_ouput_survey_based_on_param') );
   }
 
   /**
@@ -39,8 +40,8 @@ class Virtue_Survey_Shortcodes
       </div>
     <?php
     ob_end_flush();
-    $results_js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-survey-result.js'));
-    wp_enqueue_script( 'get-survey-results', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-survey-result.js', array('jquery'), $results_js_version, true );
+    $results_js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-survey-result.min.js'));
+    wp_enqueue_script( 'get-survey-results', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-survey-result.min.js', array('jquery'), $results_js_version, true );
     wp_localize_script( 'get-survey-results', 'surveyResults', array(
       'nonce' => wp_create_nonce('wp_rest'),
       'requestURL' => get_site_url()."/wp-json/vs-api/v1/get-survey-result/",
@@ -75,7 +76,7 @@ class Virtue_Survey_Shortcodes
     }
 
     // Create array with 16 numbers representing survey numbers
-    $available_surveys = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
+    $available_surveys = array(1,5);
     foreach($available_surveys as $k=> $v){
       if(in_array($v, $_SESSION['surveys-taken'])){
         unset($available_surveys[$k]);
@@ -84,9 +85,46 @@ class Virtue_Survey_Shortcodes
     $site_url = get_site_url();
     $random_key = array_rand($available_surveys,1);
     $button_text = ($shortcode_atts['retake'] == 'false') ? "Take Survey" : "Take Another Survey";
-    $button_to_return = "<div class='wp-block-button'> <a class='survey-rdm-button wp-block-button__link $button_style' href='$site_url/survey-version-{$available_surveys[$random_key]}'>$button_text</a></div>";
+    $button_to_return = "<div class='wp-block-button'> <a class='survey-rdm-button wp-block-button__width-100 wp-block-button__link $button_style' href='$site_url/survey/?form-id={$available_surveys[$random_key]}'>$button_text</a></div>";
     return $button_to_return;
   }
+  // /**
+  //  * Outputs a random survey button
+  //  *
+  //  * @param  array $atts               shortcode attributes
+  //  * @return string
+  //  */
+  //
+  // function vs_ouput_random_survey_button($atts){
+  //   session_start();
+  //   $atts = array_change_key_case( (array) $atts, CASE_LOWER );
+  //   $shortcode_atts = shortcode_atts(array('retake' => 'false'), $atts);
+  //   $button_style = "has-white-background-color has-text-color has-background survey-btn";
+  //   // Set Session variable as array if not set
+  //   if(!isset($_SESSION['surveys-taken'])){
+  //     $_SESSION['surveys-taken'] = array();
+  //   }
+  //
+  //   // Add completed survey ID to Session Variable if on the results page
+  //   // and restyle button accordingly
+  //   if($shortcode_atts['retake'] == 'true'){
+  //     $_SESSION['surveys-taken'][] = $_GET['formID'];
+  //     $button_style = "has-text-color has-background retake-btn";
+  //   }
+  //
+  //   // Create array with 16 numbers representing survey numbers
+  //   $available_surveys = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
+  //   foreach($available_surveys as $k=> $v){
+  //     if(in_array($v, $_SESSION['surveys-taken'])){
+  //       unset($available_surveys[$k]);
+  //     }
+  //   }
+  //   $site_url = get_site_url();
+  //   $random_key = array_rand($available_surveys,1);
+  //   $button_text = ($shortcode_atts['retake'] == 'false') ? "Take Survey" : "Take Another Survey";
+  //   $button_to_return = "<div class='wp-block-button'> <a class='survey-rdm-button wp-block-button__link $button_style' href='$site_url/survey-version-{$available_surveys[$random_key]}'>$button_text</a></div>";
+  //   return $button_to_return;
+  // }
 
   /**
    * Outputs a random survey button
@@ -96,7 +134,7 @@ class Virtue_Survey_Shortcodes
    * @return string
    */
 
-  function vs_ouput_survey_part_two($atts){
+  function vs_ouput_survey_based_on_param($atts){
     if(!$_GET['form-id']){
       return "<div>Oops something broke. ¯\(°_o)/¯ <br/> Please click back and enter your code again.</div>";
     }

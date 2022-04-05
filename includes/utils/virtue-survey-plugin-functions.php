@@ -14,8 +14,8 @@
 
  function vs_enqueue_random_url(){
    if(is_front_page() || is_page('Survey Results')){
-     $js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-random-survey-url.js'));
-     wp_enqueue_script( 'return-random-url', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-random-survey-url.js', array('jquery'), $js_version, true);
+     $js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-random-survey-url.min.js'));
+     wp_enqueue_script( 'return-random-url', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-random-survey-url.min.js', array('jquery'), $js_version, true);
      wp_localize_script( 'return-random-url', 'randomSurvey',
      array(
      'nonce' => wp_create_nonce('wp_rest'),
@@ -49,7 +49,9 @@
    function vs_get_matching_form_id($form_id){
       $mapped_form_id_matches = array(
        1 => 3,
-       3 => 1
+       3 => 1,
+       5 => 6,
+       6 => 5
      );
      return $mapped_form_id_matches[(int)$form_id];
    }
@@ -121,7 +123,7 @@
    */
 
  function vs_create_results_html($results){
-    $html_to_return ="<div><h1 style='font-weight: 500;'>Virtue Survey Results</h1><h2>Below are your virtue survey results! <br/>They are ranked strongest to weakest.</h2><ol>";
+    $html_to_return ="<div class='alignfull virtue-results-wrapper'><h1 style='font-weight: 500;'>Virtue Survey Results</h1><div style='text-align:center'>Virtues are ranked strongest to weakest.</div><ol>";
     foreach($results as $virtue){
       $virtue_style = ucfirst($virtue);
       $virtue_icon =  wp_get_attachment_image_src( get_option("$virtue-icon-id", '') );

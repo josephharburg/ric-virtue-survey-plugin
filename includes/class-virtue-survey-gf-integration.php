@@ -10,12 +10,16 @@ class Virtue_Survey_Gravity_Forms_Integration
 {
   function __construct(){
     add_action( 'gform_after_submission_3', array($this, 'vs_create_and_save_results'), 10, 2 );
+    add_action( 'gform_after_submission_6', array($this, 'vs_create_and_save_results'), 10, 2 );
     add_filter( 'gform_pre_render_1', array($this,'vs_populate_return_code'),10, 1 );
     add_action( 'gform_after_submission_1', array($this, 'vs_save_return_code_data'), 10, 2 );
     add_action( 'gform_field_validation_1_27', array($this,'vs_validate_code_saved'), 10, 4 );
+    add_filter( 'gform_pre_render_5', array($this,'vs_populate_return_code'),10, 1 );
+    add_action( 'gform_after_submission_5', array($this, 'vs_save_return_code_data'), 10, 2 );
+    add_action( 'gform_field_validation_5_27', array($this,'vs_validate_code_saved'), 10, 4 );
     add_action( 'gform_field_validation_4', array($this,'vs_validate_return_code_exists'), 10, 4 );
     add_action( 'gform_pre_submission_4', array($this, 'vs_update_matching_form_id'), 10, 1);
-    add_filter( 'gform_field_value_return_code', array($this,'add_return_code_to_hidden_field') );
+    add_filter( 'gform_field_value_return_code', array($this,'vs_add_return_code_to_hidden_field') );
   }
 
   /**
@@ -73,7 +77,7 @@ class Virtue_Survey_Gravity_Forms_Integration
    */
 
 
-  function add_return_code_to_hidden_field($value){
+  function vs_add_return_code_to_hidden_field($value){
     return $_GET['return-code'];
   }
 
