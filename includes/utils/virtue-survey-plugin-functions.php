@@ -26,6 +26,20 @@
  add_action('wp_enqueue_scripts', 'vs_enqueue_random_url');
 
  /**
+  * Enqueues script for front-end css
+  *
+  * @param int|string $form_id
+  * @return int
+  */
+
+ function vs_enqueue_frontend_style(){
+     $css_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH.'assets/css/frontend-style.min.css'));
+     wp_enqueue_style( 'ric-styles', VIRTUE_SURVEY_FILE_PATH.'assets/css/frontend-style.min.css', array(), $css_version);
+ }
+ add_action('wp_enqueue_scripts', 'vs_enqueue_frontend_style');
+
+
+ /**
   * Returns an the corresponding form id
   *
   * @param int|string $form_id

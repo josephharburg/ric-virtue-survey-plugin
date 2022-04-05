@@ -1,0 +1,6 @@
+# ...
+node_modules
+package.json
+gulpfile.js
+package-lock.json
+src/
