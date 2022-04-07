@@ -11,7 +11,8 @@ class Virtue_Survey_Site_Modifications
 {
   function __construct(){
     add_action('wp_enqueue_scripts', array($this,'vs_enqueue_scripts'));
-    add_action('wp_login', array($this, 'vs_save_user_results_on_login'),10, 2);
+    add_action('wp_login', array($this, 'vs_save_results_after_login_or_register'),10, 2);
+    add_action('user_register', array($this, 'vs_save_results_after_login_or_register'),10, 2);
   }
 
   /**
@@ -39,14 +40,14 @@ class Virtue_Survey_Site_Modifications
   }
 
   /**
-   * Save users results up login
+   * Save users results upon login or registration
    *
-   * @param  string $user_login
-   * @param  object $user
+   * @param  string|int $user_login_or_id  Either a user login or id depending on hook
+   * @param  object|array $userdata   Either a User object or array of user data depending on hook
    * @return void
    */
 
-  function vs_save_user_results_on_login($user_login, $user){
+  function vs_save_results_after_login_or_register($user_login_or_id, $userdata){
     // Make sure we only save results if they are coming from the results page login form
     if(empty($_POST['return-code'])){return;}
     // Get the return code from form post object
@@ -55,22 +56,15 @@ class Virtue_Survey_Site_Modifications
 
     //If this transient does not exist exit
     if(empty($virtue_result_object)){return;}
-
-    $user_id = $user->ID;
     // We dont want the user to save multiple of the same results to their account so
     // we delete the transient to avoid repeat result objects being stored.
     delete_transient( "return-results-$return_code" );
 
-    // See if the user has any stored surveys
-    $survey_completions = get_user_meta($user_id, "total-surveys-completed", true);
-    if($survey_completions == '' || $survey_completions == false){
-      add_user_meta($user_id, "user-virtue-survey-result-1",$virtue_result_object, true);
-      add_user_meta($user_id, "total-surveys-completed", 1, true);
-    } else{
-      $survey_completions++;
-      add_user_meta($user_id, "user-virtue-survey-result-$survey_completions", $virtue_result_object, true);
-      update_user_meta($user_id, "total-surveys-completed", $survey_completions);
-    }
+    //The wp_login hook passes the user object while the user_register does not so we should use the user
+    // user id passed by the user_register hook if user is not an object
+    $user_id = (is_object($userdata)) ? $userdata->ID : $user_login_or_id;
+
+    vs_save_results_to_usermeta($user_id, $virtue_result_object);
   }
 
 }

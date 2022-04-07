@@ -19,25 +19,31 @@ class Virtue_Survey_Shortcodes
   /**
    * Shortcode to output results on results page
    *
+   * @see #RESULTS_SHORTCODE
    * @param  array $atts               shortcode attributes
    * @return string
    */
 
   public function vs_output_survey_results(){
-    if(is_admin()){return;}
+    if(is_admin()){return'';}
     if(is_user_logged_in()){
-      $user_id =  get_current_user_id();
-      if(!metadata_exists( 'user', $user_id, 'user-virtue-survey-result-1' )){
-        return "<div>Please take a survey first to see results!</div>";
-      }
+      $user_id = get_current_user_id();
+      if(metadata_exists( 'user', $user_id, 'user-virtue-survey-result-1' )){
         $survey_completions = get_user_meta( $user_id, "total-surveys-completed", true);
         $result_object = get_user_meta( $user_id, "user-virtue-survey-result-$survey_completions", true );
         return vs_create_results_html($result_object->get_ranked_virtues());
+      }
     }
 
+    // Get return code from URL Parameter and retrieve result object
     $return_code = $_GET['return-code'];
     $result_object = get_transient( "return-results-$return_code" );
+
+    // Make sure we have a valid return code param and results arent expired.
+    // This will also run if it is just a plain old request to the results page
+    // and user doesnt have any saved surveys.
     if(empty($result_object)){
+      // Display form to retrieve results from return code
       ob_start();
       ?>
       <div class="formError" id="surveyFormError"></div>
@@ -49,26 +55,26 @@ class Virtue_Survey_Shortcodes
           <input id="get-result-button" class="vs-space" type="submit" value="Get Result">
         </form>
       </div>
-    <?php
-    ob_end_flush();
-    $results_js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-survey-result.min.js'));
-    wp_enqueue_script( 'get-survey-results', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-survey-result.min.js', array('jquery'), $results_js_version, true );
-    wp_localize_script( 'get-survey-results', 'surveyResults', array(
-      'nonce' => wp_create_nonce('wp_rest'),
-      'requestURL' => get_site_url()."/wp-json/vs-api/v1/get-survey-result/",
-    ));
-    return '';
-    }
-    ob_start();
-    echo vs_create_results_html($result_object->get_ranked_virtues());
-    if(!is_user_logged_in()){
-      echo '<div class="alignfull" style="padding: 0 10%;"><h2 style="">Do you want to save these results in your user account?</h2><small>Login and Your Results will be saved automatically.</small></div>';
-      wp_login_form(array('true') );
-      wp_register_script( 'return-code-input', '', array("jquery"), '', true );
-      wp_enqueue_script( 'return-code-input'  );
-      wp_add_inline_script( 'return-code-input', "<script type='text/javascript'>jQuery(document).ready(function($){
-        $('#loginform').prepend('<input type=hidden name=return-code value=$return_code>');
-      });</script>");
+      <?php
+      ob_end_flush();
+      $results_js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-survey-result.min.js'));
+      wp_enqueue_script( 'get-survey-results', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-survey-result.min.js', array('jquery'), $results_js_version, true );
+      wp_localize_script( 'get-survey-results', 'surveyResults', array(
+        'nonce' => wp_create_nonce('wp_rest'),
+        'requestURL' => get_site_url()."/wp-json/vs-api/v1/get-survey-result/",
+      ));
+    }else{
+      ob_start();
+      echo vs_create_results_html($result_object->get_ranked_virtues());
+      if(!is_user_logged_in()){
+          echo '<div class="alignfull" style="padding: 0 10%;"><h2 style="">Do you want to save these results in your user account?</h2><small>Login and Your Results will be saved automatically.</small></div>';
+          wp_login_form(array('true') );
+          wp_register_script( 'return-code-input', '', array("jquery"), '', true );
+          wp_enqueue_script( 'return-code-input'  );
+          wp_add_inline_script( 'return-code-input', "<script type='text/javascript'>jQuery(document).ready(function($){
+            $('#loginform').prepend('<input type=hidden name=return-code value=$return_code>');
+          });</script>");
+      }
       ob_end_flush();
     }
     return '';

@@ -116,6 +116,27 @@
   }
 
   /**
+   * Saves the result to users meta
+   *
+   * @param  int|string $user_id
+   * @param object $result
+   */
+
+
+  function vs_save_user_results_to_meta($user_id, $result){
+    // See if the user has any stored surveys
+    $survey_completions = get_user_meta($user_id, "total-surveys-completed", true);
+    if($survey_completions == '' || $survey_completions == false){
+      add_user_meta($user_id, "user-virtue-survey-result-1",$result, true);
+      add_user_meta($user_id, "total-surveys-completed", 1, true);
+    } else{
+      $survey_completions++;
+      add_user_meta($user_id, "user-virtue-survey-result-$survey_completions", $result, true);
+      update_user_meta($user_id, "total-surveys-completed", $survey_completions);
+    }
+  }
+
+  /**
    * Returns an html table of survey results
    *
    * @param  array  $results required

@@ -185,6 +185,11 @@ class Virtue_Survey_Gravity_Forms_Integration
      // GFAPI::update_entry_field( $entry_id, 20, (string)$virtue_result_object->results['prudence'] );
      // GFAPI::update_entry_field( $entry_id, 21, (string)$virtue_result_object->results['justice'] );
      // GFAPI::update_entry_field( $entry_id, 22, (string)$virtue_result_object->results['temperance'] );
+
+     // if(is_user_logged_in()){
+     //   vs_save_results_to_usermeta(get_current_user_id(), $virtue_result_object);
+     //   return;
+     // }
      $user_results_meta_key = "return-results-$return_code";
      set_transient($user_results_meta_key, $virtue_result_object, MONTH_IN_SECONDS*2 );
   }
