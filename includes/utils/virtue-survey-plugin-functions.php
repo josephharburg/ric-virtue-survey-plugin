@@ -56,6 +56,40 @@
      return $mapped_form_id_matches[(int)$form_id];
    }
 
+   /**
+    * Returns the parent virtue for styling
+    *
+    * @param string $virtue
+    * @return array
+    */
+
+   function vs_get_parent_virtue($virtue){
+     $fortitude = array('courage','industriousness','magnanimity','magnificence','patience',);
+     $prudence = array('circumspection','docility','foresight', 'judgment');
+     $temperance = array('honesty','humility','meekness','moderation','modesty','orderliness','self-control','clemency',
+     'studiousness','eutrapelia',);
+     $justice = array('fairness','affability','courtesy','gratitude','generosity','kindness','loyalty','obedience','reverence','respect','responsibility','sincerity','trustworthiness',);
+     switch ($virtue) {
+       case in_array($virtue, $fortitude):
+         $parent_virtue = 'fortitude';
+         break;
+       case in_array($virtue, $justice):
+         $parent_virtue = 'justice';
+         break;
+       case in_array($virtue, $temperance):
+         $parent_virtue = 'temperance';
+         break;
+       case in_array($virtue, $prudence):
+         $parent_virtue = 'prudence';
+         break;
+
+       default:
+         $parent_virtue = 'prudence';
+         break;
+     }
+     return $parent_virtue;
+   }
+
   /**
    * Returns an array of the virtue names
    *
@@ -123,13 +157,25 @@
    */
 
  function vs_create_results_html($results){
-    $html_to_return ="<div class='alignfull virtue-results-wrapper'><h1 style='font-weight: 500;'>Virtue Survey Results</h1><div style='text-align:center'>Virtues are ranked strongest to weakest.</div><ol>";
-    foreach($results as $virtue){
-      $virtue_style = ucfirst($virtue);
-      $virtue_icon =  wp_get_attachment_image_src( get_option("$virtue-icon-id", '') );
-      $virtue_icon_html = (!empty($virtue_icon))? "<img id='currentVirtueImg' src='$virtue_icon[0]'>": '';
-      $html_to_return .= "<li class='virtue-result $virtue-style'><span class='virtue-result-icon'>$virtue_icon_html</span><span style='font-weight: bold;position: relative;top: -1rem;text-transform: uppercase;'>$virtue_style</span> <br/><p>".get_option('vs-'. $virtue .'-definition')."</p></li>";
+    $html_to_return ="<div class='alignfull virtue-results-wrapper'><div style='color: aliceblue;background-color: var(--primary-color);padding: 1rem 0;'><h1 style='font-weight: 500;'>Virtue Survey Results</h1><div style='text-align:center'>Virtues are ranked strongest to weakest.</div></div><ol>";
+    foreach($results as $index => $virtue){
+      $parent_virtue = vs_get_parent_virtue($virtue);
+
+      // Create the virtue rank html
+      $rank = $index + 1;
+      $ranked_number = "<span class='result-rank' style='border: 2px solid var(--$parent_virtue);color: var(--$parent_virtue); display:inline-block'>$rank</span>";
+
+      // Create virtue name html
+      $virtue_name = "<span style='font-weight: bold;position: relative;text-transform: uppercase;margin-right:auto;font-size:large;color:var(--$parent_virtue);'>$virtue</span>";
+
+      //Create virtue icon html
+      $virtue_icon =  wp_get_attachment_image_src( get_option("$virtue-icon-id", '95') );
+      $virtue_icon_html = (!empty($virtue_icon))? "<span class='virtue-result-icon'><img id='currentVirtueImg' src='$virtue_icon[0]'></span>": '';
+
+      // Put it all together
+      $html_to_return .= "<li class='virtue-result $parent_virtue-style'><div class='result-card-top'><span>$ranked_number $virtue_name</span> $virtue_icon_html</div> ".get_option('vs-'. $virtue .'-definition', 'definition here')."</li>";
     }
+
     $html_to_return .="</ol></div>";
 
     // if(is_user_logged_in()){

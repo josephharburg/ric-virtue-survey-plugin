@@ -31,11 +31,11 @@ class Virtue_Survey_Page_Templates {
                         continue;
                     }
                     // Gets Template Name from the file
-                    $filedata = get_file_data($full_path, array(
+                    $template_name = get_file_data($full_path, array(
                         'Template Name' => 'Template Name',
                     ));
-                    $template_name = $filedata['Template Name'];
-                    $templates[$full_path] = $template_name;
+
+                    $templates[$file] = $template_name['Template Name'];
                 }
                 closedir($dh);
             }
@@ -56,7 +56,7 @@ class Virtue_Survey_Page_Templates {
 
         // Merging the WP templates with this plugin's active templates
         $theme_templates = array_merge($theme_templates, $this->templates);
-
+        // $theme_templates['focus-survey-template.php'] = 'Focus Survey Template';
         return $theme_templates;
     }
 
@@ -84,7 +84,7 @@ class Virtue_Survey_Page_Templates {
         // AND if it's a plugin template, we replace the normal flow to
         // include the selected template
         if ( $user_selected_template != '' AND $is_plugin ) {
-            $template = $template_dir . $file_name;
+            return $template_dir . $file_name;
         }
 
         return $template;

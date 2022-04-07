@@ -31,11 +31,12 @@ class Virtue_Survey_Shortcodes
       ob_start();
       ?>
       <div class="formError" id="surveyFormError"></div>
-      <div>
-        <form id="getSurveyResultForm" onSubmit="return false" method="post">
-          <label for='returnCode'>Please enter your return code below to get your results.</label>
-          <input type='text' name='returnCode' id='returnCode' required/>
-          <input class="vs-button-style vs-space" type='submit' value="Get Result"/>
+      <div style="display: block;text-align: center;padding: 5rem;border-radius: 8px;box-shadow: rgb(129 195 215 / 20%) 0px 7px 29px 0px;">
+        <img src="http://development-playground.local/wp-content/uploads/2022/04/cardinal-virtues-accent-01.png" style="width: 20rem;margin-bottom: 2rem;">
+         <h2 style="color: #393D3F;font-variant: all-small-caps;margin-bottom: 1rem;">Get Your Results</h2>
+         <form id="getSurveyResultForm" onsubmit="return false" method="post" style="">
+          <input type="text" name="returnCode" id="returnCode" required="" placeholder="Enter Your Return Code" style="border-radius: 8px;border-color: #393D3F;">
+          <input id="get-result-button" class="vs-space" type="submit" value="Get Result">
         </form>
       </div>
     <?php

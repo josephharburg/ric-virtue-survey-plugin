@@ -1,7 +1,7 @@
 <?php
 /**
  * Template Name: Focus Survey Template
- * The template for displaying a survey
+ *
  */
 ?>
 <!doctype html>
