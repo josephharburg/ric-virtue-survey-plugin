@@ -25,6 +25,16 @@ class Virtue_Survey_Shortcodes
 
   public function vs_output_survey_results(){
     if(is_admin()){return;}
+    if(is_user_logged_in()){
+      $user_id =  get_current_user_id();
+      if(!metadata_exists( 'user', $user_id, 'user-virtue-survey-result-1' )){
+        return "<div>Please take a survey first to see results!</div>";
+      }
+        $survey_completions = get_user_meta( $user_id, "total-surveys-completed", true);
+        $result_object = get_user_meta( $user_id, "user-virtue-survey-result-$survey_completions", true );
+        return vs_create_results_html($result_object->get_ranked_virtues());
+    }
+
     $return_code = $_GET['return-code'];
     $result_object = get_transient( "return-results-$return_code" );
     if(empty($result_object)){
@@ -47,9 +57,21 @@ class Virtue_Survey_Shortcodes
       'nonce' => wp_create_nonce('wp_rest'),
       'requestURL' => get_site_url()."/wp-json/vs-api/v1/get-survey-result/",
     ));
-    return;
+    return '';
     }
-    return vs_create_results_html($result_object->get_ranked_virtues());
+    ob_start();
+    echo vs_create_results_html($result_object->get_ranked_virtues());
+    if(!is_user_logged_in()){
+      echo '<div class="alignfull" style="padding: 0 10%;"><h2 style="">Do you want to save these results in your user account?</h2><small>Login and Your Results will be saved automatically.</small></div>';
+      wp_login_form(array('true') );
+      wp_register_script( 'return-code-input', '', array("jquery"), '', true );
+      wp_enqueue_script( 'return-code-input'  );
+      wp_add_inline_script( 'return-code-input', "<script type='text/javascript'>jQuery(document).ready(function($){
+        $('#loginform').prepend('<input type=hidden name=return-code value=$return_code>');
+      });</script>");
+      ob_end_flush();
+    }
+    return '';
   }
 
   /**
