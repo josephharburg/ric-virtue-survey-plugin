@@ -69,10 +69,22 @@ class Virtue_Survey_Shortcodes
       if(!is_user_logged_in()){
           echo '<div class="alignfull" style="padding: 0 10%;"><h2 style="">Do you want to save these results in your user account?</h2><small>Login and Your Results will be saved automatically.</small></div>';
           wp_login_form(array('true') );
+          echo '<div><form id="register" name="registerform" method="post" action="http://development-playground.local/wp-login.php?action=register" style="display: grid;grid-template-columns: repeat(2,1fr);">
+    <div><label style="display: block;">Email</label>
+    <input type="email" placeholder="example@email.com" name="user_login" style="display: block;" required="">
+    <label style="display: block;">First Name</label>
+    <input type="text" name="first_name">
+    <label style="display: block;">Last Name</label>
+    <input type="text" name="last_name">
+        </div>
+    <div><label style="display: block;">Password</label>
+   <input type="password" name="user_pass" style="" required="">
+     <label style="display: block;">Confirm Password</label>
+<input type="password" name="user_pass_conf" style="" required=""></div><input type="submit" value="submit"/></form></div>';
           wp_register_script( 'return-code-input', '', array("jquery"), '', true );
           wp_enqueue_script( 'return-code-input'  );
           wp_add_inline_script( 'return-code-input', "<script type='text/javascript'>jQuery(document).ready(function($){
-            $('#loginform').prepend('<input type=hidden name=return-code value=$return_code>');
+            $('#loginform,#register').prepend('<input type=hidden name=return-code value=$return_code>');
           });</script>");
       }
       ob_end_flush();
