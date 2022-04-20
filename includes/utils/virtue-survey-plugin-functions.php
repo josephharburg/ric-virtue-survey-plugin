@@ -12,7 +12,7 @@
   * @return int
   */
 
-   function vs_get_matching_form_id($form_id){
+   function vs_get_correlated_form_id($form_id){
       $mapped_form_id_matches = array(
        1 => 3,
        3 => 1,
@@ -106,8 +106,8 @@
    * @return object
    */
 
-  function vs_get_matching_form($form_id){
-    $matching_form_id = vs_get_matching_form_id($form_id);
+  function vs_get_correlated_form($form_id){
+    $matching_form_id = vs_get_correlated_form_id($form_id);
     $matching_form = array(
       'id' => $matching_form_id,
       'form'=> GFAPI::get_form($matching_form_id)
@@ -318,7 +318,7 @@
 
   function vs_create_results_array(int $entry_id,int $form_id, $return_code){
     $entry_one = GFAPI::get_entry( $entry_id );
-    $matching_form_id = vs_get_matching_form_id($form_id);
+    $matching_form_id = vs_get_correlated_form_id($form_id);
     $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $return_code );
     $matching_entry = GFAPI::get_entries( $matching_form_id, $search_criteria);
     $entry_two = reset($matching_entry);

@@ -49,7 +49,7 @@ class Virtue_Survey_Result {
       $matching_form = GFAPI::get_form($transient_data['form-id']);
       $entry_two = GFAPI::get_entry($transient_data['entry-id']);
     } else{
-      $matching_form_data = vs_get_matching_form($form_one['id']);
+      $matching_form_data = vs_get_correlated_form($form_one['id']);
       $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $return_code );
       $matching_entry = GFAPI::get_entries( $matching_form_data['id'], $search_criteria);
       $entry_two = reset($matching_entry);

@@ -34,7 +34,7 @@ class Virtue_Survey_Gravity_Forms_Integration
 
   function vs_save_return_code_data($entry, $form){
     $return_code = rgar($entry, 19);
-    $data        = array('entry-id'=> rgar($entry, 'id'),'form-id' =>  $form['id'], 'next-form-id' => vs_get_matching_form_id($form['id']));
+    $data        = array('entry-id'=> rgar($entry, 'id'),'form-id' =>  $form['id'], 'next-form-id' => vs_get_correlated_form_id($form['id']));
     set_transient( "$return_code-data", $data, WEEK_IN_SECONDS*2 );
   }
 
@@ -63,7 +63,7 @@ class Virtue_Survey_Gravity_Forms_Integration
       // Get the form associated with the entry
       $previous_form_id = rgar($entry_with_code, 'form-id');
       // Use our matching function to get the matching form id
-      $matching_form_id = vs_get_matching_form_id($previous_form_id);
+      $matching_form_id = vs_get_correlated_form_id($previous_form_id);
     }
 
     $_POST['input_3'] = $matching_form_id;
