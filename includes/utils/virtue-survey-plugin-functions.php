@@ -144,7 +144,7 @@
    */
 
  function vs_create_results_html($results){
-    $html_to_return ="<div class='alignfull virtue-results-wrapper'><div style='color: aliceblue;background-color: var(--primary-color);padding: 1rem 0;'><h1 style='font-weight: 500;'>Virtue Survey Results</h1><div style='text-align:center'>Virtues are ranked strongest to weakest.</div></div><ol>";
+    $html_to_return ="<div class='alignfull virtue-results-wrapper'><div style='color: aliceblue;background-color: var(--primary-color);padding: 1rem 0;'><h1 style='font-weight: 500;'>Virtue Survey Results</h1></div><div style='text-align:center;text-transform: uppercase;letter-spacing: 0.1rem;color: aliceblue;background: #01192B;'>Virtues are ranked strongest to needing improvement</div><ol>";
     foreach($results as $index => $virtue){
       $parent_virtue = vs_get_parent_virtue($virtue);
 
@@ -156,11 +156,14 @@
       $virtue_name = "<span style='font-weight: bold;position: relative;text-transform: uppercase;margin-right:auto;font-size:large;color:var(--$parent_virtue);'>$virtue</span>";
 
       //Create virtue icon html
-      $virtue_icon =  wp_get_attachment_image_src( get_option("$virtue-icon-id", '95') );
+      $virtue_icon =  wp_get_attachment_image_src( get_option("$virtue-icon-id", '95'), 'full' );
       $virtue_icon_html = (!empty($virtue_icon))? "<span class='virtue-result-icon'><img id='currentVirtueImg' src='$virtue_icon[0]'></span>": '';
 
+      // Temps
+      $html_to_return .= "<li class='virtue-result $parent_virtue-style'><div class='result-card-top'>$ranked_number <img id='currentVirtueImg' src='$virtue_icon[0]'></div> ".get_option('vs-'. $virtue .'-definition', 'definition here')."</li>";
+
       // Put it all together
-      $html_to_return .= "<li class='virtue-result $parent_virtue-style'><div class='result-card-top'><span>$ranked_number $virtue_name</span> $virtue_icon_html</div> ".get_option('vs-'. $virtue .'-definition', 'definition here')."</li>";
+      // $html_to_return .= "<li class='virtue-result $parent_virtue-style'><div class='result-card-top'><span>$ranked_number $virtue_name</span> $virtue_icon_html</div> ".get_option('vs-'. $virtue .'-definition', 'definition here')."</li>";
     }
 
     $html_to_return .="</ol></div>";
@@ -213,7 +216,7 @@
           $field_id = $field->id;
           foreach($virtue_list as $virtue){
             $virtue_first_five = substr($virtue, 0, 5);
-            if(stripos($admin_label, $virtue_first_five) !== false){
+            if(mb_stripos($admin_label, $virtue_first_five) !== false){
             $mapped_fields_ids[$virtue][$admin_label] = $field_id;
             }
           }
@@ -332,7 +335,7 @@
         $current_virtue = [];
         foreach($field_id_set as $field_key => $field_id){
         // If the key(admin_label) of the array has reverse in it make sure to do reverese calculation
-         $current_virtue[] = (stripos($field_key, 'neg') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
+         $current_virtue[] = (mb_stripos($field_key, 'neg') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
        }
        // Do the calculation after collecting all values
        $current_virtue_calculation =  array_sum($current_virtue) / count($current_virtue);

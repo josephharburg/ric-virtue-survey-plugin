@@ -81,7 +81,7 @@ class Virtue_Survey_Result {
         $current_virtue = [];
         foreach($field_id_set as $admin_label => $field_id){
         // If the key(admin_label) of the array has reverse in it make sure to do reverese calculation
-         $current_virtue[] = (stripos($admin_label, 'neg') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
+         $current_virtue[] = (mb_stripos($admin_label, 'neg') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
        }
        // Do the calculation after collecting all values
        $current_virtue_calculation =  array_sum($current_virtue) / count($current_virtue);

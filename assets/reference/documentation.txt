@@ -2,24 +2,7 @@ CHANGES FOR PRODUCTION
 IN DOWNLOAD Backups change directory name.
 vs_upload_backup change directory name from SERVER[DOCUMENT_ROOT] and add is_dir conditional
 
-
-V1 -> Here is an overall step by step explanation of the process for storing virtue results and displaying them.
-
-  1. User takes survey.
-  2. On Submission =>
-    If user is logged in:
-      a. Calculate and store results in an object.
-      b. Store result object in user meta.
-      (See #CALC_INC_DEC below for more info )
-      c. Calculate increase and/or decrease of virtues from previous tests.
-    If user is not logged in:
-      a. Calculate and store results in an object.
-      b. Store result object in a transient that lasts a day.
-  3. On the results page, use a shortcode to pull either the transient using URL parameters from form submissions or user meta if user is logged in.
-    a. If logged in AND there are positive and/or negative results, display them.
-  4. Offer a form to register and log in if the user is not logged in; once completed, the user's transient data will be stored in the user's meta information.
-
-V2 -> Here is an overall step by step explanation of the process for storing virtue results and displaying them.
+Version 2 process -> Here is an overall step by step explanation of the process for storing virtue results and displaying them.
 
   1. User takes first survey.
   2. After submission the return code is saved in entry.
@@ -27,6 +10,23 @@ V2 -> Here is an overall step by step explanation of the process for storing vir
   4. On Submission, the plugin will collect both entries based on return code, combine the form values in one array and then run the result calculation on those values and store results in a transient object with a meta key as the return code.
   3. On the results page, use a shortcode to pull the transient using URL parameters.
     a. If a user comes back to see results again, we will use the form for viewing results again to create a results URL parameter as the code entered in form field.
+
+Version 1 Process-> Here is an overall step by step explanation of the process for storing virtue results and displaying them.
+
+      1. User takes survey.
+      2. On Submission =>
+        If user is logged in:
+          a. Calculate and store results in an object.
+          b. Store result object in user meta.
+          (See #CALC_INC_DEC below for more info )
+          c. Calculate increase and/or decrease of virtues from previous tests.
+        If user is not logged in:
+          a. Calculate and store results in an object.
+          b. Store result object in a transient that lasts a day.
+      3. On the results page, use a shortcode to pull either the transient using URL parameters from form submissions or user meta if user is logged in.
+        a. If logged in AND there are positive and/or negative results, display them.
+      4. Offer a form to register and log in if the user is not logged in; once completed, the user's transient data will be stored in the user's meta information.
+
 
 #CALC_INC_DEC
 We collect survey result objects individually with separate meta keys.

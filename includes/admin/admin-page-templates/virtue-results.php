@@ -3,7 +3,6 @@
  * This template handles the admin page for
  * updating the definitions of the virtues
  */
-require_once VIRTUE_SURVEY_PLUGIN_DIR_PATH . 'includes/utils/virtue-survey-plugin-functions.php';
 ob_start();
  ?>
 
