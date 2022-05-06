@@ -56,7 +56,7 @@
       * @return void
       */
 
-      function virtue_survey_plugin_activate() {
+      public static function virtue_survey_plugin_activate() {
 
         //Require Gravity Forms to be installed or deactivate plugin
         if(!is_plugin_active('gravityforms/gravityforms.php')){
