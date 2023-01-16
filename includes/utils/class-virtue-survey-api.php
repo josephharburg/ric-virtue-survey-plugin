@@ -60,6 +60,13 @@ class Virtue_Survey_API {
         'permission_callback' => array($this, 'vs_plugin_permission_callback'),
         )
       );
+    register_rest_route($this->namespace, '/get-random-code-for-survey/',
+        array(
+        'methods' => 'POST',
+        'callback' => array($this,'vs_generate_random_code'),
+        'permission_callback' => array($this, 'vs_plugin_permission_callback'),
+        )
+      );
   }
 
   /**
@@ -182,40 +189,50 @@ class Virtue_Survey_API {
     /**
      * Create a randomly generated url for the take survey button.
      *
+     * @see #RANDOM_CODE_GENERATION
      * @param object $request
      * @return string
      */
+
     function vs_generate_random_url(WP_REST_Request $request){
-      session_start();
-      // $available_surveys = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
-      $available_surveys = array(1,5);
+      $active_student_surveys = array(1,22);
+      $active_adult_surveys = array(20,24);
 
-      // Set Session variable as array if not set
-      if(!isset($_SESSION['surveys-taken'])){
-        $_SESSION['surveys-taken'] = array();
-      }
-
-      // Add completed survey ID to Session Variable if on the results page
-      if($request['retake'] == 'YES'){
-        if(!in_array($request['formID'], $_SESSION['surveys-taken'])){
-          $_SESSION['surveys-taken'][] = $request['formID'];
-        }
-      }
-
-      // Create array with 16 numbers representing survey numbers
-      if(!empty($_SESSION['surveys-taken'])){
-        foreach($available_surveys as $k=> $v){
-          if(in_array($v, $_SESSION['surveys-taken'])){
-            unset($available_surveys[$k]);
-          }
-        }
-      }
       $site_url = get_site_url();
-      $shuffled = $available_surveys;
+      $shuffled =($request['adult'] == 'YES') ? $active_adult_surveys : $active_student_surveys;
       shuffle($shuffled);
-      $random_key = array_rand($available_surveys);
-      $url_to_return = "$site_url/survey/?form-id={$available_surveys[$random_key]}";
+      $random_key = array_rand($shuffled);
+      // $random_survey = $shuffled[$random_key];
+      // $url_to_return = ($request['adult'] == 'YES') ? "$site_url/take-part-one/?form-id=20" : "$site_url/take-part-one/?form-id=$random_survey";
+      $url_to_return = "$site_url/take-part-one/?form-id={$shuffled[$random_key]}";
+      $letters = 'abcdefghijklmnopqrstuvwxyz';
+      $rand_one = $letters[rand(0, 26)];
+      $rand_two = $letters[rand(0, 26)];
+      $rand_three = $letters[rand(0, 26)];
+      $return_code = str_shuffle(rand(1000,10000).$rand_one.$rand_two.$rand_three);
+      $url_to_return .= "&return-code=$return_code";
       return wp_send_json_success($url_to_return , 200);
+      // session_start();
+      // Set Session variable as array if not set
+      // if(!isset($_SESSION['surveys-taken'])){
+      //   $_SESSION['surveys-taken'] = array();
+      // }
+      //
+      // // Add completed survey ID to Session Variable if on the results page
+      // if($request['retake'] == 'YES'){
+      //   if(!in_array($request['formID'], $_SESSION['surveys-taken'])){
+      //     $_SESSION['surveys-taken'][] = $request['formID'];
+      //   }
+      // }
+      //
+      // // Create array with 16 numbers representing survey numbers
+      // if(!empty($_SESSION['surveys-taken'])){
+      //   foreach($available_surveys as $k=> $v){
+      //     if(in_array($v, $_SESSION['surveys-taken'])){
+      //       unset($available_surveys[$k]);
+      //     }
+      //   }
+      // }
     }
 
     /**
@@ -232,9 +249,26 @@ class Virtue_Survey_API {
             $html_to_return = vs_create_results_html($results->get_ranked_virtues());
             return wp_send_json_success( array('resultHTML' => $html_to_return), 200 );
           }
-          return wp_send_json_error( "Results don not exist for this Return Code: $return_code", 404 );
+          return wp_send_json_error( "Results dont not exist for this Return Code: $return_code", 404 );
       }
       return wp_send_json_error( "Return Code was not attached to request.", 404 );
     }
+
+    /**
+     * Callback for getting random code
+     *
+     * @param object $request
+     * @return string|object
+     */
+    function vs_generate_random_code(WP_REST_Request $request){
+      $letters = 'abcdefghijklmnopqrstuvwxyz';
+      $rand_one = $letters[rand(0, 26)];
+      $rand_two = $letters[rand(0, 26)];
+      $rand_three = $letters[rand(0, 26)];
+      $return_code = str_shuffle(rand(1000,10000).$rand_one.$rand_two.$rand_three);
+      return wp_send_json_success($return_code, 200);
+    }
+
+
 
 }
