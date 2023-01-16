@@ -13,11 +13,20 @@
   */
 
    function vs_get_correlated_form_id($form_id){
+     //20 and 21 are the adult version
       $mapped_form_id_matches = array(
-       1 => 3,
-       3 => 1,
-       5 => 6,
-       6 => 5
+      //Version one youth
+       1 => 2,
+       2 => 1,
+       //Version Two Youth
+       22 => 23,
+       23 => 22,
+       //Version one adult
+       20 => 21,
+       21 => 20,
+       //Version two adult
+       24 => 25,
+       25 => 24
      );
      return $mapped_form_id_matches[(int)$form_id];
    }
@@ -30,9 +39,9 @@
     */
 
    function vs_get_parent_virtue($virtue){
-     $fortitude = array('courage','industriousness','magnanimity','magnificence','patience',);
+     $fortitude = array('courage','industriousness','magnanimity','magnificence','patience','perseverance');
      $prudence = array('circumspection','docility','foresight', 'judgment');
-     $temperance = array('honesty','humility','meekness','moderation','modesty','orderliness','self-control','clemency',
+     $temperance = array('honesty','humility','meekness','moderation','modesty','orderliness','self control','clemency',
      'studiousness','eutrapelia',);
      $justice = array('fairness','affability','courtesy','gratitude','generosity','kindness','loyalty','obedience','reverence','respect','responsibility','sincerity','trustworthiness',);
      switch ($virtue) {
@@ -93,7 +102,7 @@
         'moderation',
         'modesty',
         'orderliness',
-        'self-control',
+        'self control',
         'eutrapelia',
         'clemency',
         'studiousness'
@@ -144,29 +153,40 @@
    */
 
  function vs_create_results_html($results){
-    $html_to_return ="<div class='alignfull virtue-results-wrapper'><div style='color: aliceblue;background-color: var(--primary-color);padding: 1rem 0;'><h1 style='font-weight: 500;'>Virtue Survey Results</h1></div><div style='text-align:center;text-transform: uppercase;letter-spacing: 0.1rem;color: aliceblue;background: #01192B;'>Virtues are ranked strongest to needing improvement</div><ol>";
+    $return_code = ($_GET['return-code'])?$_GET['return-code'] : $_POST['returnCode'];
+    $virtue_tree_link_and_video = '<div style="text-align:center; text-decoration:underline;"><div class="no-print-video"style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/732594369?h=7b3ccf326a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="VSS - Ep 14 - Rough Cut v2"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script><a class="no-print-video" href="https://openlightmedia.com/interactive-virtue-tree/" target="_blank">You can read more about these virtues and their definitions by clicking here.</a></div>';
+    $html_to_return ="<div class='virtue-results-wrapper'><div id='results-page-header' ><h1 style='color: var(--primary-color);'>Virtue Survey Results</h1></div>$virtue_tree_link_and_video<div id='results-page-subheader' style='text-align:center;letter-spacing: 0.1rem;color: var(--primary-black-color);margin-bottom: 2rem;line-height:26pt;font-weight:400;'>Virtues are ranked in order by strongest to needing improvement.<br>The results below are for the return code: $return_code</div><h2 style='text-align: center;color: var(--primary-black-color);''>Your Top Three Virtues Are:</h2><ol>";
     foreach($results as $index => $virtue){
+      $rank = $index + 1;
       $parent_virtue = vs_get_parent_virtue($virtue);
 
-      // Create the virtue rank html
-      $rank = $index + 1;
+      //Emphasize the top three items
+      $top_three = '';
+      if(in_array($rank, array(1,2,3))){
+        $top_three =" $parent_virtue-top-three-style";
+      }
+
+      //Rank html
       $ranked_number = "<span class='result-rank' style='border: 2px solid var(--$parent_virtue);color: var(--$parent_virtue); display:inline-block'>$rank</span>";
 
-      // Create virtue name html
-      $virtue_name = "<span style='font-weight: bold;position: relative;text-transform: uppercase;margin-right:auto;font-size:large;color:var(--$parent_virtue);'>$virtue</span>";
-
-      //Create virtue icon html
+      //Get the virtue icon
       $virtue_icon =  wp_get_attachment_image_src( get_option("$virtue-icon-id", '95'), 'full' );
-      $virtue_icon_html = (!empty($virtue_icon))? "<span class='virtue-result-icon'><img id='currentVirtueImg' src='$virtue_icon[0]'></span>": '';
 
-      // Temps
-      $html_to_return .= "<li class='virtue-result $parent_virtue-style'><div class='result-card-top'>$ranked_number <img id='currentVirtueImg' src='$virtue_icon[0]'></div> ".get_option('vs-'. $virtue .'-definition', 'definition here')."</li>";
+      // Description html
+      // $html_to_return .= get_option('vs-'. $virtue .'-definition', 'definition here');
 
-      // Put it all together
-      // $html_to_return .= "<li class='virtue-result $parent_virtue-style'><div class='result-card-top'><span>$ranked_number $virtue_name</span> $virtue_icon_html</div> ".get_option('vs-'. $virtue .'-definition', 'definition here')."</li>";
+      $html_to_return .= "<li class='virtue-result $parent_virtue-style$top_three'><div class='result-card-top'>$ranked_number <img id='currentVirtueImg' src='$virtue_icon[0]'></div></li>";
+
+      //Emphasize the top three items
+      if($rank === 3){$html_to_return.= "</ol><hr><ol>";}
+
+      //Make it printer friendly
+      if($rank % 9 == 0 && $rank !== 1){
+        $html_to_return .= "</ol><div style='page-break-before:always;'></div><ol>";
+      }
     }
 
-    $html_to_return .="</ol></div>";
+    $html_to_return .="</ol></div><div style='margin-top: 2rem;text-align:center;'><a href='/' class='button' style='margin-right:2rem;font-weight: 400;'><i class='ph-lg ph-house-light' style='vertical-align: -6px;'></i> Return Home</a><a class='button' onclick='window.print();return false;' class='button'style='background-color: var(--primary-black-color);font-weight: 400;'><i class='ph-lg ph-printer-light' style='vertical-align: -6px;'></i> Print Your Results</a></div>";
 
     // if(is_user_logged_in()){
     //   $user_id = get_current_user_id();
@@ -215,7 +235,9 @@
           $admin_label = $field->adminLabel;
           $field_id = $field->id;
           foreach($virtue_list as $virtue){
-            $virtue_first_five = substr($virtue, 0, 5);
+            //NOte added 5/19/22 for self control
+            $virtue_first_five = str_replace(' ', '',$virtue);
+            $virtue_first_five = substr($virtue_first_five, 0, 5);
             if(mb_stripos($admin_label, $virtue_first_five) !== false){
             $mapped_fields_ids[$virtue][$admin_label] = $field_id;
             }
@@ -335,7 +357,7 @@
         $current_virtue = [];
         foreach($field_id_set as $field_key => $field_id){
         // If the key(admin_label) of the array has reverse in it make sure to do reverese calculation
-         $current_virtue[] = (mb_stripos($field_key, 'neg') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
+         $current_virtue[] = (mb_stripos($field_key, 'neg') !== false) ? 8 - rgar($entry, $field_id) : rgar($entry, $field_id);
        }
        // Do the calculation after collecting all values
        $current_virtue_calculation =  array_sum($current_virtue) / count($current_virtue);
@@ -345,4 +367,47 @@
     // Sort it by highest value
     arsort($calculated_survey_results);
     return $calculated_survey_results;
+  }
+
+  /**
+   * Collect and radomize the survey questions (fields)
+   *
+   * @see  #RANDOMIZATION_FUNCTION
+   * @param  array|object $form
+   *
+   * @return array
+   */
+
+  function vs_randomize_field_order($form){
+    $reordered_fields = array();
+    //Gather all the fields that are questions
+    foreach ( $form['fields'] as $index => &$field ) {
+      if(mb_stripos($field->cssClass, 'fieldset-wrapper-grid')){
+        $random_index_keys[] = $index;
+      }
+    }
+
+    //Shuffle the random indexes
+    $random_indexes = $random_index_keys;
+    shuffle($random_indexes);
+
+    foreach ( $form['fields'] as $index => &$field ) {
+      //Set the page number if its a page
+      if($field->type == 'page' ){
+        $current_page_number = $field->pageNumber;
+        $reordered_fields[$index] = $field;
+        continue;
+      }
+
+      //Replace the current field with another one using the index
+      if(in_array($index, $random_index_keys)){
+         $random_index = array_pop($random_indexes);
+         $form['fields'][$random_index]->pageNumber = $current_page_number;
+         $reordered_fields[$index] = $form['fields'][$random_index];
+      }else{
+         $reordered_fields[$index] = $field;
+      }
+    }
+
+    return $reordered_fields;
   }
