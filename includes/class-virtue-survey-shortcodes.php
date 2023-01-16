@@ -13,7 +13,8 @@ class Virtue_Survey_Shortcodes
     add_shortcode( 'survey_results', array($this, 'vs_output_survey_results'));
     add_shortcode( 'random-survey-button', array($this, 'vs_ouput_random_survey_button') );
     add_shortcode( 'output_part_two', array($this, 'vs_ouput_survey_based_on_param') );
-    add_shortcode( 'return_survey', array($this, 'vs_ouput_survey_based_on_param') );
+    add_shortcode( 'output_survey', array($this, 'vs_ouput_survey_based_on_param') );
+    add_shortcode( 'example_survey_results', array($this, 'vs_output_example_survey_results'));
   }
 
   /**
@@ -25,7 +26,7 @@ class Virtue_Survey_Shortcodes
    */
 
   public function vs_output_survey_results(){
-    if(is_admin()){return'';}
+    if(is_admin()){return 'Hello';}
     // if(is_user_logged_in()){
     //   $user_id = get_current_user_id();
     //   if(metadata_exists( 'user', $user_id, 'user-virtue-survey-result-1' )){
@@ -38,24 +39,22 @@ class Virtue_Survey_Shortcodes
     // Get return code from URL Parameter and retrieve result object
     $return_code = $_GET['return-code'];
     $result_object = get_transient( "return-results-$return_code" );
-
+    
     // Make sure we have a valid return code param and results arent expired.
     // This will also run if it is just a plain old request to the results page
     // and user doesnt have any saved surveys.
-    if(empty($result_object)){
+    if(empty($result_object) || empty($return_code)){
       // Display form to retrieve results from return code
       ob_start();
-      ?>
-      <div class="formError" id="surveyFormError"></div>
+      echo '<div class="formError" id="surveyFormError" style="margin-top: 15vh;"></div>
       <div style="display: block;text-align: center;padding: 5rem;border-radius: 8px;box-shadow: rgb(129 195 215 / 20%) 0px 7px 29px 0px;">
-        <img src="http://development-playground.local/wp-content/uploads/2022/04/cardinal-virtues-accent-01.png" style="width: 20rem;margin-bottom: 2rem;">
+        <img src="https://restoredinchrist.openlightmedia.com/wp-content/uploads/2022/05/cardinal-virtues-accent-01.png" style="width: 20rem;margin-bottom: 2rem;">
          <h2 style="color: #393D3F;font-variant: all-small-caps;margin-bottom: 1rem;">Get Your Results</h2>
          <form id="getSurveyResultForm" onsubmit="return false" method="post" style="">
           <input type="text" name="returnCode" id="returnCode" required="" placeholder="Enter Your Return Code" style="border-radius: 8px;border-color: #393D3F;">
           <input id="get-result-button" class="vs-space" type="submit" value="Get Result">
         </form>
-      </div>
-      <?php
+      </div>';
       ob_end_flush();
       $results_js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-survey-result.min.js'));
       wp_enqueue_script( 'get-survey-results', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-survey-result.min.js', array('jquery'), $results_js_version, true );
@@ -93,6 +92,26 @@ class Virtue_Survey_Shortcodes
   }
 
   /**
+   * Shortcode to output results on results page
+   *
+   */
+
+  public function vs_output_example_survey_results(){
+    if(is_admin()){return 'Hello';}
+
+    // Get return code from URL Parameter and retrieve result object
+    $return_code = 'cz179m3';
+    $result_object = array_keys(vs_create_results_array(209, 21, $return_code ));
+    // var_dump($result_object);
+      ob_start();
+      echo vs_create_results_html($result_object);
+      ob_end_flush();
+      return '';
+    }
+
+
+
+  /**
    * Outputs a random survey button
    *
    * @param  array $atts               shortcode attributes
@@ -117,7 +136,7 @@ class Virtue_Survey_Shortcodes
     }
 
     // Create array with 16 numbers representing survey numbers
-    $available_surveys = array(1,5);
+    $available_surveys = array(1);
     foreach($available_surveys as $k=> $v){
       if(in_array($v, $_SESSION['surveys-taken'])){
         unset($available_surveys[$k]);
@@ -126,7 +145,7 @@ class Virtue_Survey_Shortcodes
     $site_url = get_site_url();
     $random_key = array_rand($available_surveys,1);
     $button_text = ($shortcode_atts['retake'] == 'false') ? "Take Survey" : "Take Another Survey";
-    $button_to_return = "<div class='wp-block-button'> <a class='survey-rdm-button wp-block-button__width-100 wp-block-button__link $button_style' href='$site_url/survey/?form-id={$available_surveys[$random_key]}'>$button_text</a></div>";
+    $button_to_return = "<div class='wp-block-button'> <a class='survey-rdm-button wp-block-button__width-100 wp-block-button__link $button_style' href='$site_url/take-part-one/?form-id={$available_surveys[$random_key]}'>$button_text</a></div>";
     return $button_to_return;
   }
   // /**
@@ -176,8 +195,12 @@ class Virtue_Survey_Shortcodes
    */
 
   function vs_ouput_survey_based_on_param($atts){
-    if(!$_GET['form-id']){
-      return "<div>Oops something broke. ¯\(°_o)/¯ <br/> Please click back and enter your code again.</div>";
+    $atts = array_change_key_case( (array) $atts, CASE_LOWER );
+    $shortcode_atts = shortcode_atts(array('part-one' => 'false'), $atts);
+    if(!$_GET['form-id'] && !$shortcode_atts['part-one']){
+      return "<div style='text-align:center;'>Oops something went wrong.<br/> Please click back and enter your code again.</div>";
+    } elseif(!$_GET['form-id'] && $shortcode_atts['part-one']){
+        return "<div style='text-align:center;'>Oops something went wrong.<br/> Please click back and click start again please!.</div>";
     }
 
     return do_shortcode( '[gravityform id="'.$_GET['form-id'].'" title="false" description="false"]' );
