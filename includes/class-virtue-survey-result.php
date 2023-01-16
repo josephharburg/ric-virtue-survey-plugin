@@ -80,8 +80,11 @@ class Virtue_Survey_Result {
         // Make SURE THE CURRENT VIRTUE ARRAY IS EMPTY DERPPPP!!! I cant believe I forgot to do this. (* ￣︿￣)
         $current_virtue = [];
         foreach($field_id_set as $admin_label => $field_id){
+          $choice_value = rgar($entry, $field_id);
+        // Make sure that there is a number in there!
+          if(empty($choice_value) || !is_numeric($choice_value)){continue;}
         // If the key(admin_label) of the array has reverse in it make sure to do reverese calculation
-         $current_virtue[] = (mb_stripos($admin_label, 'neg') !== false) ? 7 - rgar($entry, $field_id) : rgar($entry, $field_id);
+         $current_virtue[] = (mb_stripos($admin_label, 'neg') !== false) ? 8 - $choice_value : $choice_value;
        }
        // Do the calculation after collecting all values
        $current_virtue_calculation =  array_sum($current_virtue) / count($current_virtue);
