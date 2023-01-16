@@ -26,9 +26,13 @@ class Virtue_Survey_Site_Modifications
     // Enqueue Front End stlyes
     $css_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH.'assets/css/frontend-style.min.css'));
     wp_enqueue_style( 'ric-styles', VIRTUE_SURVEY_FILE_PATH.'assets/css/frontend-style.min.css', array(), $css_version);
+    add_action( 'wp_head', function(){
+      echo '<script src="https://unpkg.com/phosphor-icons"></script>';
+      echo '<link rel="stylesheet" href="https://use.typekit.net/jzx5qgz.css">';
+    },10);
 
     // Enqueue Random URL Scripts
-    if(is_front_page() || is_page('Survey Results')){
+    if(is_front_page() || is_page('Survey Results') || is_page('Adult') || is_page('Youth')){
       $js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-random-survey-url.min.js'));
       wp_enqueue_script( 'return-random-url', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-random-survey-url.min.js', array('jquery'), $js_version, true);
       wp_localize_script( 'return-random-url', 'randomSurvey',
@@ -37,6 +41,17 @@ class Virtue_Survey_Site_Modifications
       'ajaxURL' => get_site_url()."/wp-json/vs-api/v1/get-random-survey/",
       ) );
     }
+
+    // Enqueue Random Code Scripts
+    // if(is_page(25)){
+    //   $js_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH. 'assets/js/get-random-survey-code.js'));
+    //   wp_enqueue_script( 'return-random-code', VIRTUE_SURVEY_FILE_PATH.'assets/js/get-random-survey-code.js', array('jquery'), $js_version, true);
+    //   wp_localize_script( 'return-random-code', 'randomCode',
+    //   array(
+    //   'nonce' => wp_create_nonce('wp_rest'),
+    //   'ajaxURL' => get_site_url()."/wp-json/vs-api/v1/get-random-code-for-survey/",
+    //   ) );
+    // }
   }
 
   /**
