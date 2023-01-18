@@ -26,7 +26,24 @@
        21 => 20,
        //Version two adult
        24 => 25,
-       25 => 24
+       25 => 24,
+
+       //ROUND TWO YOUTH Version one
+       33 => 34,
+       34 => 33,
+
+       //ROUND TWO YOUTH Version Two
+       35 => 36,
+       36 => 35, 
+
+       //ROUND TWO YOUTH Version Three
+       37 => 38,
+       38 => 37, 
+ 
+       //ROUND TWO ADULT
+       39 => 28,
+       28 => 39,
+       
      );
      return $mapped_form_id_matches[(int)$form_id];
    }
@@ -185,8 +202,8 @@
         $html_to_return .= "</ol><div style='page-break-before:always;'></div><ol>";
       }
     }
-
-    $html_to_return .="</ol></div><div style='margin-top: 2rem;text-align:center;'><a href='/' class='button' style='margin-right:2rem;font-weight: 400;'><i class='ph-lg ph-house-light' style='vertical-align: -6px;'></i> Return Home</a><a class='button' onclick='window.print();return false;' class='button'style='background-color: var(--primary-black-color);font-weight: 400;'><i class='ph-lg ph-printer-light' style='vertical-align: -6px;'></i> Print Your Results</a></div>";
+    $return_home_url = ($_GET['adult-version'] == true)? '/adult' : '/youth';
+    $html_to_return .="</ol></div><div style='margin-top: 2rem;text-align:center;'><a href='$return_home_url' class='button' style='margin-right:2rem;font-weight: 400;'><i class='ph-lg ph-house-light' style='vertical-align: -6px;'></i> Return Home</a><a class='button' onclick='window.print();return false;' class='button'style='background-color: var(--primary-black-color);font-weight: 400;'><i class='ph-lg ph-printer-light' style='vertical-align: -6px;'></i> Print Your Results</a></div>";
 
     // if(is_user_logged_in()){
     //   $user_id = get_current_user_id();

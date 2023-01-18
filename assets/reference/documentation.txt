@@ -71,6 +71,9 @@ their return code. The correct corresponding form id is placed within
 the URL parameters. If it is not then we need the user to resubmit the return
 code again.
 
+#RANDOM_CODE_GENERATION
+In order to make sure that cache does affect the generation of the code we use a js script to attach the code to the url of the "Take Part One" button. Because there are two different versions of the survey depending on if the user is an adult or not the js script when requesting the new url will specify if the request is coming from the adult landing page.
+
 |REST API INFO|
 The following are the available rest routes:
 
@@ -90,7 +93,31 @@ Request parameters:
 Request parameters:
   formID => The form ID of the survey just taken.
   retake => A bool as to whether the request is for a retake URL.
+  adult  => A bool as to whether this is the adult version of survey.
 
 /get-survey-result/ => Handles the retrieval of survey results.
 Request parameters:
   returnCode => The return code of the survey to retrieve.
+
+  #RANDOMIZATION_OVERVIEW
+  Oh boy this was a doozy.
+  The way we randomize the question order is by using the following filters and functions.
+
+    Step 1: add_action( 'gform_pre_render_{form ID}'...);
+    This action is used to manipulate the form and randomize the question order.
+    If running for the first time we set the session variable $_SESSION["raw-form-fields-$survey_session"];
+    The subsequent calls will just use that variable to reorder the fields.
+
+    Step 2: add_filter( 'gform_pre_validation_{form ID}'...);
+    This filter is used to change the original form into the randomized form before Gravity Forms validates and checks the submission of each page.
+
+    Step 3: add_action( 'gform_field_validation_{form ID}'...);
+    For some reason that I haven't been able to determine, Gravity Forms does not remove the failed validation message on corrected field submissions. Because of this we have to use this filter to force Gravity Forms to turn of failed validation if the field is correctly filled out.
+
+  #RANDOMIZATION_FUNCTION
+    The order by which gravity fields puts the fields onto the screen is directly correlated with the order of the array the form fields are stored in.
+    The first step is to find all the correct fields we want to randomized. This is achieved by iterating through the fields, checking if a particular class is attached to it and putting the index of the that field into an array. Then the indexes are shuffled in that array thus creating the random order of fields.
+
+    Then we iterate through the array once more and if the current field index is not in the array we created before we put that item back at the same index thus in the same position as it was placed in the form. If the field is a page field, we take the page number and set that to a variable that we use to set the page number of the field we are reordering later. (Gravity Forms uses the page number to decide what needs to be validated in the backend.)
+
+    If the field is within in our randomized array of indexes of correct fields we take the top index out of our randomized array using array_pop and place the random indexed field into the slot with the currently iterated index. Since we are removing the index from the shuffled array it will not repeat.

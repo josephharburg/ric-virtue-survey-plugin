@@ -197,8 +197,9 @@ class Virtue_Survey_Shortcodes
   function vs_ouput_survey_based_on_param($atts){
     $atts = array_change_key_case( (array) $atts, CASE_LOWER );
     $shortcode_atts = shortcode_atts(array('part-one' => 'false'), $atts);
+    
     if(!$_GET['form-id'] && !$shortcode_atts['part-one']){
-      return "<div style='text-align:center;'>Oops something went wrong.<br/> Please click back and enter your code again.</div>";
+      return "<div style='text-align:center;'>Oops something went wrong.<br/> Please click back and try again!</div>";
     } elseif(!$_GET['form-id'] && $shortcode_atts['part-one']){
         return "<div style='text-align:center;'>Oops something went wrong.<br/> Please click back and click start again please!.</div>";
     }

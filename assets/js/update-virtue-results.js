@@ -20,6 +20,7 @@
         virtue: virtue
       },
       success: (response) => {
+        // console.log(response.data.definition);
         tinymce.get("definitionContent").setContent(response.data.definition);
         if(response.data.imgURL){
           $(".virtue-image-upl").removeClass('vs-button-style');
@@ -27,7 +28,7 @@
         } else{
           $('.virtue-image-rmv').trigger('click');
         }
-        console.log(response.data.imgURL);
+        // console.log(response.data.imgURL);
       },
       error: (response) => {
         $('#updateError').show();

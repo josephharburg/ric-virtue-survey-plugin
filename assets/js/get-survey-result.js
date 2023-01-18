@@ -23,8 +23,8 @@ jQuery(document).ready(function($){
         }
       },
       error: (response) => {
-        console.log(response);
-        $('#surveyFormError').text('Either that return code has expired or it is entered incorrectly. Please re-enter your code and try again.');
+        $('#surveyFormError').html('Either that return code has expired or it is entered incorrectly.<br/> Please re-enter your code and try again.');
+        $('#surveyFormError').css("background-color", "var(--fortitude)");
       }
     });
   }

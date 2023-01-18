@@ -3,7 +3,7 @@
 * This class handles all the gravity form customizations
 *
 * @package ric-virtue-survey-plugins
-* @version 2.0
+* @version 1.0
 */
 
 class Virtue_Survey_Gravity_Forms_Integration
@@ -14,78 +14,170 @@ class Virtue_Survey_Gravity_Forms_Integration
     add_filter( 'gform_field_value_return_code', array($this,'vs_add_return_code_to_hidden_field') );
     add_filter( 'gform_enable_legacy_markup', '__return_true' );
 
-    /*())____________)_> YOUTH VERSION ONE  <_(____________(()   */
-    add_filter( 'gform_pre_render_1', array($this,'vs_populate_return_code'),10, 1 );
-    add_action( 'gform_after_submission_1', array($this, 'vs_save_return_code_data'), 10, 2 );
-    add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_action( 'gform_enqueue_scripts_1', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
-    add_action( 'gform_enqueue_scripts_2', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
-    add_action( 'gform_post_paging_1', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
-    add_filter( 'gform_previous_button_1', array($this,'vs_previous_button_markup'), 10, 2 );
-    add_filter( 'gform_previous_button_2', array($this,'vs_previous_button_markup'), 10, 2 );
-
-    /*())____________)_> YOUTH VERSION TWO  <_(____________(()   */
-    add_filter( 'gform_pre_render_22', array($this,'vs_populate_return_code'),10, 1 );
-    add_action( 'gform_after_submission_22', array($this, 'vs_save_return_code_data'), 10, 2 );
-    add_action( 'gform_after_submission_23', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_action( 'gform_enqueue_scripts_22', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
-    add_action( 'gform_enqueue_scripts_23', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
-    add_action( 'gform_post_paging_22', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
-    add_filter( 'gform_previous_button_22', array($this,'vs_previous_button_markup'), 10, 2 );
-    add_filter( 'gform_previous_button_23', array($this,'vs_previous_button_markup'), 10, 2 );
-
+    /*())____________)_>ROUND TWO -- YOUTH -- PART ONE BRIE SECTION<_(____________(()   */
+    add_filter( 'gform_pre_render_30', array($this,'vs_populate_return_code'),10, 1 );
+    add_action( 'gform_pre_submission_30', array($this, 'vs_round_two_send_user_to_section_b_youth_from_section_a'), 10, 1);
+    add_action( 'gform_enqueue_scripts_30', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    add_action( 'gform_post_paging_30', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
+    add_filter( 'gform_previous_button_30', array($this,'vs_previous_button_markup'), 10, 2 );
 
     ////__________________"o##o> Question Randomization <o##o"__________________//
-    /////...................|______ Part One ______/....................//
-    add_action( 'gform_pre_render_1', array($this,'vs_randomize_questions'),10, 2);
-    add_filter( 'gform_pre_validation_1', array($this,'vs_pre_form_fields_validation'), 10, 1);
-    add_action( 'gform_field_validation_1', array($this,'vs_post_form_fields_validation'), 10, 4 );
-    add_action( 'gform_pre_render_22', array($this,'vs_randomize_questions'),10, 2);
-    add_filter( 'gform_pre_validation_22', array($this,'vs_pre_form_fields_validation'), 10, 1);
-    add_action( 'gform_field_validation_22', array($this,'vs_post_form_fields_validation'), 10, 4 );
+    add_action( 'gform_pre_render_30', array($this,'vs_randomize_questions'),10, 2);
+    add_filter( 'gform_pre_validation_30', array($this,'vs_pre_form_fields_validation'), 10, 1);
+    add_action( 'gform_field_validation_30', array($this,'vs_post_form_fields_validation'), 10, 4 );
+    
+
+    /*())____________)_> ROUND TWO -- YOUTH -- VERSION 01 VIRTUE SURVEY <_(____________(()   */
+    ////////////////////   Part One (Section B) = 33 |  Part Two = 34  ///////////////////////
+    add_action( 'gform_enqueue_scripts_33', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    add_filter( 'gform_previous_button_33', array($this,'vs_previous_button_markup'), 10, 2 );
+    add_action( 'gform_after_submission_33', array($this, 'vs_save_return_code_data'), 10, 2 );
+   
+    add_action( 'gform_enqueue_scripts_34', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    add_filter( 'gform_previous_button_34', array($this,'vs_previous_button_markup'), 10, 2 );
+    add_action( 'gform_after_submission_34', array($this, 'vs_create_and_save_results'), 10, 2 );
+
+      ////__________________"o##o> Question Randomization <o##o"__________________//
+      add_action( 'gform_pre_render_33', array($this,'vs_randomize_questions'),10, 2 );
+      add_filter( 'gform_pre_validation_33', array($this,'vs_pre_form_fields_validation'), 10, 1);
+      add_action( 'gform_pre_render_34', array($this,'vs_randomize_questions'),10, 2 );
+      add_filter( 'gform_pre_validation_34', array($this,'vs_pre_form_fields_validation'), 10, 1);
+
+    /*())____________)_> ROUND TWO -- YOUTH -- VERSION 02 VIRTUE SURVEY <_(____________(()   */
+    ////////////////////   Part One (Section B) = 35 |  Part Two = 36  ///////////////////////
+    add_action( 'gform_enqueue_scripts_35', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    add_filter( 'gform_previous_button_35', array($this,'vs_previous_button_markup'), 10, 2 );
+    add_action( 'gform_after_submission_35', array($this, 'vs_save_return_code_data'), 10, 2 );
+   
+    add_action( 'gform_enqueue_scripts_36', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    add_filter( 'gform_previous_button_36', array($this,'vs_previous_button_markup'), 10, 2 );
+    add_action( 'gform_after_submission_36', array($this, 'vs_create_and_save_results'), 10, 2 );
+
+      ////__________________"o##o> Question Randomization <o##o"__________________//
+      add_action( 'gform_pre_render_35', array($this,'vs_randomize_questions'),10, 2 );
+      add_filter( 'gform_pre_validation_35', array($this,'vs_pre_form_fields_validation'), 10, 1);
+      add_action( 'gform_pre_render_36', array($this,'vs_randomize_questions'),10, 2 );
+      add_filter( 'gform_pre_validation_36', array($this,'vs_pre_form_fields_validation'), 10, 1);
+
+    /*())____________)_> ROUND TWO -- YOUTH -- VERSION 03 VIRTUE SURVEY <_(____________(()   */
+    ////////////////////   Part One (Section B) = 37 |  Part Two = 38  ///////////////////////
+    add_action( 'gform_enqueue_scripts_37', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    add_filter( 'gform_previous_button_37', array($this,'vs_previous_button_markup'), 10, 2 );
+    add_action( 'gform_after_submission_37', array($this, 'vs_save_return_code_data'), 10, 2 );
+   
+    add_action( 'gform_enqueue_scripts_38', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    add_filter( 'gform_previous_button_38', array($this,'vs_previous_button_markup'), 10, 2 );
+    add_action( 'gform_after_submission_38', array($this, 'vs_create_and_save_results'), 10, 2 );
+
+      ////__________________"o##o> Question Randomization <o##o"__________________//
+      add_action( 'gform_pre_render_37', array($this,'vs_randomize_questions'),10, 2 );
+      add_filter( 'gform_pre_validation_37', array($this,'vs_pre_form_fields_validation'), 10, 1);
+      add_action( 'gform_pre_render_38', array($this,'vs_randomize_questions'),10, 2 );
+      add_filter( 'gform_pre_validation_38', array($this,'vs_pre_form_fields_validation'), 10, 1);
+
+    
+ 
+
+    // /*())____________)_> YOUTH VERSION ONE  <_(____________(()   */
+    // add_filter( 'gform_pre_render_1', array($this,'vs_populate_return_code'),10, 1 );
+    // add_action( 'gform_after_submission_1', array($this, 'vs_save_return_code_data'), 10, 2 );
+    // add_action( 'gform_after_submission_2', array($this, 'vs_create_and_save_results'), 10, 2 );
+    // add_action( 'gform_enqueue_scripts_1', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    // add_action( 'gform_enqueue_scripts_2', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    // add_action( 'gform_post_paging_1', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
+    // add_filter( 'gform_previous_button_1', array($this,'vs_previous_button_markup'), 10, 2 );
+    // add_filter( 'gform_previous_button_2', array($this,'vs_previous_button_markup'), 10, 2 );
+
+    // /*())____________)_> YOUTH VERSION TWO  <_(____________(()   */
+    // add_filter( 'gform_pre_render_22', array($this,'vs_populate_return_code'),10, 1 );
+    // add_action( 'gform_after_submission_22', array($this, 'vs_save_return_code_data'), 10, 2 );
+    // add_action( 'gform_after_submission_23', array($this, 'vs_create_and_save_results'), 10, 2 );
+    // add_action( 'gform_enqueue_scripts_22', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    // add_action( 'gform_enqueue_scripts_23', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    // add_action( 'gform_post_paging_22', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
+    // add_filter( 'gform_previous_button_22', array($this,'vs_previous_button_markup'), 10, 2 );
+    // add_filter( 'gform_previous_button_23', array($this,'vs_previous_button_markup'), 10, 2 );
+
+
+    
+    // SECTION B
+    // add_action( 'gform_pre_render_22', array($this,'vs_randomize_questions'),10, 2);
+    // add_filter( 'gform_pre_validation_22', array($this,'vs_pre_form_fields_validation'), 10, 1);
+    // add_action( 'gform_field_validation_22', array($this,'vs_post_form_fields_validation'), 10, 4 );
     //This is required to turn off the randomization.
     // add_action( 'gform_field_validation_1_25', array($this,'vs_validate_code_saved'), 10, 4 );
-    /////...................|______ Part Two ______/....................//
-    add_action( 'gform_pre_render_2', array($this,'vs_randomize_questions'),10, 2 );
-    add_filter( 'gform_pre_validation_2', array($this,'vs_pre_form_fields_validation'), 10, 1);
-    add_action( 'gform_field_validation_2', array($this,'vs_post_form_fields_validation'), 10, 4 );
-    add_action( 'gform_pre_render_23', array($this,'vs_randomize_questions'),10, 2 );
-    add_filter( 'gform_pre_validation_23', array($this,'vs_pre_form_fields_validation'), 10, 1);
-    add_action( 'gform_field_validation_23', array($this,'vs_post_form_fields_validation'), 15, 4 );
+    // /////...................|______ Part Two ______/....................//
+    // add_action( 'gform_pre_render_2', array($this,'vs_randomize_questions'),10, 2 );
+    // add_filter( 'gform_pre_validation_2', array($this,'vs_pre_form_fields_validation'), 10, 1);
+    // add_action( 'gform_field_validation_2', array($this,'vs_post_form_fields_validation'), 10, 4 );
+    // add_action( 'gform_pre_render_23', array($this,'vs_randomize_questions'),10, 2 );
+    // add_filter( 'gform_pre_validation_23', array($this,'vs_pre_form_fields_validation'), 10, 1);
+    // add_action( 'gform_field_validation_23', array($this,'vs_post_form_fields_validation'), 15, 4 );
 
     /*())____________)_> ADULT VERSION ONE  <_(____________(()   */
-    add_filter( 'gform_pre_render_20', array($this,'vs_populate_return_code'),10, 1 );
-    add_action( 'gform_after_submission_20', array($this, 'vs_save_return_code_data'), 10, 2 );
-    add_action( 'gform_field_validation_20_25', array($this,'vs_validate_code_saved'), 10, 4 );
-    add_action( 'gform_after_submission_21', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_action( 'gform_enqueue_scripts_20', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
-    add_action( 'gform_enqueue_scripts_21', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
-    add_action( 'gform_post_paging_20', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
+    // add_filter( 'gform_pre_render_20', array($this,'vs_populate_return_code'),10, 1 );
+    // add_action( 'gform_after_submission_20', array($this, 'vs_save_return_code_data'), 10, 2 );
+    // add_action( 'gform_field_validation_20_25', array($this,'vs_validate_code_saved'), 10, 4 );
+    // add_action( 'gform_after_submission_21', array($this, 'vs_create_and_save_results'), 10, 2 );
+    // add_action( 'gform_enqueue_scripts_20', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    // add_action( 'gform_enqueue_scripts_21', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    // add_action( 'gform_post_paging_20', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
 
-    /*())____________)_> ADULT VERSION TWO  <_(____________(()   */
-    add_filter( 'gform_pre_render_24', array($this,'vs_populate_return_code'),10, 1 );
-    add_action( 'gform_after_submission_24', array($this, 'vs_save_return_code_data'), 10, 2 );
-    add_action( 'gform_field_validation_24_25', array($this,'vs_validate_code_saved'), 10, 4 );
-    add_action( 'gform_after_submission_25', array($this, 'vs_create_and_save_results'), 10, 2 );
-    add_action( 'gform_enqueue_scripts_24', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
-    add_action( 'gform_enqueue_scripts_25', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
-    add_action( 'gform_post_paging_24', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
+    // /*())____________)_> ADULT VERSION TWO  <_(____________(()   */
+    // add_filter( 'gform_pre_render_24', array($this,'vs_populate_return_code'),10, 1 );
+    // add_action( 'gform_after_submission_24', array($this, 'vs_save_return_code_data'), 10, 2 );
+    // add_action( 'gform_field_validation_24_25', array($this,'vs_validate_code_saved'), 10, 4 );
+    // add_action( 'gform_after_submission_25', array($this, 'vs_create_and_save_results'), 10, 2 );
+    // add_action( 'gform_enqueue_scripts_24', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    // add_action( 'gform_enqueue_scripts_25', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    // add_action( 'gform_post_paging_24', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
+
+    /*())____________)_> ADULT ROUND TWO <_(____________(()   */
+    add_filter( 'gform_pre_render_39', array($this,'vs_populate_return_code'),10, 1 );
+    add_action( 'gform_after_submission_39', array($this, 'vs_save_return_code_data'), 10, 2 );
+    add_action( 'gform_field_validation_39_25', array($this,'vs_validate_code_saved'), 10, 4 );
+    add_action( 'gform_after_submission_28', array($this, 'vs_create_and_save_results'), 10, 2 );
+    add_action( 'gform_enqueue_scripts_39', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    add_action( 'gform_enqueue_scripts_28', array($this,'vs_enqueue_answer_key_script'), 10, 2 );
+    add_action( 'gform_post_paging_39', array($this, 'vs_redirect_non_consenting_user'), 10, 3 );
+
+
 
     ////__________________"o##o> Question Randomization <o##o"__________________//
+    //Part One
+    add_action( 'gform_pre_render_39', array($this,'vs_randomize_questions'),10, 2 );
+    add_filter( 'gform_pre_validation_39', array($this,'vs_pre_form_fields_validation'), 10, 1);
+    //Part TWO
+    add_action( 'gform_pre_render_28', array($this,'vs_randomize_questions'),10, 2 );
+    add_filter( 'gform_pre_validation_28', array($this,'vs_pre_form_fields_validation'), 10, 1);
+   
     //////...................|______ Part One ______/....................//
-    add_action( 'gform_pre_render_20', array($this,'vs_randomize_questions'),10, 2 );
-    add_filter( 'gform_pre_validation_20', array($this,'vs_pre_form_fields_validation'), 10, 1);
-    add_action( 'gform_pre_render_24', array($this,'vs_randomize_questions'),10, 2 );
-    add_filter( 'gform_pre_validation_24', array($this,'vs_pre_form_fields_validation'), 10, 1);
-    //////...................|______ Part Two ______/....................//
-    add_action( 'gform_pre_render_21', array($this,'vs_randomize_questions'),10, 2 );
-    add_filter( 'gform_pre_validation_21', array($this,'vs_pre_form_fields_validation'), 10, 1);
-    add_action( 'gform_pre_render_25', array($this,'vs_randomize_questions'),10, 2 );
-    add_filter( 'gform_pre_validation_25', array($this,'vs_pre_form_fields_validation'), 10, 1);
+    // add_action( 'gform_pre_render_20', array($this,'vs_randomize_questions'),10, 2 );
+    // add_filter( 'gform_pre_validation_20', array($this,'vs_pre_form_fields_validation'), 10, 1);
 
-    /*())____________)_> GO TO PART TWO <_(____________(()   */
+    // add_action( 'gform_pre_render_24', array($this,'vs_randomize_questions'),10, 2 );
+    // add_filter( 'gform_pre_validation_24', array($this,'vs_pre_form_fields_validation'), 10, 1);
+
+ 
+    //////...................|______ Part Two ______/....................//
+    // add_action( 'gform_pre_render_21', array($this,'vs_randomize_questions'),10, 2 );
+    // add_filter( 'gform_pre_validation_21', array($this,'vs_pre_form_fields_validation'), 10, 1);
+    // add_action( 'gform_pre_render_25', array($this,'vs_randomize_questions'),10, 2 );
+    // add_filter( 'gform_pre_validation_25', array($this,'vs_pre_form_fields_validation'), 10, 1);
+
+ 
+
+    /*())____________)_>ADULT/PREVIOUS SEt GO TO PART TWO <_(____________(()   */
     add_action( 'gform_field_validation_18', array($this,'vs_validate_return_code_exists'), 10, 4 );
     add_action( 'gform_pre_submission_18', array($this, 'vs_update_matching_form_id'), 10, 1);
+
+    /*())____________)_>ROUND TWO GO TO PART TWO <_(____________(()   */
+    add_action( 'gform_field_validation_29', array($this,'vs_validate_return_code_exists'), 10, 4 );
+    add_action( 'gform_pre_submission_29', array($this, 'vs_round_two_send_user_to_section_b_youth_from_form'), 10, 1);
+
+    /*())____________)_> ROUND TWO GO TO PART THREE <_(____________(()   */
+    add_action( 'gform_field_validation_26', array($this,'vs_validate_return_code_exists'), 10, 4 );
+    add_action( 'gform_pre_submission_26', array($this, 'vs_update_matching_form_id'), 10, 1);
   }
 
   /**
@@ -100,9 +192,30 @@ class Virtue_Survey_Gravity_Forms_Integration
 
   function vs_save_return_code_data($entry, $form){
     $return_code = rgar($entry, 19);
-    $data        = array('entry-id'=> rgar($entry, 'id'),'form-id' =>  $form['id'], 'next-form-id' => vs_get_correlated_form_id($form['id']));
+    $data = array('entry-id'=> rgar($entry, 'id'),'form-id' =>  $form['id'], 'next-form-id' =>   vs_get_correlated_form_id($form['id']));
+
     set_transient( "$return_code-data", $data, WEEK_IN_SECONDS*2 );
   }
+
+  // /**
+  //  * Creates and Saves Return Code, Form ID, and next Form ID
+  //  *
+  //  * @see #RETURN_CODE_TRANSIENT
+  //  *
+  //  * @param  array|object $entry          The entry object from GF.
+  //  * @param  array|object $form           The form object from GF.
+  //  * @return void
+  //  */
+  //
+  // function vs_save_return_code_data_round_two_youth($entry, $form){
+  //   $return_code = rgar($entry, 19);
+  //   $round_two_part_two_form_ids = array(29,33);
+  //   shuffle($round_two_part_two_form_ids);
+  //   $next_form_id = $round_two_part_two_form_ids[0];
+  //   $data = array('next-form-id' => $next_form_id);
+  //
+  //   set_transient( "$return_code-data-youth-round-two", $data, WEEK_IN_SECONDS*4 );
+  // }
 
   /**
    * Adds code into field value based on url parameter
@@ -123,7 +236,11 @@ class Virtue_Survey_Gravity_Forms_Integration
       // as the return code is unique to the entry it will return the
       // one we need
       $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $return_code );
-      $matching_entry = GFAPI::get_entries( 0, $search_criteria);
+      //Adult survey is 39 put all the correct form ids here.
+      $matching_entry = GFAPI::get_entries( 0 , $search_criteria);
+
+      //OLD VERSION
+      // $matching_entry = GFAPI::get_entries( 0, $search_criteria);
       $entry_with_code = reset($matching_entry);
       // Get the form associated with the entry
       $previous_form_id = rgar($entry_with_code, 'form-id');
@@ -134,6 +251,37 @@ class Virtue_Survey_Gravity_Forms_Integration
     $_POST['input_3'] = $matching_form_id;
     return;
   }
+
+  /**
+   * Adds next form id into field value randomly
+   *
+   * @param  mixed $form
+   * @return array
+   */
+
+  function vs_round_two_send_user_to_section_b_youth_from_form($form){
+    $round_two_part_two_form_ids = array(33,35,37);
+    shuffle($round_two_part_two_form_ids);
+    $next_form_id = $round_two_part_two_form_ids[0];
+    $_POST['input_3'] = $next_form_id;
+    return;
+  }
+
+  /**
+   * Adds next form id into field value randomly
+   *
+   * @param  mixed $form
+   * @return array
+   */
+
+  function vs_round_two_send_user_to_section_b_youth_from_section_a($form){
+    $round_two_part_two_form_ids = array(33,35,37);
+    shuffle($round_two_part_two_form_ids);
+    $next_form_id = $round_two_part_two_form_ids[0];
+    $_POST['input_279'] = $next_form_id;
+    return;
+  }
+
   /**
    * Adds code into field value based on url parameter
    *
@@ -254,7 +402,7 @@ class Virtue_Survey_Gravity_Forms_Integration
      //   return;
      // }
      $user_results_meta_key = "return-results-$return_code";
-     set_transient($user_results_meta_key, $virtue_result_object, MONTH_IN_SECONDS*2 );
+     set_transient($user_results_meta_key, $virtue_result_object, MONTH_IN_SECONDS*12 );
   }
 
   /**
@@ -270,7 +418,7 @@ class Virtue_Survey_Gravity_Forms_Integration
     }
 
   /**
-   * Modifys the error messages for skipped questions
+   * Redirects the user if no is selected
    *
    *
    * @param  array|object $form           The form object from GF.
@@ -281,8 +429,9 @@ class Virtue_Survey_Gravity_Forms_Integration
 
     function vs_redirect_non_consenting_user($form, $source_page_number, $current_page_number){
       $disagreement = rgpost( 'input_30' );
-      if($current_page_number == 2 && !empty($disagreement) && $disagreement == "No"){
-        $endpoint_url = ($form['id'] == 1) ? "/youth" : '/adult';
+
+      if($current_page_number == 2 && !empty($disagreement) && stripos($disagreement,"No") !== false){
+        $endpoint_url = ($form['id'] == 39) ? "/adult" : '/youth';
         $url = get_site_url() . $endpoint_url;
         $script_to_redirect = "<script id='redirect-non-consent' type='text/javascript'>
         alert( 'Because you did not consent to the terms of agreement you are being redirected out of the survey.' );
@@ -302,11 +451,16 @@ class Virtue_Survey_Gravity_Forms_Integration
 
     function vs_enqueue_answer_key_script($form, $is_ajax){
       $pages_to_omit = array();
-      if(in_array($form['id'], array(1,20,22,24))){$pages_to_omit = array(1,2,3);}
+      if(in_array($form['id'], array(1,20,22,24,39,30))){$pages_to_omit = array(1,2,3);}
       if(in_array($current_page, $pages_to_omit)){return;}
       $current_page = GFFormDisplay::get_current_page( $form['id'] );
+      if(($form['id'] == 30 || $form['id'] == 39) && $current_page == 5){
+        $js_happiness_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH.'assets/js/happiness-questions.js'));
+        wp_enqueue_script( 'happiness-questions', VIRTUE_SURVEY_FILE_PATH.'assets/js/happiness-questions.js', array('jquery'), $js_happiness_version,true);
+      }
       $js_answer_key_version =  date("ymd-Gis", filemtime( VIRTUE_SURVEY_PLUGIN_DIR_PATH.'assets/js/answer-key-header.js'));
       wp_enqueue_script( 'answer-key-header', VIRTUE_SURVEY_FILE_PATH.'assets/js/answer-key-header.js', array('jquery'), $js_answer_key_version,true);
+
     }
 
   /**
@@ -317,7 +471,7 @@ class Virtue_Survey_Gravity_Forms_Integration
    */
 
    function vs_previous_button_markup( $previous_button, $form ) {
-     $page_number_to_hide = ($form['id'] == 1 || $form['id'] == 22)? 3 : 0;
+     $page_number_to_hide = ($form['id'] == 30)? 3 : 0;
      $current_page = GFFormDisplay::get_current_page( $form['id'] );
      if($current_page > $page_number_to_hide){
        $previous_button = '<div style="display:none;">' . $previous_button . '</div>';
@@ -347,18 +501,30 @@ class Virtue_Survey_Gravity_Forms_Integration
        }
 
        //First three pages need to be ignored on part one
-       if(in_array($form['id'], array(1,20,22,24))){
+       if(in_array($form['id'], array(1,20,22,24,39,30))){
          if(in_array($current_page, array(1,2,3))){return $form;}
        }
 
        // ADDED THIS TO HANDLE PART TWO ERRORS 9-19-2022
-       if(in_array($form_id, array(2,23))){
+       if(in_array($form_id, array(2,23,33,35,37))){
          $return_code = (!empty(rgpost( 'input_19' )))? rgpost( 'input_19' ) : $_GET['return-code'];
-         $part_two_welcome = "<div style='text-align:center;font-size:35px;'><h3>Welcome to part two of the survey!</h3><span style='font-size: 25px;'>This is the second part for the return code: $return_code.</span><br/><span style='font-size: 25px;'>Click Next to begin!</span></div>";
-         $field_id_to_change = ($form_id == 2)? 266: 281;
+         $part_two_welcome = "<div style='text-align:center;font-size:35px;'><h3>Congrats, you made it to Section B!</h3><span style='font-size: 25px;'>Just a reminder your return code is: $return_code.</span><br/><span style='font-size: 25px;'>Click Next to begin Part One Section B!</span></div>";
+        //  $field_id_to_change = ($form_id == 2)? 266: 281;
+         $field_id_to_change = 443;
          foreach ( $form['fields'] as &$field ) {
            if($field->id ==  $field_id_to_change){
              $field->content = $part_two_welcome;
+           }
+         }
+       }
+       //REPEAT THE ABOVE FOR PART THREE
+       if(in_array($form_id, array(2,23,39,34,36,38))){
+         $return_code = (!empty(rgpost( 'input_19' )))? rgpost( 'input_19' ) : $_GET['return-code'];
+         $last_part_welcome = "<div style='text-align:center;font-size:35px;'><h3>Welcome to the last part of the survey!</h3><span style='font-size: 25px;'>This is the last part for the return code: $return_code.</span><br/><span style='font-size: 25px;'>Click Next to begin!</span></div>";
+         $field_id_to_change = 443;
+         foreach ( $form['fields'] as &$field ) {
+           if($field->id ==  $field_id_to_change){
+             $field->content = $last_part_welcome;
            }
          }
        }
@@ -392,7 +558,7 @@ class Virtue_Survey_Gravity_Forms_Integration
      function vs_pre_form_fields_validation($form){
        $form_id = $form['id'];
        //First three pages need to be ignored on part one
-       if(in_array($form['id'], array(1,20,22,24))){
+       if(in_array($form['id'], array(1,20,22,24,39,30))){
          $source_page = GFFormDisplay::get_source_page( $form['id'] );
          if(in_array($source_page, array(1,2))){return $form;}
        }
@@ -422,7 +588,7 @@ class Virtue_Survey_Gravity_Forms_Integration
        $source_page = GFFormDisplay::get_source_page( $form['id'] );
 
        $result['is_valid'] = true;
-       if(($form['id'] == 1 || $form['id'] == 22) && $source_page == 3){
+       if(in_array($form['id'], array(1,20,22,24,30,39)) && $source_page == 3){
            $return_code = rgpost( 'input_19' );
            if ( $result['is_valid'] && $value !== $return_code ) {
                $result['is_valid'] = false;
@@ -431,7 +597,7 @@ class Virtue_Survey_Gravity_Forms_Integration
        }
 
        //make sure the radios are filled in!
-       if (empty($value) && $field->type == 'radio' && in_array($form['id'], array(1,2,22,23))){
+       if (empty($value) && $field->type == 'radio' && in_array($form['id'], array(1,2,22,23,30,33,34,35,36,37,38))){
          $result['is_valid'] = false;
          $result['message']  = 'Please answer the question above.';
        }

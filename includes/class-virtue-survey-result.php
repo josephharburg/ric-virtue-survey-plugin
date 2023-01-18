@@ -44,11 +44,19 @@ class Virtue_Survey_Result {
    */
 
   public function vs_match_forms_and_entries($form_one, $entry_one, $return_code){
+    //This is for the Round two adult version because all the virtue questions are in one part rather than two.
+    if($form_one['id'] == 28){
+      return array(
+          array('form'=> $form_one,'entry'=> $entry_one),
+        );
+    }
+
     $transient_data = get_transient( "$return_code-data" );
     if($transient_data){
       $matching_form = GFAPI::get_form($transient_data['form-id']);
       $entry_two = GFAPI::get_entry($transient_data['entry-id']);
-    } else{
+    }
+    else{
       $matching_form_data = vs_get_correlated_form($form_one['id']);
       $search_criteria['field_filters'][] = array( 'key' => '19', 'value' => $return_code );
       $matching_entry = GFAPI::get_entries( $matching_form_data['id'], $search_criteria);
