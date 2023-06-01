@@ -40,8 +40,10 @@ class Virtue_Survey_Gravity_Forms_Integration
       ////__________________"o##o> Question Randomization <o##o"__________________//
       add_action( 'gform_pre_render_33', array($this,'vs_randomize_questions'),10, 2 );
       add_filter( 'gform_pre_validation_33', array($this,'vs_pre_form_fields_validation'), 10, 1);
+      add_action( 'gform_field_validation_33', array($this,'vs_post_form_fields_validation'), 10, 4 );
       add_action( 'gform_pre_render_34', array($this,'vs_randomize_questions'),10, 2 );
       add_filter( 'gform_pre_validation_34', array($this,'vs_pre_form_fields_validation'), 10, 1);
+      add_action( 'gform_field_validation_34', array($this,'vs_post_form_fields_validation'), 10, 4 );
 
     /*())____________)_> ROUND TWO -- YOUTH -- VERSION 02 VIRTUE SURVEY <_(____________(()   */
     ////////////////////   Part One (Section B) = 35 |  Part Two = 36  ///////////////////////
@@ -56,8 +58,10 @@ class Virtue_Survey_Gravity_Forms_Integration
       ////__________________"o##o> Question Randomization <o##o"__________________//
       add_action( 'gform_pre_render_35', array($this,'vs_randomize_questions'),10, 2 );
       add_filter( 'gform_pre_validation_35', array($this,'vs_pre_form_fields_validation'), 10, 1);
+      add_action( 'gform_field_validation_35', array($this,'vs_post_form_fields_validation'), 10, 4 );
       add_action( 'gform_pre_render_36', array($this,'vs_randomize_questions'),10, 2 );
       add_filter( 'gform_pre_validation_36', array($this,'vs_pre_form_fields_validation'), 10, 1);
+      add_action( 'gform_field_validation_36', array($this,'vs_post_form_fields_validation'), 10, 4 );
 
     /*())____________)_> ROUND TWO -- YOUTH -- VERSION 03 VIRTUE SURVEY <_(____________(()   */
     ////////////////////   Part One (Section B) = 37 |  Part Two = 38  ///////////////////////
@@ -72,8 +76,10 @@ class Virtue_Survey_Gravity_Forms_Integration
       ////__________________"o##o> Question Randomization <o##o"__________________//
       add_action( 'gform_pre_render_37', array($this,'vs_randomize_questions'),10, 2 );
       add_filter( 'gform_pre_validation_37', array($this,'vs_pre_form_fields_validation'), 10, 1);
+      add_action( 'gform_field_validation_37', array($this,'vs_post_form_fields_validation'), 10, 4 );
       add_action( 'gform_pre_render_38', array($this,'vs_randomize_questions'),10, 2 );
       add_filter( 'gform_pre_validation_38', array($this,'vs_pre_form_fields_validation'), 10, 1);
+      add_action( 'gform_field_validation_38', array($this,'vs_post_form_fields_validation'), 10, 4 );
 
     
  
@@ -508,7 +514,7 @@ class Virtue_Survey_Gravity_Forms_Integration
        // ADDED THIS TO HANDLE PART TWO ERRORS 9-19-2022
        if(in_array($form_id, array(2,23,33,35,37))){
          $return_code = (!empty(rgpost( 'input_19' )))? rgpost( 'input_19' ) : $_GET['return-code'];
-         $part_two_welcome = "<div style='text-align:center;font-size:35px;'><h3>Congrats, you made it to Section B!</h3><span style='font-size: 25px;'>Just a reminder your return code is: $return_code.</span><br/><span style='font-size: 25px;'>Click Next to begin Part One Section B!</span></div>";
+         $part_two_welcome = "<div style='text-align:center;font-size:35px;'><h3>Congrats, you made it to Section B!</h3><span style='font-size: 25px;'>Just a reminder your return code is: $return_code</span><br/><span style='font-size: 25px;'>Click Next to begin Part One Section B!</span></div>";
         //  $field_id_to_change = ($form_id == 2)? 266: 281;
          $field_id_to_change = 443;
          foreach ( $form['fields'] as &$field ) {
@@ -520,7 +526,7 @@ class Virtue_Survey_Gravity_Forms_Integration
        //REPEAT THE ABOVE FOR PART THREE
        if(in_array($form_id, array(2,23,39,34,36,38))){
          $return_code = (!empty(rgpost( 'input_19' )))? rgpost( 'input_19' ) : $_GET['return-code'];
-         $last_part_welcome = "<div style='text-align:center;font-size:35px;'><h3>Welcome to the last part of the survey!</h3><span style='font-size: 25px;'>This is the last part for the return code: $return_code.</span><br/><span style='font-size: 25px;'>Click Next to begin!</span></div>";
+         $last_part_welcome = "<div style='text-align:center;font-size:35px;'><h3>Welcome to the last part of the survey!</h3><span style='font-size: 25px;'>This is the last part for the return code: $return_code</span><br/><span style='font-size: 25px;'>Click Next to begin!</span></div>";
          $field_id_to_change = 443;
          foreach ( $form['fields'] as &$field ) {
            if($field->id ==  $field_id_to_change){
@@ -596,7 +602,7 @@ class Virtue_Survey_Gravity_Forms_Integration
            }
        }
 
-       //make sure the radios are filled in!
+       ///make sure the radios are filled in!
        if (empty($value) && $field->type == 'radio' && in_array($form['id'], array(1,2,22,23,30,33,34,35,36,37,38))){
          $result['is_valid'] = false;
          $result['message']  = 'Please answer the question above.';
