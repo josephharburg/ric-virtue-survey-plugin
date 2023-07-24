@@ -1,5 +1,5 @@
-Here is an overall step by step explanation of the process for storing virtue results and displaying.
-
+Here is an overall step-by-step explanation of the process for storing virtue results and displaying them.
+NOTE: This overview does not reflect the Survey Data collection period. 
   1. User takes survey.
   2. On Submission =>
     If user is logged in:
@@ -9,7 +9,7 @@ Here is an overall step by step explanation of the process for storing virtue re
       c. Calculate increase and/or decrease of virtues from previous tests.
     If user is not logged in:
       a. Calculate and store results in an object.
-      b. Store result object in a transient that lasts a day.
+      b. Store result object in a transient that lasts a couple months.
   3. On the results page, use a shortcode to pull either the transient using URL parameters from form submissions or user meta if user is logged in.
     a. If logged in AND there are positive and/or negative results, display them.
   4. Offer a form to register and log in if the user is not logged in; once completed, the user's transient data will be stored in the user's meta information.
